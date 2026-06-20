@@ -186,7 +186,7 @@ final class SuiteWP {
                 'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'suitewp'),
                 'file'        => $base_path . 'debug-tools/debug-tools.php',
                 'class'       => 'SuiteWPDebugTools',
-                'version'     => '1.0.0',
+                'version'     => '1.0.1',
                 'icon'        => 'dashicons-code',
             ),
         );

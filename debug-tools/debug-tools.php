@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SuiteWP Debug & Logs
  * Description: Toggle WordPress debugging from the admin and view the debug log without FTP.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Jorge ML
  */
 
@@ -15,7 +15,7 @@ if (!class_exists('SuiteWPDebugTools')) :
 
 class SuiteWPDebugTools {
 
-    const VERSION         = '1.0.0';
+    const VERSION         = '1.0.1';
     const OPTION_KEY      = 'suitewp_debug_settings';
     const NONCE_ACTION    = 'suitewp_debug';
     const MENU_SLUG       = 'suitewp-debug';
@@ -25,8 +25,12 @@ class SuiteWPDebugTools {
     const DISABLED_PREFIX = '// SuiteWP-disabled: ';
     const LOG_TAIL_BYTES  = 131072; // 128 KB tail
 
+    /** Hook suffix of our admin page (set when the menu is registered). */
+    private $page_hook = '';
+
     public function __construct() {
-        add_action('admin_menu', array($this, 'add_admin_menu'));
+        // Priority 11 so the SuiteWP top-level menu (priority 10) exists first.
+        add_action('admin_menu', array($this, 'add_admin_menu'), 11);
         add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));
         add_action('wp_ajax_suitewp_debug_save_settings', array($this, 'ajax_save_settings'));
         add_action('wp_ajax_suitewp_debug_get_log', array($this, 'ajax_get_log'));
@@ -91,8 +95,9 @@ class SuiteWPDebugTools {
     /* --------------------------------------------------------------------- */
 
     public function add_admin_menu() {
-        add_submenu_page(
-            'tools.php',
+        // Register under the SuiteWP top-level menu so it's easy to find.
+        $this->page_hook = add_submenu_page(
+            'suitewp',
             __('Debug & Logs', 'suitewp'),
             __('Debug & Logs', 'suitewp'),
             self::CAPABILITY,
@@ -111,7 +116,7 @@ class SuiteWPDebugTools {
     }
 
     public function enqueue_assets($hook) {
-        if ('tools_page_' . self::MENU_SLUG !== $hook) {
+        if ('' === $this->page_hook || $hook !== $this->page_hook) {
             return;
         }
 
