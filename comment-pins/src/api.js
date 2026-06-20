@@ -3,7 +3,7 @@
  * return WordPress's { success, data } envelope.
  */
 
-const cfg = window.wpCommentPins || {};
+const cfg = window.devToolsCommentPins || {};
 
 function post( action, payload ) {
 	const body = new URLSearchParams( {

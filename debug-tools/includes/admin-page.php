@@ -14,102 +14,102 @@ $runtime  = $state['runtime'];
 $writable = $state['config_writable'];
 
 $levels = array(
-    'fatal'      => __('Fatal', 'suitewp'),
-    'error'      => __('Error', 'suitewp'),
-    'warning'    => __('Warning', 'suitewp'),
-    'notice'     => __('Notice', 'suitewp'),
-    'deprecated' => __('Deprecated', 'suitewp'),
-    'other'      => __('Other', 'suitewp'),
+    'fatal'      => __('Fatal', 'dev-tools'),
+    'error'      => __('Error', 'dev-tools'),
+    'warning'    => __('Warning', 'dev-tools'),
+    'notice'     => __('Notice', 'dev-tools'),
+    'deprecated' => __('Deprecated', 'dev-tools'),
+    'other'      => __('Other', 'dev-tools'),
 );
 ?>
-<div class="wrap suitewp-debug">
-    <h1><?php esc_html_e('Debug &amp; Logs', 'suitewp'); ?></h1>
+<div class="wrap devtools-debug">
+    <h1><?php esc_html_e('Debug &amp; Logs', 'dev-tools'); ?></h1>
 
     <?php if (!$writable) : ?>
         <div class="notice notice-warning">
-            <p><?php esc_html_e('wp-config.php is not writable. Saving will show a block you can paste manually.', 'suitewp'); ?></p>
+            <p><?php esc_html_e('wp-config.php is not writable. Saving will show a block you can paste manually.', 'dev-tools'); ?></p>
         </div>
     <?php endif; ?>
 
-    <div id="suitewp-debug-notice" class="notice" style="display:none;"><p></p></div>
+    <div id="devtools-debug-notice" class="notice" style="display:none;"><p></p></div>
 
-    <div class="suitewp-debug-grid">
-        <div class="suitewp-debug-card">
-            <h2><?php esc_html_e('Debug settings', 'suitewp'); ?></h2>
+    <div class="devtools-debug-grid">
+        <div class="devtools-debug-card">
+            <h2><?php esc_html_e('Debug settings', 'dev-tools'); ?></h2>
 
-            <form id="suitewp-debug-form">
-                <label class="suitewp-debug-toggle is-master">
+            <form id="devtools-debug-form">
+                <label class="devtools-debug-toggle is-master">
                     <input type="checkbox" name="wp_debug" <?php checked($settings['wp_debug']); ?> />
-                    <span><code>WP_DEBUG</code> — <?php esc_html_e('master switch', 'suitewp'); ?></span>
+                    <span><code>WP_DEBUG</code> — <?php esc_html_e('master switch', 'dev-tools'); ?></span>
                 </label>
 
-                <div class="suitewp-debug-sub">
-                    <label class="suitewp-debug-toggle">
+                <div class="devtools-debug-sub">
+                    <label class="devtools-debug-toggle">
                         <input type="checkbox" name="wp_debug_log" <?php checked($settings['wp_debug_log']); ?> />
-                        <span><code>WP_DEBUG_LOG</code> — <?php esc_html_e('write errors to debug.log', 'suitewp'); ?></span>
+                        <span><code>WP_DEBUG_LOG</code> — <?php esc_html_e('write errors to debug.log', 'dev-tools'); ?></span>
                     </label>
-                    <label class="suitewp-debug-toggle">
+                    <label class="devtools-debug-toggle">
                         <input type="checkbox" name="wp_debug_display" <?php checked($settings['wp_debug_display']); ?> />
-                        <span><code>WP_DEBUG_DISPLAY</code> — <?php esc_html_e('show errors on screen (avoid on live sites)', 'suitewp'); ?></span>
+                        <span><code>WP_DEBUG_DISPLAY</code> — <?php esc_html_e('show errors on screen (avoid on live sites)', 'dev-tools'); ?></span>
                     </label>
-                    <label class="suitewp-debug-toggle">
+                    <label class="devtools-debug-toggle">
                         <input type="checkbox" name="script_debug" <?php checked($settings['script_debug']); ?> />
-                        <span><code>SCRIPT_DEBUG</code> — <?php esc_html_e('load unminified core assets', 'suitewp'); ?></span>
+                        <span><code>SCRIPT_DEBUG</code> — <?php esc_html_e('load unminified core assets', 'dev-tools'); ?></span>
                     </label>
-                    <label class="suitewp-debug-toggle">
+                    <label class="devtools-debug-toggle">
                         <input type="checkbox" name="savequeries" <?php checked($settings['savequeries']); ?> />
-                        <span><code>SAVEQUERIES</code> — <?php esc_html_e('record DB queries (uses memory)', 'suitewp'); ?></span>
+                        <span><code>SAVEQUERIES</code> — <?php esc_html_e('record DB queries (uses memory)', 'dev-tools'); ?></span>
                     </label>
                 </div>
 
                 <p class="submit">
-                    <button type="submit" class="button button-primary"><?php esc_html_e('Save settings', 'suitewp'); ?></button>
-                    <button type="button" id="suitewp-debug-restore" class="button"<?php echo $state['has_backup'] ? '' : ' style="display:none;"'; ?>>
-                        <?php esc_html_e('Restore wp-config backup', 'suitewp'); ?>
+                    <button type="submit" class="button button-primary"><?php esc_html_e('Save settings', 'dev-tools'); ?></button>
+                    <button type="button" id="devtools-debug-restore" class="button"<?php echo $state['has_backup'] ? '' : ' style="display:none;"'; ?>>
+                        <?php esc_html_e('Restore wp-config backup', 'dev-tools'); ?>
                     </button>
                 </p>
             </form>
 
-            <div id="suitewp-debug-manual" class="suitewp-debug-manual" style="display:none;">
-                <p><?php esc_html_e('Paste this into wp-config.php, just above the "stop editing" line:', 'suitewp'); ?></p>
+            <div id="devtools-debug-manual" class="devtools-debug-manual" style="display:none;">
+                <p><?php esc_html_e('Paste this into wp-config.php, just above the "stop editing" line:', 'dev-tools'); ?></p>
                 <textarea readonly rows="7"></textarea>
             </div>
 
-            <p class="suitewp-debug-runtime" id="suitewp-debug-runtime"
+            <p class="devtools-debug-runtime" id="devtools-debug-runtime"
                data-active="<?php echo $runtime['wp_debug'] ? '1' : '0'; ?>">
                 <?php
                 echo $runtime['wp_debug']
-                    ? esc_html__('Debug is currently ACTIVE on the site.', 'suitewp')
-                    : esc_html__('Debug is currently OFF on the site.', 'suitewp');
+                    ? esc_html__('Debug is currently ACTIVE on the site.', 'dev-tools')
+                    : esc_html__('Debug is currently OFF on the site.', 'dev-tools');
                 ?>
             </p>
         </div>
 
-        <div class="suitewp-debug-card suitewp-debug-viewer">
-            <h2><?php esc_html_e('Debug log', 'suitewp'); ?></h2>
+        <div class="devtools-debug-card devtools-debug-viewer">
+            <h2><?php esc_html_e('Debug log', 'dev-tools'); ?></h2>
 
-            <div class="suitewp-debug-toolbar">
-                <div class="suitewp-debug-filters">
+            <div class="devtools-debug-toolbar">
+                <div class="devtools-debug-filters">
                     <?php foreach ($levels as $key => $label) : ?>
-                        <label class="suitewp-debug-level lvl-<?php echo esc_attr($key); ?>">
+                        <label class="devtools-debug-level lvl-<?php echo esc_attr($key); ?>">
                             <input type="checkbox" value="<?php echo esc_attr($key); ?>" checked />
                             <?php echo esc_html($label); ?>
                         </label>
                     <?php endforeach; ?>
                 </div>
-                <div class="suitewp-debug-tools">
-                    <input type="search" id="suitewp-debug-search" placeholder="<?php esc_attr_e('Search…', 'suitewp'); ?>" />
-                    <label class="suitewp-debug-auto">
-                        <input type="checkbox" id="suitewp-debug-autorefresh" /> <?php esc_html_e('Auto', 'suitewp'); ?>
+                <div class="devtools-debug-tools">
+                    <input type="search" id="devtools-debug-search" placeholder="<?php esc_attr_e('Search…', 'dev-tools'); ?>" />
+                    <label class="devtools-debug-auto">
+                        <input type="checkbox" id="devtools-debug-autorefresh" /> <?php esc_html_e('Auto', 'dev-tools'); ?>
                     </label>
-                    <button type="button" class="button" id="suitewp-debug-refresh"><?php esc_html_e('Refresh', 'suitewp'); ?></button>
-                    <button type="button" class="button" id="suitewp-debug-download"><?php esc_html_e('Download', 'suitewp'); ?></button>
-                    <button type="button" class="button button-link-delete" id="suitewp-debug-clear"><?php esc_html_e('Clear', 'suitewp'); ?></button>
+                    <button type="button" class="button" id="devtools-debug-refresh"><?php esc_html_e('Refresh', 'dev-tools'); ?></button>
+                    <button type="button" class="button" id="devtools-debug-download"><?php esc_html_e('Download', 'dev-tools'); ?></button>
+                    <button type="button" class="button button-link-delete" id="devtools-debug-clear"><?php esc_html_e('Clear', 'dev-tools'); ?></button>
                 </div>
             </div>
 
-            <div class="suitewp-debug-metabar" id="suitewp-debug-meta"></div>
-            <div class="suitewp-debug-log" id="suitewp-debug-log" aria-live="polite"></div>
+            <div class="devtools-debug-metabar" id="devtools-debug-meta"></div>
+            <div class="devtools-debug-log" id="devtools-debug-log" aria-live="polite"></div>
         </div>
     </div>
 </div>

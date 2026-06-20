@@ -1,6 +1,6 @@
 # Debug & Logs
 
-A WordPress mini-plugin (part of SuiteWP) to **turn WordPress debugging on/off and read
+A WordPress mini-plugin (part of DevTools) to **turn WordPress debugging on/off and read
 `debug.log` from the admin**, without FTP or server access.
 
 ## What it does
@@ -17,9 +17,9 @@ A WordPress mini-plugin (part of SuiteWP) to **turn WordPress debugging on/off a
 it at runtime — the constants must live in `wp-config.php`. This module edits it safely:
 
 - Locates `wp-config.php` the way WordPress core does.
-- Keeps a one-time pristine **backup** in `wp-content/uploads/suitewp-debug/`
+- Keeps a one-time pristine **backup** in `wp-content/uploads/devtools-debug/`
   (protected with `.htaccess`), restorable from the page.
-- Writes a delimited block (`/* BEGIN/END SuiteWP Debug */`) just above the
+- Writes a delimited block (`/* BEGIN/END DevTools Debug */`) just above the
   "stop editing" line, and **comments out** any pre-existing `define()` of the managed
   constants (in PHP the first `define()` wins, so duplicates must be avoided).
 - If `wp-config.php` isn't writable, the page shows the exact block to paste manually.

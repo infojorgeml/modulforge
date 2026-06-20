@@ -1,6 +1,6 @@
 # Page State Management
 
-A WordPress mini-plugin (part of SuiteWP) that improves page management by adding status, notes and responsive-design checks to the Pages list.
+A WordPress mini-plugin (part of DevTools) that improves page management by adding status, notes and responsive-design checks to the Pages list.
 
 ## ✨ Features
 
@@ -51,10 +51,10 @@ page-state/
 ## 🔄 Versions
 
 - **v2.0.0** (current)
-  - Unified text domain (`suitewp`) and English UI
+  - Unified text domain (`devtools`) and English UI
   - Hardened AJAX handlers (per-object capability, single localised nonce)
   - Styles moved from inline `admin_head` to an enqueued stylesheet
-  - Optional data cleanup on uninstall (via SuiteWP's opt-in)
+  - Optional data cleanup on uninstall (via DevTools's opt-in)
 
 ## 👤 Author
 

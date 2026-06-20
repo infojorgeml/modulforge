@@ -1,6 +1,6 @@
 /** Small shared helpers: localised strings, dates and avatars. */
 
-const cfg = window.wpCommentPins || {};
+const cfg = window.devToolsCommentPins || {};
 
 /** Localised string by key, falling back to the key itself. */
 export function t( key ) {

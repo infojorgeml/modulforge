@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: SuiteWP Debug & Logs
+ * Plugin Name: DevTools Debug & Logs
  * Description: Toggle WordPress debugging from the admin and view the debug log without FTP.
  * Version: 1.0.1
  * Author: Jorge ML
@@ -11,32 +11,32 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists('SuiteWPDebugTools')) :
+if (!class_exists('DevToolsDebug')) :
 
-class SuiteWPDebugTools {
+class DevToolsDebug {
 
     const VERSION         = '1.0.1';
-    const OPTION_KEY      = 'suitewp_debug_settings';
-    const NONCE_ACTION    = 'suitewp_debug';
-    const MENU_SLUG       = 'suitewp-debug';
+    const OPTION_KEY      = 'dev_tools_debug_settings';
+    const NONCE_ACTION    = 'dev_tools_debug';
+    const MENU_SLUG       = 'devtools-debug';
     const CAPABILITY      = 'manage_options';
-    const BLOCK_BEGIN     = '/* BEGIN SuiteWP Debug */';
-    const BLOCK_END       = '/* END SuiteWP Debug */';
-    const DISABLED_PREFIX = '// SuiteWP-disabled: ';
+    const BLOCK_BEGIN     = '/* BEGIN DevTools Debug */';
+    const BLOCK_END       = '/* END DevTools Debug */';
+    const DISABLED_PREFIX = '// DevTools-disabled: ';
     const LOG_TAIL_BYTES  = 131072; // 128 KB tail
 
     /** Hook suffix of our admin page (set when the menu is registered). */
     private $page_hook = '';
 
     public function __construct() {
-        // Priority 11 so the SuiteWP top-level menu (priority 10) exists first.
+        // Priority 11 so the DevTools top-level menu (priority 10) exists first.
         add_action('admin_menu', array($this, 'add_admin_menu'), 11);
         add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));
-        add_action('wp_ajax_suitewp_debug_save_settings', array($this, 'ajax_save_settings'));
-        add_action('wp_ajax_suitewp_debug_get_log', array($this, 'ajax_get_log'));
-        add_action('wp_ajax_suitewp_debug_clear_log', array($this, 'ajax_clear_log'));
-        add_action('wp_ajax_suitewp_debug_download_log', array($this, 'ajax_download_log'));
-        add_action('wp_ajax_suitewp_debug_restore_backup', array($this, 'ajax_restore_backup'));
+        add_action('wp_ajax_dev_tools_debug_save_settings', array($this, 'ajax_save_settings'));
+        add_action('wp_ajax_dev_tools_debug_get_log', array($this, 'ajax_get_log'));
+        add_action('wp_ajax_dev_tools_debug_clear_log', array($this, 'ajax_clear_log'));
+        add_action('wp_ajax_dev_tools_debug_download_log', array($this, 'ajax_download_log'));
+        add_action('wp_ajax_dev_tools_debug_restore_backup', array($this, 'ajax_restore_backup'));
     }
 
     /** Constants managed inside our wp-config block. */
@@ -60,7 +60,7 @@ class SuiteWPDebugTools {
     }
 
     /* --------------------------------------------------------------------- */
-    /* Lifecycle — invoked by the SuiteWP controller                          */
+    /* Lifecycle — invoked by the DevTools controller                          */
     /* --------------------------------------------------------------------- */
 
     public static function activate(): void {
@@ -95,11 +95,11 @@ class SuiteWPDebugTools {
     /* --------------------------------------------------------------------- */
 
     public function add_admin_menu() {
-        // Register under the SuiteWP top-level menu so it's easy to find.
+        // Register under the DevTools top-level menu so it's easy to find.
         $this->page_hook = add_submenu_page(
-            'suitewp',
-            __('Debug & Logs', 'suitewp'),
-            __('Debug & Logs', 'suitewp'),
+            'dev-tools',
+            __('Debug & Logs', 'dev-tools'),
+            __('Debug & Logs', 'dev-tools'),
             self::CAPABILITY,
             self::MENU_SLUG,
             array($this, 'render_admin_page')
@@ -108,7 +108,7 @@ class SuiteWPDebugTools {
 
     public function render_admin_page() {
         if (!current_user_can(self::CAPABILITY)) {
-            wp_die(esc_html__('You do not have permission to access this page.', 'suitewp'));
+            wp_die(esc_html__('You do not have permission to access this page.', 'dev-tools'));
         }
         $settings = self::get_settings();
         $state    = self::current_state();
@@ -121,37 +121,37 @@ class SuiteWPDebugTools {
         }
 
         wp_enqueue_script(
-            'suitewp-debug',
+            'devtools-debug',
             plugin_dir_url(__FILE__) . 'assets/admin.js',
             array(),
             self::VERSION,
             true
         );
         wp_enqueue_style(
-            'suitewp-debug',
+            'devtools-debug',
             plugin_dir_url(__FILE__) . 'assets/admin.css',
             array(),
             self::VERSION
         );
 
-        wp_localize_script('suitewp-debug', 'suitewpDebug', array(
+        wp_localize_script('devtools-debug', 'devToolsDebug', array(
             'ajax_url'     => admin_url('admin-ajax.php'),
             'nonce'        => wp_create_nonce(self::NONCE_ACTION),
             'download_url' => add_query_arg(
-                array('action' => 'suitewp_debug_download_log', 'nonce' => wp_create_nonce(self::NONCE_ACTION)),
+                array('action' => 'dev_tools_debug_download_log', 'nonce' => wp_create_nonce(self::NONCE_ACTION)),
                 admin_url('admin-ajax.php')
             ),
             'state'        => self::current_state(),
             'i18n'         => array(
-                'saved'          => __('Settings saved. Reload pages to apply.', 'suitewp'),
-                'save_error'     => __('Could not save settings.', 'suitewp'),
-                'connect_error'  => __('Connection error.', 'suitewp'),
-                'confirm_clear'  => __('Clear the debug log? This cannot be undone.', 'suitewp'),
-                'confirm_restore'=> __('Restore wp-config.php from the original backup?', 'suitewp'),
-                'cleared'        => __('Log cleared.', 'suitewp'),
-                'empty_log'      => __('The debug log is empty.', 'suitewp'),
-                'no_match'       => __('No entries match the current filter.', 'suitewp'),
-                'restored'       => __('wp-config.php restored from backup.', 'suitewp'),
+                'saved'          => __('Settings saved. Reload pages to apply.', 'dev-tools'),
+                'save_error'     => __('Could not save settings.', 'dev-tools'),
+                'connect_error'  => __('Connection error.', 'dev-tools'),
+                'confirm_clear'  => __('Clear the debug log? This cannot be undone.', 'dev-tools'),
+                'confirm_restore'=> __('Restore wp-config.php from the original backup?', 'dev-tools'),
+                'cleared'        => __('Log cleared.', 'dev-tools'),
+                'empty_log'      => __('The debug log is empty.', 'dev-tools'),
+                'no_match'       => __('No entries match the current filter.', 'dev-tools'),
+                'restored'       => __('wp-config.php restored from backup.', 'dev-tools'),
             ),
         ));
     }
@@ -162,10 +162,10 @@ class SuiteWPDebugTools {
 
     private function verify(): void {
         if (!check_ajax_referer(self::NONCE_ACTION, 'nonce', false)) {
-            wp_send_json_error(array('message' => __('Security check failed.', 'suitewp')), 403);
+            wp_send_json_error(array('message' => __('Security check failed.', 'dev-tools')), 403);
         }
         if (!current_user_can(self::CAPABILITY)) {
-            wp_send_json_error(array('message' => __('Insufficient permissions.', 'suitewp')), 403);
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'dev-tools')), 403);
         }
     }
 
@@ -197,7 +197,7 @@ class SuiteWPDebugTools {
         }
 
         wp_send_json_success(array(
-            'message' => __('Settings saved.', 'suitewp'),
+            'message' => __('Settings saved.', 'dev-tools'),
             'state'   => self::current_state(),
         ));
     }
@@ -227,7 +227,7 @@ class SuiteWPDebugTools {
         if (file_exists($path)) {
             file_put_contents($path, '', LOCK_EX);
         }
-        wp_send_json_success(array('message' => __('Log cleared.', 'suitewp')));
+        wp_send_json_success(array('message' => __('Log cleared.', 'dev-tools')));
     }
 
     public function ajax_restore_backup() {
@@ -237,29 +237,29 @@ class SuiteWPDebugTools {
         $backup = self::backup_dir() . '/wp-config-original.bak';
 
         if ('' === $path || !is_writable($path)) {
-            wp_send_json_error(array('message' => __('wp-config.php is not writable.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('wp-config.php is not writable.', 'dev-tools')), 400);
         }
         if (!file_exists($backup)) {
-            wp_send_json_error(array('message' => __('No backup found.', 'suitewp')), 404);
+            wp_send_json_error(array('message' => __('No backup found.', 'dev-tools')), 404);
         }
 
         $contents = file_get_contents($backup);
         if (false === $contents || false === file_put_contents($path, $contents, LOCK_EX)) {
-            wp_send_json_error(array('message' => __('Could not restore wp-config.php.', 'suitewp')), 500);
+            wp_send_json_error(array('message' => __('Could not restore wp-config.php.', 'dev-tools')), 500);
         }
 
         update_option(self::OPTION_KEY, self::default_settings());
-        wp_send_json_success(array('message' => __('Restored.', 'suitewp'), 'state' => self::current_state()));
+        wp_send_json_success(array('message' => __('Restored.', 'dev-tools'), 'state' => self::current_state()));
     }
 
     public function ajax_download_log() {
         if (!check_ajax_referer(self::NONCE_ACTION, 'nonce', false) || !current_user_can(self::CAPABILITY)) {
-            wp_die(esc_html__('Access denied.', 'suitewp'), '', array('response' => 403));
+            wp_die(esc_html__('Access denied.', 'dev-tools'), '', array('response' => 403));
         }
 
         $path = self::log_path();
         if (!file_exists($path) || !is_readable($path)) {
-            wp_die(esc_html__('No log file.', 'suitewp'), '', array('response' => 404));
+            wp_die(esc_html__('No log file.', 'dev-tools'), '', array('response' => 404));
         }
 
         nocache_headers();
@@ -293,15 +293,15 @@ class SuiteWPDebugTools {
     private static function apply_wp_config(array $settings) {
         $path = self::locate_wp_config();
         if ('' === $path) {
-            return new WP_Error('not_found', __('wp-config.php could not be located.', 'suitewp'));
+            return new WP_Error('not_found', __('wp-config.php could not be located.', 'dev-tools'));
         }
         if (!is_writable($path)) {
-            return new WP_Error('not_writable', __('wp-config.php is not writable. Add the block below manually.', 'suitewp'));
+            return new WP_Error('not_writable', __('wp-config.php is not writable. Add the block below manually.', 'dev-tools'));
         }
 
         $contents = file_get_contents($path);
         if (false === $contents) {
-            return new WP_Error('read_failed', __('Could not read wp-config.php.', 'suitewp'));
+            return new WP_Error('read_failed', __('Could not read wp-config.php.', 'dev-tools'));
         }
 
         self::backup($contents);
@@ -317,7 +317,7 @@ class SuiteWPDebugTools {
         }
 
         if (false === file_put_contents($path, $contents, LOCK_EX)) {
-            return new WP_Error('write_failed', __('Could not write wp-config.php.', 'suitewp'));
+            return new WP_Error('write_failed', __('Could not write wp-config.php.', 'dev-tools'));
         }
         return true;
     }
@@ -400,10 +400,10 @@ class SuiteWPDebugTools {
 
     private static function backup_dir(): string {
         $uploads = wp_upload_dir();
-        return trailingslashit($uploads['basedir']) . 'suitewp-debug';
+        return trailingslashit($uploads['basedir']) . 'devtools-debug';
     }
 
-    /** Keep a single pristine backup (the state before SuiteWP ever touched it). */
+    /** Keep a single pristine backup (the state before DevTools ever touched it). */
     private static function backup(string $contents): void {
         $dir = self::backup_dir();
         if (!is_dir($dir)) {
@@ -464,6 +464,6 @@ class SuiteWPDebugTools {
 
 endif;
 
-if (!defined('SUITEWP_LIFECYCLE_RUN')) {
-    new SuiteWPDebugTools();
+if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
+    new DevToolsDebug();
 }

@@ -7,7 +7,7 @@
  * stored absolute page pixels, which drifted whenever the layout changed.
  */
 
-const ROOT_SELECTOR = '#wpcp-root';
+const ROOT_SELECTOR = '#dtcp-root';
 
 /**
  * True when the node belongs to our own UI (so we never anchor to it).

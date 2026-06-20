@@ -2,7 +2,7 @@
  * WP Comment Pins — front-end overlay styles (minimalist, Linear/Notion-like).
  * Compiled by wp-scripts to build/style-index.css.
  *
- * Everything visual is nested under #wpcp-root so it gains id-level specificity
+ * Everything visual is nested under #dtcp-root so it gains id-level specificity
  * over the host theme (no !important needed) and never leaks out.
  */
 
@@ -33,7 +33,7 @@ $font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
 	sans-serif;
 $ease: cubic-bezier(0.16, 1, 0.3, 1);
 
-#wpcp-root {
+#dtcp-root {
 	position: static;
 
 	*,
@@ -43,7 +43,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	/* Mode layer (transparent — the crosshair signals the mode). */
-	.wpcp-overlay {
+	.dtcp-overlay {
 		position: fixed;
 		inset: 0;
 		pointer-events: none;
@@ -51,7 +51,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	/* Pin marker. */
-	.wpcp-pin {
+	.dtcp-pin {
 		position: absolute;
 		display: flex;
 		align-items: center;
@@ -63,7 +63,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		transform: translate(-50%, -50%);
 		border: 2px solid #fff;
 		border-radius: 50%;
-		background: var(--wpcp-pin-color, #{$accent});
+		background: var(--dtcp-pin-color, #{$accent});
 		box-shadow: $shadow-pin;
 		color: #fff;
 		font-family: $font;
@@ -87,7 +87,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		&.is-draft {
 			background: $accent;
 			pointer-events: none;
-			animation: wpcp-pin-in 0.28s $ease;
+			animation: dtcp-pin-in 0.28s $ease;
 		}
 
 		&.is-resolved {
@@ -101,7 +101,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		}
 	}
 
-	.wpcp-pin-initial {
+	.dtcp-pin-initial {
 		font-size: 11px;
 		font-weight: 600;
 		line-height: 1;
@@ -109,12 +109,12 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		user-select: none;
 	}
 
-	.wpcp-pin-check {
+	.dtcp-pin-check {
 		display: block;
 	}
 
 	/* Reusable initials avatar. */
-	.wpcp-avatar {
+	.dtcp-avatar {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -137,7 +137,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	/* Status badge. */
-	.wpcp-badge {
+	.dtcp-badge {
 		display: inline-flex;
 		align-items: center;
 		flex: 0 0 auto;
@@ -159,7 +159,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	/* Comment thread card. */
-	.wpcp-thread {
+	.dtcp-thread {
 		position: absolute;
 		width: 300px;
 		max-width: calc(100vw - 24px);
@@ -177,24 +177,24 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		line-height: 1.5;
 		outline: none;
 		z-index: 99994;
-		animation: wpcp-card-in 0.16s $ease;
+		animation: dtcp-card-in 0.16s $ease;
 	}
 
-	.wpcp-thread-head {
+	.dtcp-thread-head {
 		display: flex;
 		align-items: center;
 		gap: 10px;
 		margin-bottom: 10px;
 	}
 
-	.wpcp-meta {
+	.dtcp-meta {
 		display: flex;
 		flex-direction: column;
 		flex: 1 1 auto;
 		min-width: 0;
 	}
 
-	.wpcp-name {
+	.dtcp-name {
 		overflow: hidden;
 		font-size: 13px;
 		font-weight: 600;
@@ -203,25 +203,25 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		text-overflow: ellipsis;
 	}
 
-	.wpcp-date {
+	.dtcp-date {
 		font-size: 12px;
 		color: $muted;
 	}
 
-	.wpcp-comment {
+	.dtcp-comment {
 		font-size: 14px;
 		color: $text;
 		white-space: pre-wrap;
 		word-wrap: break-word;
 	}
 
-	.wpcp-resolved-note {
+	.dtcp-resolved-note {
 		margin-top: 6px;
 		font-size: 12px;
 		color: $ok-text;
 	}
 
-	.wpcp-thread-actions {
+	.dtcp-thread-actions {
 		display: flex;
 		gap: 4px;
 		margin-top: 12px;
@@ -230,35 +230,35 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	/* Replies */
-	.wpcp-replies {
+	.dtcp-replies {
 		margin-top: 12px;
 		display: flex;
 		flex-direction: column;
 		gap: 12px;
 	}
 
-	.wpcp-loading {
+	.dtcp-loading {
 		font-size: 13px;
 		color: $muted;
 	}
 
-	.wpcp-reply {
+	.dtcp-reply {
 		display: flex;
 		gap: 8px;
 	}
 
-	.wpcp-reply-body {
+	.dtcp-reply-body {
 		flex: 1 1 auto;
 		min-width: 0;
 	}
 
-	.wpcp-reply-head {
+	.dtcp-reply-head {
 		display: flex;
 		align-items: baseline;
 		gap: 8px;
 	}
 
-	.wpcp-reply-text {
+	.dtcp-reply-text {
 		margin-top: 2px;
 		font-size: 13px;
 		color: $text;
@@ -266,14 +266,14 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		word-wrap: break-word;
 	}
 
-	.wpcp-reply-composer {
+	.dtcp-reply-composer {
 		margin-top: 12px;
 		padding-top: 12px;
 		border-top: 1px solid $border;
 	}
 
 	/* Composer (new comment + reply). */
-	.wpcp-form {
+	.dtcp-form {
 		position: absolute;
 		width: 300px;
 		max-width: calc(100vw - 24px);
@@ -285,10 +285,10 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		box-shadow: $shadow-card;
 		font-family: $font;
 		z-index: 99994;
-		animation: wpcp-card-in 0.16s $ease;
+		animation: dtcp-card-in 0.16s $ease;
 	}
 
-	.wpcp-textarea {
+	.dtcp-textarea {
 		display: block;
 		width: 100%;
 		min-height: 72px;
@@ -320,7 +320,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		}
 	}
 
-	.wpcp-form-actions {
+	.dtcp-form-actions {
 		display: flex;
 		justify-content: flex-end;
 		gap: 6px;
@@ -328,7 +328,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	/* Buttons */
-	.wpcp-icon-btn {
+	.dtcp-icon-btn {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -349,7 +349,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		}
 	}
 
-	.wpcp-text-btn {
+	.dtcp-text-btn {
 		padding: 6px 10px;
 		border: none;
 		border-radius: $radius-btn;
@@ -376,7 +376,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		}
 	}
 
-	.wpcp-link-danger {
+	.dtcp-link-danger {
 		margin-left: auto;
 		padding: 0;
 		border: none;
@@ -391,7 +391,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		}
 	}
 
-	.wpcp-btn-primary {
+	.dtcp-btn-primary {
 		padding: 6px 14px;
 		border: none;
 		border-radius: $radius-btn;
@@ -414,7 +414,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	/* Filter chips */
-	.wpcp-chip {
+	.dtcp-chip {
 		padding: 4px 12px;
 		border: none;
 		border-radius: 999px;
@@ -437,7 +437,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	/* Side panel */
-	.wpcp-panel {
+	.dtcp-panel {
 		position: fixed;
 		top: 0;
 		right: 0;
@@ -451,10 +451,10 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		box-shadow: -8px 0 24px rgba(0, 0, 0, 0.08);
 		font-family: $font;
 		z-index: 99995;
-		animation: wpcp-panel-in 0.2s $ease;
+		animation: dtcp-panel-in 0.2s $ease;
 	}
 
-	.wpcp-panel-head {
+	.dtcp-panel-head {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -462,20 +462,20 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		border-bottom: 1px solid $border;
 	}
 
-	.wpcp-panel-title {
+	.dtcp-panel-title {
 		font-size: 15px;
 		font-weight: 600;
 		color: $text;
 	}
 
-	.wpcp-panel-filters {
+	.dtcp-panel-filters {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 6px;
 		padding: 12px 16px 8px;
 	}
 
-	.wpcp-panel-showresolved {
+	.dtcp-panel-showresolved {
 		display: flex;
 		align-items: center;
 		gap: 8px;
@@ -489,20 +489,20 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		}
 	}
 
-	.wpcp-panel-list {
+	.dtcp-panel-list {
 		flex: 1 1 auto;
 		overflow-y: auto;
 		padding: 4px 0 12px;
 	}
 
-	.wpcp-panel-empty {
+	.dtcp-panel-empty {
 		padding: 24px 16px;
 		font-size: 13px;
 		color: $muted;
 		text-align: center;
 	}
 
-	.wpcp-panel-item {
+	.dtcp-panel-item {
 		display: flex;
 		gap: 10px;
 		width: 100%;
@@ -524,26 +524,26 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		}
 	}
 
-	.wpcp-panel-item-body {
+	.dtcp-panel-item-body {
 		flex: 1 1 auto;
 		min-width: 0;
 	}
 
-	.wpcp-panel-item-head {
+	.dtcp-panel-item-head {
 		display: flex;
 		align-items: baseline;
 		justify-content: space-between;
 		gap: 8px;
 	}
 
-	.wpcp-panel-item-text {
+	.dtcp-panel-item-text {
 		margin-top: 2px;
 		font-size: 13px;
 		color: $text;
 		line-height: 1.45;
 	}
 
-	.wpcp-panel-item-meta {
+	.dtcp-panel-item-meta {
 		display: flex;
 		align-items: center;
 		gap: 8px;
@@ -551,13 +551,13 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		empty-cells: hide;
 	}
 
-	.wpcp-reply-count {
+	.dtcp-reply-count {
 		font-size: 12px;
 		color: $muted;
 	}
 
 	/* Floating toggle for the panel. */
-	.wpcp-panel-toggle {
+	.dtcp-panel-toggle {
 		position: fixed;
 		right: 24px;
 		bottom: 24px;
@@ -584,7 +584,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 		}
 	}
 
-	.wpcp-panel-toggle-count {
+	.dtcp-panel-toggle-count {
 		position: absolute;
 		top: -2px;
 		right: -2px;
@@ -604,7 +604,7 @@ $ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Cursor hint while in comment mode. */
-body.wpcp-active {
+body.dtcp-active {
 	cursor: crosshair;
 }
 
@@ -615,13 +615,13 @@ body.wpcp-active {
 		vertical-align: middle;
 	}
 
-	&.wpcp-on .ab-item {
+	&.dtcp-on .ab-item {
 		background: #{$accent} !important;
 		color: #fff !important;
 	}
 }
 
-@keyframes wpcp-card-in {
+@keyframes dtcp-card-in {
 	from {
 		opacity: 0;
 		transform: translateX(-50%) translateY(4px) scale(0.97);
@@ -632,7 +632,7 @@ body.wpcp-active {
 	}
 }
 
-@keyframes wpcp-pin-in {
+@keyframes dtcp-pin-in {
 	0% {
 		opacity: 0;
 		transform: translate(-50%, -50%) scale(0);
@@ -647,7 +647,7 @@ body.wpcp-active {
 	}
 }
 
-@keyframes wpcp-panel-in {
+@keyframes dtcp-panel-in {
 	from {
 		transform: translateX(100%);
 	}
@@ -657,12 +657,12 @@ body.wpcp-active {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	#wpcp-root {
-		.wpcp-pin,
-		.wpcp-thread,
-		.wpcp-form,
-		.wpcp-panel,
-		.wpcp-panel-toggle {
+	#dtcp-root {
+		.dtcp-pin,
+		.dtcp-thread,
+		.dtcp-form,
+		.dtcp-panel,
+		.dtcp-panel-toggle {
 			animation: none !important;
 			transition: none !important;
 		}

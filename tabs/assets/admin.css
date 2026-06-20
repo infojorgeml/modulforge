@@ -1,26 +1,26 @@
 /* Page Tabs Organizer - Admin styles */
 
-.pto-admin-container {
+.dtpt-admin-container {
     display: flex;
     gap: 30px;
     margin-top: 20px;
 }
 
-.pto-tabs-section,
-.pto-pages-section {
+.dtpt-tabs-section,
+.dtpt-pages-section {
     flex: 1;
 }
 
-.pto-tabs-section {
+.dtpt-tabs-section {
     max-width: 500px;
 }
 
-.pto-pages-section {
+.dtpt-pages-section {
     min-width: 600px;
 }
 
 /* Tab form */
-.pto-add-tab-form {
+.dtpt-add-tab-form {
     background: #fff;
     border: 1px solid #c3c4c7;
     border-radius: 4px;
@@ -28,32 +28,32 @@
     margin-bottom: 20px;
 }
 
-.pto-add-tab-form h3 {
+.dtpt-add-tab-form h3 {
     margin-top: 0;
     margin-bottom: 15px;
     color: #1d2327;
 }
 
-.pto-add-tab-form .form-table th {
+.dtpt-add-tab-form .form-table th {
     width: 120px;
     padding: 15px 10px 15px 0;
 }
 
-.pto-add-tab-form .form-table td {
+.dtpt-add-tab-form .form-table td {
     padding: 15px 0;
 }
 
-.pto-add-tab-form .regular-text {
+.dtpt-add-tab-form .regular-text {
     width: 100%;
     max-width: 300px;
 }
 
-.pto-add-tab-form textarea.regular-text {
+.dtpt-add-tab-form textarea.regular-text {
     height: 80px;
     resize: vertical;
 }
 
-.pto-add-tab-form input[type="color"] {
+.dtpt-add-tab-form input[type="color"] {
     width: 50px;
     height: 30px;
     border: none;
@@ -61,16 +61,16 @@
     cursor: pointer;
 }
 
-.pto-add-tab-form .submit {
+.dtpt-add-tab-form .submit {
     margin: 10px 0 0 0;
     padding: 0;
 }
 
-.pto-add-tab-form .button {
+.dtpt-add-tab-form .button {
     position: relative;
 }
 
-.pto-add-tab-form .spinner {
+.dtpt-add-tab-form .spinner {
     display: none;
     float: none;
     position: absolute;
@@ -80,59 +80,59 @@
     margin: 0;
 }
 
-.pto-add-tab-form .button.loading .spinner {
+.dtpt-add-tab-form .button.loading .spinner {
     display: block;
     visibility: visible;
 }
 
-.pto-add-tab-form .button.loading .button-text {
+.dtpt-add-tab-form .button.loading .button-text {
     opacity: 0.6;
 }
 
 /* Tab list */
-.pto-tabs-list {
+.dtpt-tabs-list {
     background: #fff;
     border: 1px solid #c3c4c7;
     border-radius: 4px;
     padding: 20px;
 }
 
-.pto-tabs-list h3 {
+.dtpt-tabs-list h3 {
     margin-top: 0;
     margin-bottom: 15px;
     color: #1d2327;
 }
 
-.pto-tabs-list .wp-list-table {
+.dtpt-tabs-list .wp-list-table {
     border: none;
     box-shadow: none;
 }
 
-.pto-tabs-list .color-preview {
+.dtpt-tabs-list .color-preview {
     border: 1px solid #c3c4c7;
     margin-right: 8px;
     vertical-align: middle;
 }
 
-.pto-tabs-list .button-small {
+.dtpt-tabs-list .button-small {
     margin-right: 5px;
 }
 
 /* Pages section */
-.pto-pages-section {
+.dtpt-pages-section {
     background: #fff;
     border: 1px solid #c3c4c7;
     border-radius: 4px;
     padding: 20px;
 }
 
-.pto-pages-section h2 {
+.dtpt-pages-section h2 {
     margin-top: 0;
     margin-bottom: 15px;
     color: #1d2327;
 }
 
-.pto-pages-assignment .wp-list-table {
+.dtpt-pages-assignment .wp-list-table {
     border: none;
     box-shadow: none;
 }
@@ -151,7 +151,7 @@
 }
 
 /* Tabs on the Pages screen - native WordPress style */
-.pto-tab-link {
+.dtpt-tab-link {
     line-height: 2;
     padding: .2em;
     text-decoration: none;
@@ -159,20 +159,20 @@
     position: relative;
 }
 
-.pto-tab-link:hover {
+.dtpt-tab-link:hover {
     text-decoration: none;
 }
 
-.pto-tab-link.current {
+.dtpt-tab-link.current {
     font-weight: 600;
 }
 
-.pto-tab-link .count {
+.dtpt-tab-link .count {
     color: #50575e;
     font-weight: 400;
 }
 
-.pto-tab-link.current .count {
+.dtpt-tab-link.current .count {
     color: #50575e;
     font-weight: 400;
 }
@@ -180,7 +180,7 @@
 /* Tabs without color indicators - clean design */
 
 /* Create New Tab button */
-#pto-create-new-tab {
+#dtpt-create-new-tab {
     margin-left: 10px;
     font-weight: 600;
 }
@@ -192,7 +192,7 @@ select[name="tab_filter"] {
 }
 
 /* Notification messages */
-#pto-messages {
+#dtpt-messages {
     position: fixed;
     top: 32px;
     right: 20px;
@@ -201,20 +201,20 @@ select[name="tab_filter"] {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-#pto-messages.notice-success {
+#dtpt-messages.notice-success {
     border-left-color: #00a32a;
 }
 
-#pto-messages.notice-error {
+#dtpt-messages.notice-error {
     border-left-color: #d63638;
 }
 
-#pto-messages.show {
+#dtpt-messages.show {
     display: block !important;
     animation: slideInRight 0.3s ease-out;
 }
 
-#pto-messages.hide {
+#dtpt-messages.hide {
     animation: slideOutRight 0.3s ease-in;
 }
 
@@ -252,38 +252,38 @@ tr.updating {
 
 /* Responsive */
 @media screen and (max-width: 1200px) {
-    .pto-admin-container {
+    .dtpt-admin-container {
         flex-direction: column;
     }
 
-    .pto-tabs-section {
+    .dtpt-tabs-section {
         max-width: none;
     }
 
-    .pto-pages-section {
+    .dtpt-pages-section {
         min-width: auto;
     }
 }
 
 @media screen and (max-width: 768px) {
-    .pto-admin-container {
+    .dtpt-admin-container {
         gap: 20px;
     }
 
-    .pto-add-tab-form,
-    .pto-tabs-list,
-    .pto-pages-section {
+    .dtpt-add-tab-form,
+    .dtpt-tabs-list,
+    .dtpt-pages-section {
         padding: 15px;
     }
 
-    .pto-add-tab-form .form-table th,
-    .pto-add-tab-form .form-table td {
+    .dtpt-add-tab-form .form-table th,
+    .dtpt-add-tab-form .form-table td {
         display: block;
         width: 100%;
         padding: 10px 0;
     }
 
-    .pto-add-tab-form .form-table th {
+    .dtpt-add-tab-form .form-table th {
         padding-bottom: 5px;
     }
 
@@ -294,7 +294,7 @@ tr.updating {
 }
 
 /* Modal styles */
-.pto-modal {
+.dtpt-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -303,7 +303,7 @@ tr.updating {
     z-index: 100000;
 }
 
-.pto-modal-backdrop {
+.dtpt-modal-backdrop {
     position: absolute;
     top: 0;
     left: 0;
@@ -312,7 +312,7 @@ tr.updating {
     background: rgba(0, 0, 0, 0.7);
 }
 
-.pto-modal-wrap {
+.dtpt-modal-wrap {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -326,12 +326,12 @@ tr.updating {
     overflow-y: auto;
 }
 
-.pto-modal-content {
+.dtpt-modal-content {
     display: flex;
     flex-direction: column;
 }
 
-.pto-modal-header {
+.dtpt-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -340,14 +340,14 @@ tr.updating {
     margin-bottom: 20px;
 }
 
-.pto-modal-header h2 {
+.dtpt-modal-header h2 {
     margin: 0 0 20px 0;
     font-size: 22px;
     font-weight: 600;
     color: #1d2327;
 }
 
-.pto-modal-close {
+.dtpt-modal-close {
     background: none;
     border: none;
     font-size: 24px;
@@ -365,41 +365,41 @@ tr.updating {
     right: 15px;
 }
 
-.pto-modal-close:hover {
+.dtpt-modal-close:hover {
     background: #f0f0f0;
     color: #000;
 }
 
-.pto-modal-body {
+.dtpt-modal-body {
     padding: 0 24px;
     flex: 1;
 }
 
-.pto-modal-body .form-table {
+.dtpt-modal-body .form-table {
     margin: 0;
 }
 
-.pto-modal-body .form-table th {
+.dtpt-modal-body .form-table th {
     width: 140px;
     padding: 15px 10px 15px 0;
     vertical-align: top;
 }
 
-.pto-modal-body .form-table td {
+.dtpt-modal-body .form-table td {
     padding: 15px 0;
 }
 
-.pto-modal-body .regular-text {
+.dtpt-modal-body .regular-text {
     width: 100%;
     max-width: 350px;
 }
 
-.pto-modal-body textarea.regular-text {
+.dtpt-modal-body textarea.regular-text {
     height: 80px;
     resize: vertical;
 }
 
-.pto-modal-body input[type="color"] {
+.dtpt-modal-body input[type="color"] {
     width: 50px;
     height: 30px;
     border: none;
@@ -407,7 +407,7 @@ tr.updating {
     cursor: pointer;
 }
 
-.pto-modal-footer {
+.dtpt-modal-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -417,16 +417,16 @@ tr.updating {
     border-radius: 0 0 4px 4px;
 }
 
-.pto-modal-actions-right {
+.dtpt-modal-actions-right {
     display: flex;
     gap: 10px;
 }
 
-.pto-modal-footer .button {
+.dtpt-modal-footer .button {
     position: relative;
 }
 
-.pto-modal-footer .spinner {
+.dtpt-modal-footer .spinner {
     display: none;
     float: none;
     position: absolute;
@@ -436,25 +436,25 @@ tr.updating {
     margin: 0;
 }
 
-.pto-modal-footer .button.loading .spinner {
+.dtpt-modal-footer .button.loading .spinner {
     display: block;
     visibility: visible;
 }
 
-.pto-modal-footer .button.loading .button-text {
+.dtpt-modal-footer .button.loading .button-text {
     opacity: 0.6;
 }
 
 /* Modal animations */
-.pto-modal {
-    animation: pto-modal-fade-in 0.15s ease-out;
+.dtpt-modal {
+    animation: dtpt-modal-fade-in 0.15s ease-out;
 }
 
-.pto-modal.closing {
-    animation: pto-modal-fade-out 0.15s ease-in;
+.dtpt-modal.closing {
+    animation: dtpt-modal-fade-out 0.15s ease-in;
 }
 
-@keyframes pto-modal-fade-in {
+@keyframes dtpt-modal-fade-in {
     from {
         opacity: 0;
     }
@@ -463,7 +463,7 @@ tr.updating {
     }
 }
 
-@keyframes pto-modal-fade-out {
+@keyframes dtpt-modal-fade-out {
     from {
         opacity: 1;
     }
@@ -472,15 +472,15 @@ tr.updating {
     }
 }
 
-.pto-modal-wrap {
-    animation: pto-modal-slide-in 0.15s ease-out;
+.dtpt-modal-wrap {
+    animation: dtpt-modal-slide-in 0.15s ease-out;
 }
 
-.pto-modal.closing .pto-modal-wrap {
-    animation: pto-modal-slide-out 0.15s ease-in;
+.dtpt-modal.closing .dtpt-modal-wrap {
+    animation: dtpt-modal-slide-out 0.15s ease-in;
 }
 
-@keyframes pto-modal-slide-in {
+@keyframes dtpt-modal-slide-in {
     from {
         transform: translate(-50%, -50%) scale(0.9);
         opacity: 0;
@@ -491,7 +491,7 @@ tr.updating {
     }
 }
 
-@keyframes pto-modal-slide-out {
+@keyframes dtpt-modal-slide-out {
     from {
         transform: translate(-50%, -50%) scale(1);
         opacity: 1;
@@ -504,7 +504,7 @@ tr.updating {
 
 /* Modal responsive */
 @media screen and (max-width: 600px) {
-    .pto-modal-wrap {
+    .dtpt-modal-wrap {
         min-width: auto;
         width: 90%;
         margin: 20px;
@@ -515,21 +515,21 @@ tr.updating {
         max-height: calc(100vh - 40px);
     }
 
-    .pto-modal-header,
-    .pto-modal-body,
-    .pto-modal-footer {
+    .dtpt-modal-header,
+    .dtpt-modal-body,
+    .dtpt-modal-footer {
         padding-left: 15px;
         padding-right: 15px;
     }
 
-    .pto-modal-body .form-table th,
-    .pto-modal-body .form-table td {
+    .dtpt-modal-body .form-table th,
+    .dtpt-modal-body .form-table td {
         display: block;
         width: 100%;
         padding: 10px 0;
     }
 
-    .pto-modal-body .form-table th {
+    .dtpt-modal-body .form-table th {
         padding-bottom: 5px;
     }
 }
@@ -539,7 +539,7 @@ tr.updating {
     width: 150px;
 }
 
-.pto-page-tab-selector {
+.dtpt-page-tab-selector {
     width: 100%;
     max-width: 140px;
     padding: 4px;
@@ -549,7 +549,7 @@ tr.updating {
     font-size: 12px;
 }
 
-.pto-page-tab-selector:focus {
+.dtpt-page-tab-selector:focus {
     border-color: #0073aa;
     box-shadow: 0 0 0 1px #0073aa;
     outline: none;
@@ -558,17 +558,17 @@ tr.updating {
 /* Tab indicator removed for a cleaner design */
 
 /* Selector states */
-.pto-page-tab-selector.updating {
+.dtpt-page-tab-selector.updating {
     opacity: 0.6;
     pointer-events: none;
 }
 
-.pto-page-tab-selector option {
+.dtpt-page-tab-selector option {
     padding: 2px 4px;
 }
 
 /* Info messages */
-#pto-messages.notice-info {
+#dtpt-messages.notice-info {
     border-left-color: #0073aa;
 }
 

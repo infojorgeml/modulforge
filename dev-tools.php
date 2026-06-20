@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: SuiteWP
+Plugin Name: DevTools
 Description: Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins.
-Version: 1.4.0
+Version: 2.0.0
 Author: JorgeML
 */
 
@@ -12,16 +12,16 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Main SuiteWP Plugin Controller.
+ * Main DevTools Plugin Controller.
  */
-final class SuiteWP {
-    private const VERSION       = '1.4.0';
-    private const OPTION_KEY     = 'suitewp_active_plugins';
-    private const OPTION_DELETE_DATA = 'suitewp_delete_data_on_uninstall';
-    private const MENU_SLUG   = 'suitewp';
+final class DevTools {
+    private const VERSION       = '2.0.0';
+    private const OPTION_KEY     = 'dev_tools_active_plugins';
+    private const OPTION_DELETE_DATA = 'dev_tools_delete_data_on_uninstall';
+    private const MENU_SLUG   = 'dev-tools';
     private const CAPABILITY  = 'manage_options';
     private const NONCE_FIELD = 'nonce';
-    private const NONCE_ACTION = 'suitewp_toggle_plugin';
+    private const NONCE_ACTION = 'dev_tools_toggle_plugin';
 
     /**
      * Single plugin instance.
@@ -126,8 +126,8 @@ final class SuiteWP {
         add_action('plugins_loaded', array($this, 'on_plugins_loaded'));
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
-        add_action('wp_ajax_suitewp_toggle_plugin', array($this, 'ajax_toggle_plugin'));
-        add_action('wp_ajax_suitewp_set_uninstall_pref', array($this, 'ajax_set_uninstall_pref'));
+        add_action('wp_ajax_dev_tools_toggle_plugin', array($this, 'ajax_toggle_plugin'));
+        add_action('wp_ajax_dev_tools_set_uninstall_pref', array($this, 'ajax_set_uninstall_pref'));
     }
 
     /**
@@ -158,40 +158,40 @@ final class SuiteWP {
 
         $plugins = array(
             'page-state'   => array(
-                'name'        => __('Page State Management', 'suitewp'),
-                'description' => __('Complete page state management system with status tracking, notes, and responsive design checkboxes.', 'suitewp'),
+                'name'        => __('Page State Management', 'dev-tools'),
+                'description' => __('Complete page state management system with status tracking, notes, and responsive design checkboxes.', 'dev-tools'),
                 'file'        => $base_path . 'page-state/page-state.php',
-                'class'       => 'PageStatePlugin',
+                'class'       => 'DevToolsPageState',
                 'version'     => '2.0.0',
                 'icon'        => 'dashicons-edit-page',
             ),
             'page-tabs'    => array(
-                'name'        => __('Page Tabs Organizer', 'suitewp'),
-                'description' => __('Organize WordPress pages with customizable tabs to improve admin panel management.', 'suitewp'),
+                'name'        => __('Page Tabs Organizer', 'dev-tools'),
+                'description' => __('Organize WordPress pages with customizable tabs to improve admin panel management.', 'dev-tools'),
                 'file'        => $base_path . 'tabs/page-tabs-organizer.php',
-                'class'       => 'PageTabsOrganizer',
+                'class'       => 'DevToolsPageTabs',
                 'version'     => '1.0.8',
                 'icon'        => 'dashicons-category',
             ),
             'comment-pins' => array(
-                'name'        => __('WP Comment Pins', 'suitewp'),
-                'description' => __('Visual comment pins system for WordPress. Add visual comments anywhere on a page.', 'suitewp'),
-                'file'        => $base_path . 'wp-comment/wp-comment-pins.php',
-                'class'       => 'WPCommentPins',
+                'name'        => __('Comment Pins', 'dev-tools'),
+                'description' => __('Visual comment pins system for WordPress. Add visual comments anywhere on a page.', 'dev-tools'),
+                'file'        => $base_path . 'comment-pins/comment-pins.php',
+                'class'       => 'DevToolsCommentPins',
                 'version'     => '2.2.0',
                 'icon'        => 'dashicons-admin-comments',
             ),
             'debug-tools'  => array(
-                'name'        => __('Debug & Logs', 'suitewp'),
-                'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'suitewp'),
+                'name'        => __('Debug & Logs', 'dev-tools'),
+                'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'dev-tools'),
                 'file'        => $base_path . 'debug-tools/debug-tools.php',
-                'class'       => 'SuiteWPDebugTools',
+                'class'       => 'DevToolsDebug',
                 'version'     => '1.0.1',
                 'icon'        => 'dashicons-code',
             ),
         );
 
-        $cache = apply_filters('suitewp_mini_plugins', $plugins);
+        $cache = apply_filters('dev_tools_mini_plugins', $plugins);
 
         return $cache;
     }
@@ -200,16 +200,16 @@ final class SuiteWP {
      * Load translations for the controller.
      */
     private function load_text_domain(): void {
-        load_plugin_textdomain('suitewp', false, dirname(plugin_basename(__FILE__)) . '/languages');
+        load_plugin_textdomain('dev-tools', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
     /**
-     * Add the SuiteWP menu entry.
+     * Add the DevTools menu entry.
      */
     public function add_admin_menu(): void {
         add_menu_page(
-            __('SuiteWP', 'suitewp'),
-            __('SuiteWP', 'suitewp'),
+            __('DevTools', 'dev-tools'),
+            __('DevTools', 'dev-tools'),
             self::CAPABILITY,
             self::MENU_SLUG,
             array($this, 'render_admin_page'),
@@ -227,7 +227,7 @@ final class SuiteWP {
         }
 
         wp_enqueue_script(
-            'suitewp-admin',
+            'devtools-admin',
             plugin_dir_url(__FILE__) . 'assets/admin.js',
             array('jquery'),
             self::VERSION,
@@ -235,41 +235,41 @@ final class SuiteWP {
         );
 
         wp_enqueue_style(
-            'suitewp-admin',
+            'devtools-admin',
             plugin_dir_url(__FILE__) . 'assets/admin.css',
             array(),
             self::VERSION
         );
 
         wp_localize_script(
-            'suitewp-admin',
-            'suitewp_ajax',
+            'devtools-admin',
+            'dev_tools_ajax',
             array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce(self::NONCE_ACTION),
                 'strings'  => array(
-                    'activating'        => __('Activating...', 'suitewp'),
-                    'deactivating'      => __('Deactivating...', 'suitewp'),
-                    'error'             => __('Operation error', 'suitewp'),
-                    'generic_error'     => __('An unexpected error occurred. Please try again.', 'suitewp'),
-                    'status_active'     => __('Active', 'suitewp'),
-                    'status_inactive'   => __('Inactive', 'suitewp'),
-                    'toggle_hint'       => __('Click the switch to activate or deactivate %s.', 'suitewp'),
+                    'activating'        => __('Activating...', 'dev-tools'),
+                    'deactivating'      => __('Deactivating...', 'dev-tools'),
+                    'error'             => __('Operation error', 'dev-tools'),
+                    'generic_error'     => __('An unexpected error occurred. Please try again.', 'dev-tools'),
+                    'status_active'     => __('Active', 'dev-tools'),
+                    'status_inactive'   => __('Inactive', 'dev-tools'),
+                    'toggle_hint'       => __('Click the switch to activate or deactivate %s.', 'dev-tools'),
                 ),
             )
         );
     }
 
     /**
-     * Render the SuiteWP admin page.
+     * Render the DevTools admin page.
      */
     public function render_admin_page(): void {
         ?>
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            <p class="description"><?php esc_html_e('Manage the mini-plugins included in SuiteWP. You can activate or deactivate each one according to your needs.', 'suitewp'); ?></p>
+            <p class="description"><?php esc_html_e('Manage the mini-plugins included in DevTools. You can activate or deactivate each one according to your needs.', 'dev-tools'); ?></p>
 
-            <div class="suitewp-plugins-grid">
+            <div class="devtools-plugins-grid">
                 <?php foreach ($this->mini_plugins as $plugin_key => $plugin_data) : ?>
                     <?php $this->render_plugin_card($plugin_key, $plugin_data, $this->is_mini_plugin_active($plugin_key)); ?>
                 <?php endforeach; ?>
@@ -290,33 +290,33 @@ final class SuiteWP {
     private function render_plugin_card(string $plugin_key, array $plugin_data, bool $is_active): void {
         $state_class = $is_active ? 'active' : 'inactive';
         ?>
-        <div class="suitewp-plugin-card <?php echo esc_attr($state_class); ?>" data-plugin="<?php echo esc_attr($plugin_key); ?>">
-            <div class="suitewp-plugin-header">
-                <div class="suitewp-plugin-icon">
+        <div class="devtools-plugin-card <?php echo esc_attr($state_class); ?>" data-plugin="<?php echo esc_attr($plugin_key); ?>">
+            <div class="devtools-plugin-header">
+                <div class="devtools-plugin-icon">
                     <span class="dashicons <?php echo esc_attr($plugin_data['icon']); ?>"></span>
                 </div>
-                <div class="suitewp-plugin-title">
+                <div class="devtools-plugin-title">
                     <h3><?php echo esc_html($plugin_data['name']); ?></h3>
-                    <span class="suitewp-plugin-version">v<?php echo esc_html($plugin_data['version']); ?></span>
+                    <span class="devtools-plugin-version">v<?php echo esc_html($plugin_data['version']); ?></span>
                 </div>
-                <div class="suitewp-plugin-toggle">
-                    <label class="suitewp-switch">
+                <div class="devtools-plugin-toggle">
+                    <label class="devtools-switch">
                         <input
                             type="checkbox"
-                            class="suitewp-plugin-checkbox"
+                            class="devtools-plugin-checkbox"
                             data-plugin="<?php echo esc_attr($plugin_key); ?>"
                             <?php checked($is_active); ?>
                         />
-                        <span class="suitewp-slider"></span>
+                        <span class="devtools-slider"></span>
                     </label>
                 </div>
             </div>
-            <div class="suitewp-plugin-description">
+            <div class="devtools-plugin-description">
                 <p><?php echo esc_html($plugin_data['description']); ?></p>
             </div>
-            <div class="suitewp-plugin-status">
-                <span class="suitewp-status-indicator <?php echo esc_attr($state_class); ?>">
-                    <?php echo $is_active ? esc_html__('Active', 'suitewp') : esc_html__('Inactive', 'suitewp'); ?>
+            <div class="devtools-plugin-status">
+                <span class="devtools-status-indicator <?php echo esc_attr($state_class); ?>">
+                    <?php echo $is_active ? esc_html__('Active', 'dev-tools') : esc_html__('Inactive', 'dev-tools'); ?>
                 </span>
             </div>
         </div>
@@ -328,36 +328,36 @@ final class SuiteWP {
      */
     private function render_information_section(): void {
         ?>
-        <div class="suitewp-info-section">
-            <h2><?php esc_html_e('Information', 'suitewp'); ?></h2>
-            <div class="suitewp-info-grid">
-                <div class="suitewp-info-card">
-                    <h4><?php esc_html_e('How does it work?', 'suitewp'); ?></h4>
-                    <p><?php esc_html_e('SuiteWP acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance.', 'suitewp'); ?></p>
+        <div class="devtools-info-section">
+            <h2><?php esc_html_e('Information', 'dev-tools'); ?></h2>
+            <div class="devtools-info-grid">
+                <div class="devtools-info-card">
+                    <h4><?php esc_html_e('How does it work?', 'dev-tools'); ?></h4>
+                    <p><?php esc_html_e('DevTools acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance.', 'dev-tools'); ?></p>
                 </div>
-                <div class="suitewp-info-card">
-                    <h4><?php esc_html_e('Included mini-plugins', 'suitewp'); ?></h4>
+                <div class="devtools-info-card">
+                    <h4><?php esc_html_e('Included mini-plugins', 'dev-tools'); ?></h4>
                     <ul>
                         <li>
-                            <strong><?php esc_html_e('Page State Management:', 'suitewp'); ?></strong>
-                            <?php esc_html_e('Page state management', 'suitewp'); ?>
+                            <strong><?php esc_html_e('Page State Management:', 'dev-tools'); ?></strong>
+                            <?php esc_html_e('Page state management', 'dev-tools'); ?>
                         </li>
                         <li>
-                            <strong><?php esc_html_e('Page Tabs Organizer:', 'suitewp'); ?></strong>
-                            <?php esc_html_e('Tab organization', 'suitewp'); ?>
+                            <strong><?php esc_html_e('Page Tabs Organizer:', 'dev-tools'); ?></strong>
+                            <?php esc_html_e('Tab organization', 'dev-tools'); ?>
                         </li>
                         <li>
-                            <strong><?php esc_html_e('WP Comment Pins:', 'suitewp'); ?></strong>
-                            <?php esc_html_e('Visual comment system', 'suitewp'); ?>
+                            <strong><?php esc_html_e('Comment Pins:', 'dev-tools'); ?></strong>
+                            <?php esc_html_e('Visual comment system', 'dev-tools'); ?>
                         </li>
                     </ul>
                 </div>
-                <div class="suitewp-info-card">
-                    <h4><?php esc_html_e('Data on uninstall', 'suitewp'); ?></h4>
-                    <p><?php esc_html_e('By default your data (tabs, pins and page notes) is kept if you delete SuiteWP. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled.', 'suitewp'); ?></p>
-                    <label class="suitewp-uninstall-pref">
-                        <input type="checkbox" id="suitewp-delete-data" <?php checked((bool) get_option(self::OPTION_DELETE_DATA, false)); ?> />
-                        <?php esc_html_e('Delete all data on uninstall', 'suitewp'); ?>
+                <div class="devtools-info-card">
+                    <h4><?php esc_html_e('Data on uninstall', 'dev-tools'); ?></h4>
+                    <p><?php esc_html_e('By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled.', 'dev-tools'); ?></p>
+                    <label class="devtools-uninstall-pref">
+                        <input type="checkbox" id="devtools-delete-data" <?php checked((bool) get_option(self::OPTION_DELETE_DATA, false)); ?> />
+                        <?php esc_html_e('Delete all data on uninstall', 'dev-tools'); ?>
                     </label>
                 </div>
             </div>
@@ -481,7 +481,7 @@ final class SuiteWP {
 
         if (!current_user_can(self::CAPABILITY)) {
             wp_send_json_error(array(
-                'message' => __('You do not have permission to perform this action.', 'suitewp'),
+                'message' => __('You do not have permission to perform this action.', 'dev-tools'),
             ));
         }
 
@@ -489,13 +489,13 @@ final class SuiteWP {
 
         if ('' === $plugin_key || !isset($this->mini_plugins[$plugin_key])) {
             wp_send_json_error(array(
-                'message' => __('Plugin not found.', 'suitewp'),
+                'message' => __('Plugin not found.', 'dev-tools'),
             ));
         }
 
         if (!isset($_POST['should_activate'])) {
             wp_send_json_error(array(
-                'message' => __('Invalid request.', 'suitewp'),
+                'message' => __('Invalid request.', 'dev-tools'),
             ));
         }
 
@@ -507,11 +507,11 @@ final class SuiteWP {
             wp_send_json_success(array(
                 'message'     => sprintf(
                     /* translators: %s: mini-plugin name. */
-                    __('%s activated successfully.', 'suitewp'),
+                    __('%s activated successfully.', 'dev-tools'),
                     $this->mini_plugins[$plugin_key]['name']
                 ),
                 'status'      => 'active',
-                'statusLabel' => __('Active', 'suitewp'),
+                'statusLabel' => __('Active', 'dev-tools'),
             ));
         }
 
@@ -520,11 +520,11 @@ final class SuiteWP {
         wp_send_json_success(array(
             'message'     => sprintf(
                 /* translators: %s: mini-plugin name. */
-                __('%s deactivated successfully.', 'suitewp'),
+                __('%s deactivated successfully.', 'dev-tools'),
                 $this->mini_plugins[$plugin_key]['name']
             ),
             'status'      => 'inactive',
-            'statusLabel' => __('Inactive', 'suitewp'),
+            'statusLabel' => __('Inactive', 'dev-tools'),
         ));
     }
 
@@ -536,7 +536,7 @@ final class SuiteWP {
 
         if (!current_user_can(self::CAPABILITY)) {
             wp_send_json_error(array(
-                'message' => __('You do not have permission to perform this action.', 'suitewp'),
+                'message' => __('You do not have permission to perform this action.', 'dev-tools'),
             ));
         }
 
@@ -546,17 +546,17 @@ final class SuiteWP {
         wp_send_json_success(array(
             'enabled' => $enabled,
             'message' => $enabled
-                ? __('Plugin data will be deleted on uninstall.', 'suitewp')
-                : __('Plugin data will be kept on uninstall.', 'suitewp'),
+                ? __('Plugin data will be deleted on uninstall.', 'dev-tools')
+                : __('Plugin data will be kept on uninstall.', 'dev-tools'),
         ));
     }
 }
 
-register_activation_hook(__FILE__, array('SuiteWP', 'activate'));
-register_deactivation_hook(__FILE__, array('SuiteWP', 'deactivate'));
+register_activation_hook(__FILE__, array('DevTools', 'activate'));
+register_deactivation_hook(__FILE__, array('DevTools', 'deactivate'));
 
 // The guard lets uninstall.php include this file to reach the static
 // definition/lifecycle helpers without booting the admin runtime.
-if (!defined('SUITEWP_LIFECYCLE_RUN')) {
-    SuiteWP::get_instance();
+if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
+    DevTools::get_instance();
 }

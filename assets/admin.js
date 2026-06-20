@@ -1,5 +1,5 @@
 /**
- * SuiteWP Admin JavaScript
+ * DevTools Admin JavaScript
  * Handles switch functionality and AJAX calls
  */
 
@@ -7,29 +7,29 @@
     'use strict';
 
     const SELECTORS = {
-        card: '.suitewp-plugin-card',
-        checkbox: '.suitewp-plugin-checkbox',
-        notice: '.suitewp-notice'
+        card: '.devtools-plugin-card',
+        checkbox: '.devtools-plugin-checkbox',
+        notice: '.devtools-notice'
     };
 
     const ADDITIONAL_CSS = `
-        .suitewp-plugin-card.success-flash {
+        .devtools-plugin-card.success-flash {
             border-color: #00a32a !important;
             box-shadow: 0 0 10px rgba(0, 163, 42, 0.3) !important;
             transition: all 0.3s ease !important;
         }
 
-        .suitewp-plugin-card.error-flash {
+        .devtools-plugin-card.error-flash {
             border-color: #dc3232 !important;
             box-shadow: 0 0 10px rgba(220, 50, 50, 0.3) !important;
             transition: all 0.3s ease !important;
         }
 
-        .suitewp-notice {
-            animation: suitewp-slide-down 0.3s ease-out;
+        .devtools-notice {
+            animation: devtools-slide-down 0.3s ease-out;
         }
 
-        @keyframes suitewp-slide-down {
+        @keyframes devtools-slide-down {
             from {
                 opacity: 0;
                 transform: translateY(-20px);
@@ -41,7 +41,7 @@
         }
     `;
 
-    const SuiteWPAdmin = {
+    const DevToolsAdmin = {
         noticeTimer: null,
 
         init() {
@@ -52,19 +52,19 @@
 
         bindEvents() {
             $(document).on('change', SELECTORS.checkbox, (event) => this.handleToggle(event));
-            $(document).on('change', '#suitewp-delete-data', (event) => this.handleUninstallPref(event));
+            $(document).on('change', '#devtools-delete-data', (event) => this.handleUninstallPref(event));
         },
 
         handleUninstallPref(event) {
             const enabled = $(event.currentTarget).is(':checked');
 
             $.ajax({
-                url: suitewp_ajax.ajax_url,
+                url: dev_tools_ajax.ajax_url,
                 method: 'POST',
                 dataType: 'json',
                 data: {
-                    action: 'suitewp_set_uninstall_pref',
-                    nonce: suitewp_ajax.nonce,
+                    action: 'dev_tools_set_uninstall_pref',
+                    nonce: dev_tools_ajax.nonce,
                     enabled: enabled ? '1' : '0'
                 }
             }).done((response) => {
@@ -73,11 +73,11 @@
                 } else {
                     const message = response && response.data && response.data.message
                         ? response.data.message
-                        : suitewp_ajax.strings.generic_error;
+                        : dev_tools_ajax.strings.generic_error;
                     this.renderNotice(message, 'error');
                 }
             }).fail(() => {
-                this.renderNotice(suitewp_ajax.strings.generic_error, 'error');
+                this.renderNotice(dev_tools_ajax.strings.generic_error, 'error');
             });
         },
 
@@ -85,7 +85,7 @@
             $(SELECTORS.card).each(function() {
                 const $card = $(this);
                 const pluginName = $card.find('h3').text();
-                $card.attr('title', SuiteWPAdmin.formatToggleHint(pluginName));
+                $card.attr('title', DevToolsAdmin.formatToggleHint(pluginName));
             });
         },
 
@@ -103,13 +103,13 @@
             this.setLoadingState($card, true);
 
             $.ajax({
-                url: suitewp_ajax.ajax_url,
+                url: dev_tools_ajax.ajax_url,
                 method: 'POST',
                 dataType: 'json',
                 data: {
-                    action: 'suitewp_toggle_plugin',
+                    action: 'dev_tools_toggle_plugin',
                     plugin: pluginKey,
-                    nonce: suitewp_ajax.nonce,
+                    nonce: dev_tools_ajax.nonce,
                     should_activate: desiredState ? '1' : '0'
                 }
             }).done((response) => {
@@ -119,13 +119,13 @@
                 } else {
                     const message = response && response.data && response.data.message
                         ? response.data.message
-                        : suitewp_ajax.strings.generic_error;
+                        : dev_tools_ajax.strings.generic_error;
                     this.handleError($card, $checkbox, message, desiredState);
                 }
             }).fail((jqXHR) => {
                 const message = jqXHR && jqXHR.responseJSON && jqXHR.responseJSON.data && jqXHR.responseJSON.data.message
                     ? jqXHR.responseJSON.data.message
-                    : suitewp_ajax.strings.generic_error;
+                    : dev_tools_ajax.strings.generic_error;
                 this.handleError($card, $checkbox, message, desiredState);
             }).always(() => {
                 this.setLoadingState($card, false);
@@ -140,11 +140,11 @@
 
         updateCardState($card, status, statusLabel) {
             const isActive = status === 'active';
-            const label = statusLabel || (isActive ? suitewp_ajax.strings.status_active : suitewp_ajax.strings.status_inactive);
+            const label = statusLabel || (isActive ? dev_tools_ajax.strings.status_active : dev_tools_ajax.strings.status_inactive);
 
             $card.toggleClass('active', isActive).toggleClass('inactive', !isActive);
             $card.find(SELECTORS.checkbox).prop('checked', isActive);
-            $card.find('.suitewp-status-indicator')
+            $card.find('.devtools-status-indicator')
                 .toggleClass('active', isActive)
                 .toggleClass('inactive', !isActive)
                 .text(label);
@@ -171,7 +171,7 @@
             $(SELECTORS.notice).remove();
 
             const $notice = $('<div />', {
-                class: `suitewp-notice ${type}`,
+                class: `devtools-notice ${type}`,
                 text: message
             });
 
@@ -190,27 +190,27 @@
         },
 
         appendAdditionalStyles() {
-            if ($('#suitewp-admin-effects').length) {
+            if ($('#devtools-admin-effects').length) {
                 return;
             }
 
             $('<style>', {
-                id: 'suitewp-admin-effects',
+                id: 'devtools-admin-effects',
                 text: ADDITIONAL_CSS
             }).appendTo('head');
         },
 
         formatToggleHint(pluginName) {
-            if (!suitewp_ajax.strings.toggle_hint) {
+            if (!dev_tools_ajax.strings.toggle_hint) {
                 return pluginName;
             }
 
-            return suitewp_ajax.strings.toggle_hint.replace('%s', pluginName);
+            return dev_tools_ajax.strings.toggle_hint.replace('%s', pluginName);
         }
     };
 
     $(document).ready(() => {
-        SuiteWPAdmin.init();
-        window.SuiteWPAdmin = SuiteWPAdmin;
+        DevToolsAdmin.init();
+        window.DevToolsAdmin = DevToolsAdmin;
     });
 })(jQuery);

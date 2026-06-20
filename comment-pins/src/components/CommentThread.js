@@ -122,33 +122,33 @@ export default function CommentThread( {
 
 	return (
 		<div
-			className={ 'wpcp-thread' + ( isResolved ? ' is-resolved' : '' ) }
+			className={ 'dtcp-thread' + ( isResolved ? ' is-resolved' : '' ) }
 			style={ { left: pos.x + 'px', top: pos.y + 18 + 'px' } }
 			ref={ ref }
 			tabIndex={ -1 }
 		>
-			<div className="wpcp-thread-head">
+			<div className="dtcp-thread-head">
 				<span
-					className="wpcp-avatar"
+					className="dtcp-avatar"
 					style={ { background: avatarColor( name ) } }
 					aria-hidden="true"
 				>
 					{ initials( name ) }
 				</span>
-				<div className="wpcp-meta">
-					<span className="wpcp-name">{ name }</span>
-					<span className="wpcp-date">
+				<div className="dtcp-meta">
+					<span className="dtcp-name">{ name }</span>
+					<span className="dtcp-date">
 						{ relativeTime( pin.created_at ) }
 					</span>
 				</div>
 				{ isResolved && (
-					<span className="wpcp-badge is-resolved">
+					<span className="dtcp-badge is-resolved">
 						{ t( 'resolved' ) }
 					</span>
 				) }
 				<button
 					type="button"
-					className="wpcp-icon-btn"
+					className="dtcp-icon-btn"
 					onClick={ onClose }
 					aria-label={ t( 'close' ) }
 				>
@@ -168,17 +168,17 @@ export default function CommentThread( {
 				</button>
 			</div>
 
-			<div className="wpcp-comment">{ pin.comment_text }</div>
+			<div className="dtcp-comment">{ pin.comment_text }</div>
 			{ isResolved && pin.resolved_by_name && (
-				<div className="wpcp-resolved-note">
+				<div className="dtcp-resolved-note">
 					{ t( 'resolved_by' ).replace( '%s', pin.resolved_by_name ) }
 				</div>
 			) }
 
-			<div className="wpcp-thread-actions">
+			<div className="dtcp-thread-actions">
 				<button
 					type="button"
-					className="wpcp-text-btn"
+					className="dtcp-text-btn"
 					onClick={ () => onResolve( pinId, ! isResolved ) }
 				>
 					{ isResolved ? t( 'reopen' ) : t( 'resolve' ) }
@@ -186,7 +186,7 @@ export default function CommentThread( {
 				{ pin.can_delete && (
 					<button
 						type="button"
-						className="wpcp-text-btn is-danger"
+						className="dtcp-text-btn is-danger"
 						onClick={ () => onDelete( pinId ) }
 					>
 						{ t( 'delete' ) }
@@ -195,17 +195,17 @@ export default function CommentThread( {
 			</div>
 
 			{ ( loading || replies.length > 0 ) && (
-				<div className="wpcp-replies">
+				<div className="dtcp-replies">
 					{ loading && (
-						<div className="wpcp-loading">{ t( 'loading' ) }</div>
+						<div className="dtcp-loading">{ t( 'loading' ) }</div>
 					) }
 					{ ! loading &&
 						replies.map( ( reply ) => {
 							const rname = reply.display_name || t( 'user' );
 							return (
-								<div className="wpcp-reply" key={ reply.id }>
+								<div className="dtcp-reply" key={ reply.id }>
 									<span
-										className="wpcp-avatar is-sm"
+										className="dtcp-avatar is-sm"
 										style={ {
 											background: avatarColor( rname ),
 										} }
@@ -213,12 +213,12 @@ export default function CommentThread( {
 									>
 										{ initials( rname ) }
 									</span>
-									<div className="wpcp-reply-body">
-										<div className="wpcp-reply-head">
-											<span className="wpcp-name">
+									<div className="dtcp-reply-body">
+										<div className="dtcp-reply-head">
+											<span className="dtcp-name">
 												{ rname }
 											</span>
-											<span className="wpcp-date">
+											<span className="dtcp-date">
 												{ relativeTime(
 													reply.created_at
 												) }
@@ -226,7 +226,7 @@ export default function CommentThread( {
 											{ reply.can_delete && (
 												<button
 													type="button"
-													className="wpcp-link-danger"
+													className="dtcp-link-danger"
 													onClick={ () =>
 														removeReply( reply.id )
 													}
@@ -235,7 +235,7 @@ export default function CommentThread( {
 												</button>
 											) }
 										</div>
-										<div className="wpcp-reply-text">
+										<div className="dtcp-reply-text">
 											{ reply.comment_text }
 										</div>
 									</div>
@@ -245,9 +245,9 @@ export default function CommentThread( {
 				</div>
 			) }
 
-			<div className="wpcp-reply-composer">
+			<div className="dtcp-reply-composer">
 				<textarea
-					className="wpcp-textarea is-sm"
+					className="dtcp-textarea is-sm"
 					value={ replyText }
 					rows={ 2 }
 					placeholder={ t( 'reply_placeholder' ) }
@@ -258,10 +258,10 @@ export default function CommentThread( {
 						}
 					} }
 				/>
-				<div className="wpcp-form-actions">
+				<div className="dtcp-form-actions">
 					<button
 						type="button"
-						className="wpcp-btn-primary"
+						className="dtcp-btn-primary"
 						onClick={ submitReply }
 						disabled={ ! replyText.trim() || sending }
 					>

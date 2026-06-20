@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
     $(document).on('change', '.page-status-selector', function() {
         const $select = $(this);
         const postId = $select.data('post');
-        const nonce = pageStateAjax.nonce;
+        const nonce = devToolsPageState.nonce;
         const newStatus = $select.val();
         const $loader = $select.siblings('.page-status-loading');
 
@@ -80,7 +80,7 @@ jQuery(document).ready(function($) {
         $select.prop('disabled', true);
 
         $.ajax({
-            url: pageStateAjax.ajaxurl,
+            url: devToolsPageState.ajaxurl,
             type: 'POST',
             data: {
                 action: 'save_page_status',
@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
                 }
             },
             error: function() {
-                alert(pageStateAjax.messages.error);
+                alert(devToolsPageState.messages.error);
                 // Revert selection on error.
                 $select.val($select.data('original-value'));
             },
@@ -123,7 +123,7 @@ jQuery(document).ready(function($) {
     $(document).on('input paste keyup', '.page-notes-textarea', function() {
         const $textarea = $(this);
         const postId = $textarea.data('post');
-        const nonce = pageStateAjax.nonce;
+        const nonce = devToolsPageState.nonce;
         const notes = $textarea.val();
 
         // Auto-resize.
@@ -135,12 +135,12 @@ jQuery(document).ready(function($) {
         }
 
         // Show the "saving..." state.
-        showSaveStatus($textarea, pageStateAjax.messages.saving, 'saving');
+        showSaveStatus($textarea, devToolsPageState.messages.saving, 'saving');
 
         // Set a new timer (1.5s delay).
         saveTimer[postId] = setTimeout(function() {
             $.ajax({
-                url: pageStateAjax.ajaxurl,
+                url: devToolsPageState.ajaxurl,
                 type: 'POST',
                 data: {
                     action: 'save_page_notes',
@@ -150,13 +150,13 @@ jQuery(document).ready(function($) {
                 },
                 success: function(response) {
                     if (response.success) {
-                        showSaveStatus($textarea, pageStateAjax.messages.saved, 'success');
+                        showSaveStatus($textarea, devToolsPageState.messages.saved, 'success');
                     } else {
-                        showSaveStatus($textarea, pageStateAjax.messages.error, 'error');
+                        showSaveStatus($textarea, devToolsPageState.messages.error, 'error');
                     }
                 },
                 error: function() {
-                    showSaveStatus($textarea, pageStateAjax.messages.error, 'error');
+                    showSaveStatus($textarea, devToolsPageState.messages.error, 'error');
                 }
             });
         }, 1500);
@@ -233,7 +233,7 @@ jQuery(document).ready(function($) {
         const $checkbox = $(this);
         const $container = $checkbox.closest('.responsive-checkboxes');
         const postId = $container.data('post');
-        const nonce = pageStateAjax.nonce;
+        const nonce = devToolsPageState.nonce;
         const device = $checkbox.data('device');
         const checked = $checkbox.is(':checked');
 
@@ -241,7 +241,7 @@ jQuery(document).ready(function($) {
         $checkbox.prop('disabled', true);
 
         $.ajax({
-            url: pageStateAjax.ajaxurl,
+            url: devToolsPageState.ajaxurl,
             type: 'POST',
             data: {
                 action: 'save_page_responsive',
@@ -252,15 +252,15 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    showResponsiveStatus($checkbox, pageStateAjax.messages.saved, 'success');
+                    showResponsiveStatus($checkbox, devToolsPageState.messages.saved, 'success');
                 } else {
-                    showResponsiveStatus($checkbox, pageStateAjax.messages.error, 'error');
+                    showResponsiveStatus($checkbox, devToolsPageState.messages.error, 'error');
                     // Revert checkbox on error.
                     $checkbox.prop('checked', !checked);
                 }
             },
             error: function() {
-                showResponsiveStatus($checkbox, pageStateAjax.messages.error, 'error');
+                showResponsiveStatus($checkbox, devToolsPageState.messages.error, 'error');
                 // Revert checkbox on error.
                 $checkbox.prop('checked', !checked);
             },

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: WP Comment Pins
+ * Plugin Name: Comment Pins
  * Description: Visual comment pins system for WordPress (React front end).
  * Version: 2.2.0
  * Author: Jorge ML
@@ -11,13 +11,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists('WPCommentPins')) :
+if (!class_exists('DevToolsCommentPins')) :
 
-class WPCommentPins {
+class DevToolsCommentPins {
 
     const VERSION             = '2.2.0';
     const DB_VERSION          = '2.1.0';
-    const DB_VERSION_OPTION   = 'wpcp_db_version';
+    const DB_VERSION_OPTION   = 'dtcp_db_version';
     const NONCE_ACTION        = 'comment_pins_nonce';
     const MAX_COMMENT_LENGTH  = 2000;
     const MAX_SELECTOR_LENGTH = 1000;
@@ -62,11 +62,11 @@ class WPCommentPins {
      * Filterable. Deleting others' content additionally requires edit_others_posts.
      */
     private function get_required_capability(): string {
-        return apply_filters('wp_comment_pins_capability', 'edit_posts');
+        return apply_filters('dev_tools_comment_pins_capability', 'edit_posts');
     }
 
     /* --------------------------------------------------------------------- */
-    /* Lifecycle — invoked by the SuiteWP controller                          */
+    /* Lifecycle — invoked by the DevTools controller                          */
     /* --------------------------------------------------------------------- */
 
     public static function activate(): void {
@@ -167,7 +167,7 @@ class WPCommentPins {
         $asset = require $asset_file;
 
         wp_enqueue_script(
-            'wp-comment-pins',
+            'dev-tools-comment-pins',
             $build_url . 'index.js',
             $asset['dependencies'],
             $asset['version'],
@@ -178,52 +178,52 @@ class WPCommentPins {
 
         if (file_exists($build_path . 'style-index.css')) {
             wp_enqueue_style(
-                'wp-comment-pins',
+                'dev-tools-comment-pins',
                 $build_url . 'style-index.css',
                 array('dashicons'),
                 $asset['version']
             );
         }
 
-        wp_localize_script('wp-comment-pins', 'wpCommentPins', array(
+        wp_localize_script('dev-tools-comment-pins', 'devToolsCommentPins', array(
             'ajax_url'    => admin_url('admin-ajax.php'),
             'nonce'       => wp_create_nonce(self::NONCE_ACTION),
             'current_url' => self::current_url(),
             'i18n'        => array(
-                'placeholder'          => __('Write your comment here...', 'suitewp'),
-                'cancel'               => __('Cancel', 'suitewp'),
-                'save'                 => __('Save', 'suitewp'),
-                'delete'               => __('Delete', 'suitewp'),
-                'close'                => __('Close', 'suitewp'),
-                'you'                  => __('You', 'suitewp'),
-                'user'                 => __('User', 'suitewp'),
-                'save_error'           => __('Error saving comment', 'suitewp'),
-                'delete_error'         => __('Error deleting comment', 'suitewp'),
-                'connect_error'        => __('Connection error', 'suitewp'),
-                'confirm_delete'       => __('Delete this comment?', 'suitewp'),
-                'confirm_delete_reply' => __('Delete this reply?', 'suitewp'),
-                'reply'                => __('Reply', 'suitewp'),
-                'reply_placeholder'    => __('Write a reply...', 'suitewp'),
-                'resolve'              => __('Resolve', 'suitewp'),
-                'reopen'               => __('Reopen', 'suitewp'),
-                'resolved'             => __('Resolved', 'suitewp'),
-                'open'                 => __('Open', 'suitewp'),
-                'comments'             => __('Comments', 'suitewp'),
-                'filter_all'           => __('All', 'suitewp'),
-                'filter_open'          => __('Open', 'suitewp'),
-                'filter_resolved'      => __('Resolved', 'suitewp'),
-                'filter_mine'          => __('Mine', 'suitewp'),
-                'show_resolved'        => __('Show resolved on page', 'suitewp'),
-                'no_comments'          => __('No comments on this page yet.', 'suitewp'),
-                'no_match'             => __('Nothing matches this filter.', 'suitewp'),
-                'loading'              => __('Loading…', 'suitewp'),
-                'panel_open'           => __('Open comments panel', 'suitewp'),
-                'panel_close'          => __('Close panel', 'suitewp'),
+                'placeholder'          => __('Write your comment here...', 'dev-tools'),
+                'cancel'               => __('Cancel', 'dev-tools'),
+                'save'                 => __('Save', 'dev-tools'),
+                'delete'               => __('Delete', 'dev-tools'),
+                'close'                => __('Close', 'dev-tools'),
+                'you'                  => __('You', 'dev-tools'),
+                'user'                 => __('User', 'dev-tools'),
+                'save_error'           => __('Error saving comment', 'dev-tools'),
+                'delete_error'         => __('Error deleting comment', 'dev-tools'),
+                'connect_error'        => __('Connection error', 'dev-tools'),
+                'confirm_delete'       => __('Delete this comment?', 'dev-tools'),
+                'confirm_delete_reply' => __('Delete this reply?', 'dev-tools'),
+                'reply'                => __('Reply', 'dev-tools'),
+                'reply_placeholder'    => __('Write a reply...', 'dev-tools'),
+                'resolve'              => __('Resolve', 'dev-tools'),
+                'reopen'               => __('Reopen', 'dev-tools'),
+                'resolved'             => __('Resolved', 'dev-tools'),
+                'open'                 => __('Open', 'dev-tools'),
+                'comments'             => __('Comments', 'dev-tools'),
+                'filter_all'           => __('All', 'dev-tools'),
+                'filter_open'          => __('Open', 'dev-tools'),
+                'filter_resolved'      => __('Resolved', 'dev-tools'),
+                'filter_mine'          => __('Mine', 'dev-tools'),
+                'show_resolved'        => __('Show resolved on page', 'dev-tools'),
+                'no_comments'          => __('No comments on this page yet.', 'dev-tools'),
+                'no_match'             => __('Nothing matches this filter.', 'dev-tools'),
+                'loading'              => __('Loading…', 'dev-tools'),
+                'panel_open'           => __('Open comments panel', 'dev-tools'),
+                'panel_close'          => __('Close panel', 'dev-tools'),
                 /* translators: %s: user name. */
-                'resolved_by'          => __('Resolved by %s', 'suitewp'),
-                'one_reply'            => __('1 reply', 'suitewp'),
+                'resolved_by'          => __('Resolved by %s', 'dev-tools'),
+                'one_reply'            => __('1 reply', 'dev-tools'),
                 /* translators: %d: number of replies. */
-                'many_replies'         => __('%d replies', 'suitewp'),
+                'many_replies'         => __('%d replies', 'dev-tools'),
             ),
         ));
     }
@@ -235,11 +235,11 @@ class WPCommentPins {
 
         $wp_admin_bar->add_node(array(
             'id'    => 'comment-pins-toggle',
-            'title' => '<span class="ab-icon dashicons dashicons-admin-comments"></span>' . esc_html__('Comment', 'suitewp'),
+            'title' => '<span class="ab-icon dashicons dashicons-admin-comments"></span>' . esc_html__('Comment', 'dev-tools'),
             'href'  => '#',
             'meta'  => array(
                 'class' => 'comment-pins-admin-bar-btn',
-                'title' => __('Toggle comment mode', 'suitewp'),
+                'title' => __('Toggle comment mode', 'dev-tools'),
             ),
         ));
     }
@@ -254,11 +254,11 @@ class WPCommentPins {
      */
     private function verify_request(): void {
         if (!check_ajax_referer(self::NONCE_ACTION, 'nonce', false)) {
-            wp_send_json_error(array('message' => __('Security check failed.', 'suitewp')), 403);
+            wp_send_json_error(array('message' => __('Security check failed.', 'dev-tools')), 403);
         }
 
         if (!current_user_can($this->get_required_capability())) {
-            wp_send_json_error(array('message' => __('Insufficient permissions.', 'suitewp')), 403);
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'dev-tools')), 403);
         }
     }
 
@@ -274,22 +274,22 @@ class WPCommentPins {
         $post_url = $this->normalize_post_url($post_url);
 
         if ('' === $post_url) {
-            wp_send_json_error(array('message' => __('Invalid page URL.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Invalid page URL.', 'dev-tools')), 400);
         }
         if (strlen($post_url) > 255) {
-            wp_send_json_error(array('message' => __('URL is too long.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('URL is too long.', 'dev-tools')), 400);
         }
         if ('' === $anchor || strlen($anchor) > self::MAX_SELECTOR_LENGTH) {
-            wp_send_json_error(array('message' => __('Invalid anchor.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Invalid anchor.', 'dev-tools')), 400);
         }
         if ('' === $comment_text) {
-            wp_send_json_error(array('message' => __('Comment cannot be empty.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Comment cannot be empty.', 'dev-tools')), 400);
         }
         if (mb_strlen($comment_text) > self::MAX_COMMENT_LENGTH) {
-            wp_send_json_error(array('message' => __('Comment is too long.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Comment is too long.', 'dev-tools')), 400);
         }
         if ($offset_x < 0 || $offset_x > 100 || $offset_y < 0 || $offset_y > 100) {
-            wp_send_json_error(array('message' => __('Invalid pin position.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Invalid pin position.', 'dev-tools')), 400);
         }
 
         global $wpdb;
@@ -311,13 +311,13 @@ class WPCommentPins {
         );
 
         if (false === $result) {
-            wp_send_json_error(array('message' => __('Error saving comment.', 'suitewp')), 500);
+            wp_send_json_error(array('message' => __('Error saving comment.', 'dev-tools')), 500);
         }
 
         wp_send_json_success(array(
             'id'         => (int) $wpdb->insert_id,
             'created_at' => $created_at,
-            'message'    => __('Comment saved successfully.', 'suitewp'),
+            'message'    => __('Comment saved successfully.', 'dev-tools'),
         ));
     }
 
@@ -370,7 +370,7 @@ class WPCommentPins {
                 'offset_y'         => (float) $pin->offset_y,
                 'comment_text'     => $pin->comment_text,
                 'created_at'       => $pin->created_at,
-                'display_name'     => $pin->display_name ? $pin->display_name : __('User', 'suitewp'),
+                'display_name'     => $pin->display_name ? $pin->display_name : __('User', 'dev-tools'),
                 'status'           => $pin->status ? $pin->status : 'open',
                 'resolved_at'      => $pin->resolved_at,
                 'resolved_by_name' => $pin->resolved_by_name,
@@ -389,7 +389,7 @@ class WPCommentPins {
 
         $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0;
         if (!$pin_id) {
-            wp_send_json_error(array('message' => __('Invalid pin.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Invalid pin.', 'dev-tools')), 400);
         }
 
         global $wpdb;
@@ -399,17 +399,17 @@ class WPCommentPins {
         ));
 
         if (null === $owner) {
-            wp_send_json_error(array('message' => __('Pin not found.', 'suitewp')), 404);
+            wp_send_json_error(array('message' => __('Pin not found.', 'dev-tools')), 404);
         }
 
         // Owner can delete their own pins; deleting others' requires elevated capability.
         if ((int) $owner !== get_current_user_id() && !current_user_can('edit_others_posts')) {
-            wp_send_json_error(array('message' => __('You cannot delete this pin.', 'suitewp')), 403);
+            wp_send_json_error(array('message' => __('You cannot delete this pin.', 'dev-tools')), 403);
         }
 
         $deleted = $wpdb->delete($this->table_name, array('id' => $pin_id), array('%d'));
         if (false === $deleted) {
-            wp_send_json_error(array('message' => __('Error deleting comment.', 'suitewp')), 500);
+            wp_send_json_error(array('message' => __('Error deleting comment.', 'dev-tools')), 500);
         }
 
         // Cascade: remove the pin's replies.
@@ -428,13 +428,13 @@ class WPCommentPins {
         $pin_id   = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0;
         $resolved = isset($_POST['resolved']) ? wp_validate_boolean(wp_unslash($_POST['resolved'])) : false;
         if (!$pin_id) {
-            wp_send_json_error(array('message' => __('Invalid pin.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Invalid pin.', 'dev-tools')), 400);
         }
 
         global $wpdb;
         $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE id = %d", $pin_id));
         if (null === $exists) {
-            wp_send_json_error(array('message' => __('Pin not found.', 'suitewp')), 404);
+            wp_send_json_error(array('message' => __('Pin not found.', 'dev-tools')), 404);
         }
 
         $current = get_current_user_id();
@@ -456,7 +456,7 @@ class WPCommentPins {
         }
 
         if (false === $result) {
-            wp_send_json_error(array('message' => __('Error updating comment.', 'suitewp')), 500);
+            wp_send_json_error(array('message' => __('Error updating comment.', 'dev-tools')), 500);
         }
 
         wp_send_json_success(array(
@@ -471,7 +471,7 @@ class WPCommentPins {
 
         $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0;
         if (!$pin_id) {
-            wp_send_json_error(array('message' => __('Invalid pin.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Invalid pin.', 'dev-tools')), 400);
         }
 
         global $wpdb;
@@ -493,7 +493,7 @@ class WPCommentPins {
                 'id'           => (int) $reply->id,
                 'comment_text' => $reply->comment_text,
                 'created_at'   => $reply->created_at,
-                'display_name' => $reply->display_name ? $reply->display_name : __('User', 'suitewp'),
+                'display_name' => $reply->display_name ? $reply->display_name : __('User', 'dev-tools'),
                 'can_delete'   => ((int) $reply->user_id === $current_user) || $can_edit_others,
             );
         }
@@ -508,19 +508,19 @@ class WPCommentPins {
         $text   = isset($_POST['comment_text']) ? sanitize_textarea_field(wp_unslash($_POST['comment_text'])) : '';
 
         if (!$pin_id) {
-            wp_send_json_error(array('message' => __('Invalid pin.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Invalid pin.', 'dev-tools')), 400);
         }
         if ('' === $text) {
-            wp_send_json_error(array('message' => __('Comment cannot be empty.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Comment cannot be empty.', 'dev-tools')), 400);
         }
         if (mb_strlen($text) > self::MAX_COMMENT_LENGTH) {
-            wp_send_json_error(array('message' => __('Comment is too long.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Comment is too long.', 'dev-tools')), 400);
         }
 
         global $wpdb;
         $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE id = %d", $pin_id));
         if (null === $exists) {
-            wp_send_json_error(array('message' => __('Pin not found.', 'suitewp')), 404);
+            wp_send_json_error(array('message' => __('Pin not found.', 'dev-tools')), 404);
         }
 
         $current    = get_current_user_id();
@@ -538,7 +538,7 @@ class WPCommentPins {
         );
 
         if (false === $result) {
-            wp_send_json_error(array('message' => __('Error saving comment.', 'suitewp')), 500);
+            wp_send_json_error(array('message' => __('Error saving comment.', 'dev-tools')), 500);
         }
 
         $name = $wpdb->get_var($wpdb->prepare("SELECT display_name FROM {$wpdb->users} WHERE ID = %d", $current));
@@ -548,7 +548,7 @@ class WPCommentPins {
             'pin_id'       => $pin_id,
             'comment_text' => $text,
             'created_at'   => $created_at,
-            'display_name' => $name ? $name : __('User', 'suitewp'),
+            'display_name' => $name ? $name : __('User', 'dev-tools'),
             'can_delete'   => true,
         ));
     }
@@ -558,7 +558,7 @@ class WPCommentPins {
 
         $reply_id = isset($_POST['reply_id']) ? absint(wp_unslash($_POST['reply_id'])) : 0;
         if (!$reply_id) {
-            wp_send_json_error(array('message' => __('Invalid reply.', 'suitewp')), 400);
+            wp_send_json_error(array('message' => __('Invalid reply.', 'dev-tools')), 400);
         }
 
         global $wpdb;
@@ -568,16 +568,16 @@ class WPCommentPins {
         ));
 
         if (null === $owner) {
-            wp_send_json_error(array('message' => __('Reply not found.', 'suitewp')), 404);
+            wp_send_json_error(array('message' => __('Reply not found.', 'dev-tools')), 404);
         }
 
         if ((int) $owner !== get_current_user_id() && !current_user_can('edit_others_posts')) {
-            wp_send_json_error(array('message' => __('You cannot delete this reply.', 'suitewp')), 403);
+            wp_send_json_error(array('message' => __('You cannot delete this reply.', 'dev-tools')), 403);
         }
 
         $deleted = $wpdb->delete($this->replies_table, array('id' => $reply_id), array('%d'));
         if (false === $deleted) {
-            wp_send_json_error(array('message' => __('Error deleting comment.', 'suitewp')), 500);
+            wp_send_json_error(array('message' => __('Error deleting comment.', 'dev-tools')), 500);
         }
 
         wp_send_json_success(array('id' => $reply_id));
@@ -633,6 +633,6 @@ endif;
 
 // Instantiate for normal runtime. The guard lets uninstall.php include this
 // file purely to reach the static uninstall() method without booting hooks.
-if (!defined('SUITEWP_LIFECYCLE_RUN')) {
-    new WPCommentPins();
+if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
+    new DevToolsCommentPins();
 }

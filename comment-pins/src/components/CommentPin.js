@@ -21,14 +21,14 @@ export default function CommentPin( { pin, tick, isActive, onOpen } ) {
 		<button
 			type="button"
 			className={
-				'wpcp-pin' +
+				'dtcp-pin' +
 				( isActive ? ' is-active' : '' ) +
 				( resolved ? ' is-resolved' : '' )
 			}
 			style={ {
 				left: pos.x + 'px',
 				top: pos.y + 'px',
-				'--wpcp-pin-color': avatarColor( pin.display_name ),
+				'--dtcp-pin-color': avatarColor( pin.display_name ),
 			} }
 			onClick={ ( e ) => {
 				e.preventDefault();
@@ -39,7 +39,7 @@ export default function CommentPin( { pin, tick, isActive, onOpen } ) {
 		>
 			{ resolved ? (
 				<svg
-					className="wpcp-pin-check"
+					className="dtcp-pin-check"
 					width="14"
 					height="14"
 					viewBox="0 0 14 14"
@@ -55,7 +55,7 @@ export default function CommentPin( { pin, tick, isActive, onOpen } ) {
 					/>
 				</svg>
 			) : (
-				<span className="wpcp-pin-initial">
+				<span className="dtcp-pin-initial">
 					{ initials( pin.display_name ) }
 				</span>
 			) }

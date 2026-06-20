@@ -12,22 +12,22 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!defined('PTO_PLUGIN_URL')) {
-    define('PTO_PLUGIN_URL', plugin_dir_url(__FILE__));
+if (!defined('DTPT_PLUGIN_URL')) {
+    define('DTPT_PLUGIN_URL', plugin_dir_url(__FILE__));
 }
-if (!defined('PTO_PLUGIN_PATH')) {
-    define('PTO_PLUGIN_PATH', plugin_dir_path(__FILE__));
+if (!defined('DTPT_PLUGIN_PATH')) {
+    define('DTPT_PLUGIN_PATH', plugin_dir_path(__FILE__));
 }
-if (!defined('PTO_VERSION')) {
-    define('PTO_VERSION', '1.0.8');
+if (!defined('DTPT_VERSION')) {
+    define('DTPT_VERSION', '1.0.8');
 }
 
-if (!class_exists('PageTabsOrganizer')) :
+if (!class_exists('DevToolsPageTabs')) :
 
-class PageTabsOrganizer {
+class DevToolsPageTabs {
 
     const DB_VERSION        = '1.1.0';
-    const DB_VERSION_OPTION = 'pto_db_version';
+    const DB_VERSION_OPTION = 'dtpt_db_version';
 
     /**
      * Per-request cache of tabs keyed by post type.
@@ -51,10 +51,10 @@ class PageTabsOrganizer {
         // Admin hooks.
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
-        add_action('wp_ajax_pto_save_tab', array($this, 'ajax_save_tab'));
-        add_action('wp_ajax_pto_delete_tab', array($this, 'ajax_delete_tab'));
-        add_action('wp_ajax_pto_assign_page_to_tab', array($this, 'ajax_assign_page_to_tab'));
-        add_action('wp_ajax_pto_remove_page_from_tab', array($this, 'ajax_remove_page_from_tab'));
+        add_action('wp_ajax_dtpt_save_tab', array($this, 'ajax_save_tab'));
+        add_action('wp_ajax_dtpt_delete_tab', array($this, 'ajax_delete_tab'));
+        add_action('wp_ajax_dtpt_assign_page_to_tab', array($this, 'ajax_assign_page_to_tab'));
+        add_action('wp_ajax_dtpt_remove_page_from_tab', array($this, 'ajax_remove_page_from_tab'));
 
         // Post list screens.
         add_action('restrict_manage_posts', array($this, 'add_tab_filter'));
@@ -63,15 +63,15 @@ class PageTabsOrganizer {
         // "Create New Tab" button + modal.
         add_action('manage_posts_extra_tablenav', array($this, 'add_create_tab_button'));
         add_action('admin_footer-edit.php', array($this, 'add_tab_creation_modal'));
-        add_action('wp_ajax_pto_create_tab_quick', array($this, 'ajax_create_tab_quick'));
-        add_action('wp_ajax_pto_update_page_tab', array($this, 'ajax_update_page_tab'));
+        add_action('wp_ajax_dtpt_create_tab_quick', array($this, 'ajax_create_tab_quick'));
+        add_action('wp_ajax_dtpt_update_page_tab', array($this, 'ajax_update_page_tab'));
 
         // Register hooks for every supported post type.
         add_action('admin_init', array($this, 'register_post_type_hooks'));
     }
 
     /* --------------------------------------------------------------------- */
-    /* Lifecycle — invoked by the SuiteWP controller                          */
+    /* Lifecycle — invoked by the DevTools controller                          */
     /* --------------------------------------------------------------------- */
 
     public static function activate(): void {
@@ -217,8 +217,8 @@ class PageTabsOrganizer {
     public function add_admin_menu() {
         add_submenu_page(
             'edit.php?post_type=page',
-            __('Manage Tabs', 'suitewp'),
-            __('Tabs', 'suitewp'),
+            __('Manage Tabs', 'dev-tools'),
+            __('Tabs', 'dev-tools'),
             'manage_options',
             'page-tabs-organizer',
             array($this, 'admin_page')
@@ -235,33 +235,33 @@ class PageTabsOrganizer {
             ? str_replace('edit-', '', $screen->id)
             : '';
 
-        wp_enqueue_script('pto-admin', PTO_PLUGIN_URL . 'assets/admin.js', array('jquery'), PTO_VERSION, true);
-        wp_enqueue_style('pto-admin', PTO_PLUGIN_URL . 'assets/admin.css', array(), PTO_VERSION);
+        wp_enqueue_script('dtpt-admin', DTPT_PLUGIN_URL . 'assets/admin.js', array('jquery'), DTPT_VERSION, true);
+        wp_enqueue_style('dtpt-admin', DTPT_PLUGIN_URL . 'assets/admin.css', array(), DTPT_VERSION);
 
-        wp_localize_script('pto-admin', 'pto_ajax', array(
+        wp_localize_script('dtpt-admin', 'dtpt_ajax', array(
             'ajax_url'          => admin_url('admin-ajax.php'),
-            'nonce'             => wp_create_nonce('pto_nonce'),
+            'nonce'             => wp_create_nonce('dtpt_nonce'),
             'current_post_type' => $post_type,
             'strings'           => array(
-                'confirm_delete'        => __('Are you sure you want to delete this tab?', 'suitewp'),
-                'confirm_remove'        => __('Are you sure you want to remove this page from the tab?', 'suitewp'),
-                'name_required'         => __('The tab name is required.', 'suitewp'),
-                'select_tab'            => __('Please select a tab first.', 'suitewp'),
-                'connection_error'      => __('Connection error', 'suitewp'),
-                'unknown_error'         => __('Unknown error', 'suitewp'),
-                'error'                 => __('Operation error', 'suitewp'),
-                'success'               => __('Operation completed successfully', 'suitewp'),
-                'create_tab'            => __('Create Tab', 'suitewp'),
-                'update_tab'            => __('Update Tab', 'suitewp'),
+                'confirm_delete'        => __('Are you sure you want to delete this tab?', 'dev-tools'),
+                'confirm_remove'        => __('Are you sure you want to remove this page from the tab?', 'dev-tools'),
+                'name_required'         => __('The tab name is required.', 'dev-tools'),
+                'select_tab'            => __('Please select a tab first.', 'dev-tools'),
+                'connection_error'      => __('Connection error', 'dev-tools'),
+                'unknown_error'         => __('Unknown error', 'dev-tools'),
+                'error'                 => __('Operation error', 'dev-tools'),
+                'success'               => __('Operation completed successfully', 'dev-tools'),
+                'create_tab'            => __('Create Tab', 'dev-tools'),
+                'update_tab'            => __('Update Tab', 'dev-tools'),
             ),
         ));
     }
 
     public function admin_page() {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to access this page.', 'suitewp'));
+            wp_die(esc_html__('You do not have permission to access this page.', 'dev-tools'));
         }
-        include PTO_PLUGIN_PATH . 'includes/admin-page.php';
+        include DTPT_PLUGIN_PATH . 'includes/admin-page.php';
     }
 
     /* --------------------------------------------------------------------- */
@@ -300,7 +300,7 @@ class PageTabsOrganizer {
             foreach ($tabs as $index => $tab) {
                 $count = isset($counts[$tab->id]) ? (int) $counts[$tab->id]->c : 0;
 
-                $class = 'pto-tab-link';
+                $class = 'dtpt-tab-link';
                 if ($active_filter === (int) $tab->id) {
                     $class .= ' current';
                 }
@@ -344,7 +344,7 @@ class PageTabsOrganizer {
             $selected = isset($_GET['tab_filter']) ? absint(wp_unslash($_GET['tab_filter'])) : '';
 
             echo '<select name="tab_filter">';
-            echo '<option value="">' . esc_html__('All tabs', 'suitewp') . '</option>';
+            echo '<option value="">' . esc_html__('All tabs', 'dev-tools') . '</option>';
 
             foreach ($tabs as $tab) {
                 printf(
@@ -389,8 +389,8 @@ class PageTabsOrganizer {
         }
 
         echo '<div class="alignright" style="margin-top: 1px;">';
-        echo '<button type="button" id="pto-create-new-tab" class="button button-primary" data-post-type="' . esc_attr($typenow) . '">';
-        echo esc_html__('Create New Tab', 'suitewp');
+        echo '<button type="button" id="dtpt-create-new-tab" class="button button-primary" data-post-type="' . esc_attr($typenow) . '">';
+        echo esc_html__('Create New Tab', 'dev-tools');
         echo '</button>';
         echo '</div>';
     }
@@ -400,7 +400,7 @@ class PageTabsOrganizer {
 
         if ($current_screen && strpos($current_screen->id, 'edit-') === 0
             && array_key_exists($typenow, $this->get_supported_post_types())) {
-            include PTO_PLUGIN_PATH . 'includes/tab-modal.php';
+            include DTPT_PLUGIN_PATH . 'includes/tab-modal.php';
         }
     }
 
@@ -408,7 +408,7 @@ class PageTabsOrganizer {
         $new_columns = array();
         foreach ($columns as $key => $value) {
             if ($key === 'date') {
-                $new_columns['page_tab'] = __('Tab', 'suitewp');
+                $new_columns['page_tab'] = __('Tab', 'dev-tools');
             }
             $new_columns[$key] = $value;
         }
@@ -424,15 +424,15 @@ class PageTabsOrganizer {
         $tabs      = $this->get_tabs_for_post_type($post_type);
 
         if (empty($tabs)) {
-            echo '<em>' . esc_html__('No tabs available', 'suitewp') . '</em>';
+            echo '<em>' . esc_html__('No tabs available', 'dev-tools') . '</em>';
             return;
         }
 
         $relations       = $this->get_relations_map();
         $assigned_tab_id = isset($relations[$post_id]) ? $relations[$post_id] : 0;
 
-        echo '<select class="pto-page-tab-selector" data-page-id="' . esc_attr($post_id) . '">';
-        echo '<option value="0">' . esc_html__('No tab', 'suitewp') . '</option>';
+        echo '<select class="dtpt-page-tab-selector" data-page-id="' . esc_attr($post_id) . '">';
+        echo '<option value="0">' . esc_html__('No tab', 'dev-tools') . '</option>';
 
         foreach ($tabs as $tab) {
             printf(
@@ -481,10 +481,10 @@ class PageTabsOrganizer {
     /* --------------------------------------------------------------------- */
 
     public function ajax_create_tab_quick() {
-        check_ajax_referer('pto_nonce', 'nonce');
+        check_ajax_referer('dtpt_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'suitewp'), 403);
+            wp_send_json_error(__('You do not have permission to perform this action.', 'dev-tools'), 403);
         }
 
         $name      = isset($_POST['name']) ? sanitize_text_field(wp_unslash($_POST['name'])) : '';
@@ -496,7 +496,7 @@ class PageTabsOrganizer {
         }
 
         if (empty($name)) {
-            wp_send_json_error(__('The tab name is required.', 'suitewp'), 400);
+            wp_send_json_error(__('The tab name is required.', 'dev-tools'), 400);
         }
 
         global $wpdb;
@@ -522,19 +522,19 @@ class PageTabsOrganizer {
             $tab_id = $wpdb->insert_id;
             wp_send_json_success(array(
                 'tab_id'       => $tab_id,
-                'message'      => __('Tab created successfully.', 'suitewp'),
+                'message'      => __('Tab created successfully.', 'dev-tools'),
                 'redirect_url' => admin_url('edit.php?post_type=' . $post_type . '&tab_filter=' . $tab_id),
             ));
         }
 
-        wp_send_json_error(__('Error creating the tab.', 'suitewp'), 500);
+        wp_send_json_error(__('Error creating the tab.', 'dev-tools'), 500);
     }
 
     public function ajax_save_tab() {
-        check_ajax_referer('pto_nonce', 'nonce');
+        check_ajax_referer('dtpt_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'suitewp'), 403);
+            wp_send_json_error(__('You do not have permission to perform this action.', 'dev-tools'), 403);
         }
 
         $tab_id      = isset($_POST['tab_id']) ? intval(wp_unslash($_POST['tab_id'])) : 0;
@@ -544,7 +544,7 @@ class PageTabsOrganizer {
         $position    = isset($_POST['position']) ? intval(wp_unslash($_POST['position'])) : 0;
 
         if (empty($name)) {
-            wp_send_json_error(__('The tab name is required.', 'suitewp'), 400);
+            wp_send_json_error(__('The tab name is required.', 'dev-tools'), 400);
         }
 
         global $wpdb;
@@ -576,23 +576,23 @@ class PageTabsOrganizer {
         if (false !== $result) {
             wp_send_json_success(array(
                 'tab_id'  => $tab_id,
-                'message' => __('Tab saved successfully.', 'suitewp'),
+                'message' => __('Tab saved successfully.', 'dev-tools'),
             ));
         }
 
-        wp_send_json_error(__('Error saving the tab.', 'suitewp'), 500);
+        wp_send_json_error(__('Error saving the tab.', 'dev-tools'), 500);
     }
 
     public function ajax_delete_tab() {
-        check_ajax_referer('pto_nonce', 'nonce');
+        check_ajax_referer('dtpt_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('You do not have permission to perform this action.', 'suitewp'), 403);
+            wp_send_json_error(__('You do not have permission to perform this action.', 'dev-tools'), 403);
         }
 
         $tab_id = isset($_POST['tab_id']) ? intval(wp_unslash($_POST['tab_id'])) : 0;
         if (!$tab_id) {
-            wp_send_json_error(__('Invalid tab.', 'suitewp'), 400);
+            wp_send_json_error(__('Invalid tab.', 'dev-tools'), 400);
         }
 
         global $wpdb;
@@ -601,14 +601,14 @@ class PageTabsOrganizer {
         $result = $wpdb->delete($wpdb->prefix . 'page_tabs', array('id' => $tab_id), array('%d'));
 
         if (false !== $result) {
-            wp_send_json_success(__('Tab deleted successfully.', 'suitewp'));
+            wp_send_json_success(__('Tab deleted successfully.', 'dev-tools'));
         }
 
-        wp_send_json_error(__('Error deleting the tab.', 'suitewp'), 500);
+        wp_send_json_error(__('Error deleting the tab.', 'dev-tools'), 500);
     }
 
     public function ajax_update_page_tab() {
-        check_ajax_referer('pto_nonce', 'nonce');
+        check_ajax_referer('dtpt_nonce', 'nonce');
 
         $page_id = isset($_POST['page_id']) ? absint(wp_unslash($_POST['page_id'])) : 0;
         $tab_id  = isset($_POST['tab_id']) ? absint(wp_unslash($_POST['tab_id'])) : 0;
@@ -616,7 +616,7 @@ class PageTabsOrganizer {
         // Per-object capability check closes the IDOR: a generic edit_pages cap
         // is not enough — the user must be able to edit THIS page.
         if (!$page_id || !current_user_can('edit_post', $page_id)) {
-            wp_send_json_error(__('You do not have permission to edit this page.', 'suitewp'), 403);
+            wp_send_json_error(__('You do not have permission to edit this page.', 'dev-tools'), 403);
         }
 
         global $wpdb;
@@ -629,7 +629,7 @@ class PageTabsOrganizer {
             );
         } else {
             if (!$this->tab_exists($tab_id)) {
-                wp_send_json_error(__('Invalid tab.', 'suitewp'), 400);
+                wp_send_json_error(__('Invalid tab.', 'dev-tools'), 400);
             }
 
             $result = $wpdb->replace(
@@ -650,28 +650,28 @@ class PageTabsOrganizer {
 
             wp_send_json_success(array(
                 'message'  => $tab_id === 0
-                    ? __('Page removed from all tabs.', 'suitewp')
-                    : sprintf(/* translators: %s: tab name. */ __('Page assigned to "%s".', 'suitewp'), $tab_name),
+                    ? __('Page removed from all tabs.', 'dev-tools')
+                    : sprintf(/* translators: %s: tab name. */ __('Page assigned to "%s".', 'dev-tools'), $tab_name),
                 'tab_id'   => $tab_id,
                 'tab_name' => $tab_name,
             ));
         }
 
-        wp_send_json_error(__('Error updating the tab assignment.', 'suitewp'), 500);
+        wp_send_json_error(__('Error updating the tab assignment.', 'dev-tools'), 500);
     }
 
     public function ajax_assign_page_to_tab() {
-        check_ajax_referer('pto_nonce', 'nonce');
+        check_ajax_referer('dtpt_nonce', 'nonce');
 
         $page_id = isset($_POST['page_id']) ? absint(wp_unslash($_POST['page_id'])) : 0;
         $tab_id  = isset($_POST['tab_id']) ? absint(wp_unslash($_POST['tab_id'])) : 0;
 
         if (!$page_id || !current_user_can('edit_post', $page_id)) {
-            wp_send_json_error(__('You do not have permission to edit this page.', 'suitewp'), 403);
+            wp_send_json_error(__('You do not have permission to edit this page.', 'dev-tools'), 403);
         }
 
         if (!$tab_id || !$this->tab_exists($tab_id)) {
-            wp_send_json_error(__('Invalid tab.', 'suitewp'), 400);
+            wp_send_json_error(__('Invalid tab.', 'dev-tools'), 400);
         }
 
         global $wpdb;
@@ -683,20 +683,20 @@ class PageTabsOrganizer {
         );
 
         if (false !== $result) {
-            wp_send_json_success(__('Page assigned to the tab successfully.', 'suitewp'));
+            wp_send_json_success(__('Page assigned to the tab successfully.', 'dev-tools'));
         }
 
-        wp_send_json_error(__('Error assigning the page to the tab.', 'suitewp'), 500);
+        wp_send_json_error(__('Error assigning the page to the tab.', 'dev-tools'), 500);
     }
 
     public function ajax_remove_page_from_tab() {
-        check_ajax_referer('pto_nonce', 'nonce');
+        check_ajax_referer('dtpt_nonce', 'nonce');
 
         $page_id = isset($_POST['page_id']) ? absint(wp_unslash($_POST['page_id'])) : 0;
         $tab_id  = isset($_POST['tab_id']) ? absint(wp_unslash($_POST['tab_id'])) : 0;
 
         if (!$page_id || !current_user_can('edit_post', $page_id)) {
-            wp_send_json_error(__('You do not have permission to edit this page.', 'suitewp'), 403);
+            wp_send_json_error(__('You do not have permission to edit this page.', 'dev-tools'), 403);
         }
 
         global $wpdb;
@@ -708,10 +708,10 @@ class PageTabsOrganizer {
         );
 
         if (false !== $result) {
-            wp_send_json_success(__('Page removed from the tab successfully.', 'suitewp'));
+            wp_send_json_success(__('Page removed from the tab successfully.', 'dev-tools'));
         }
 
-        wp_send_json_error(__('Error removing the page from the tab.', 'suitewp'), 500);
+        wp_send_json_error(__('Error removing the page from the tab.', 'dev-tools'), 500);
     }
 
     /**
@@ -728,6 +728,6 @@ class PageTabsOrganizer {
 
 endif;
 
-if (!defined('SUITEWP_LIFECYCLE_RUN')) {
-    new PageTabsOrganizer();
+if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
+    new DevToolsPageTabs();
 }

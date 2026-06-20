@@ -40,12 +40,12 @@ export default function CommentPanel( {
 	const list = pins.filter( ( pin ) => matches( pin, filter ) );
 
 	return (
-		<div className="wpcp-panel">
-			<div className="wpcp-panel-head">
-				<span className="wpcp-panel-title">{ t( 'comments' ) }</span>
+		<div className="dtcp-panel">
+			<div className="dtcp-panel-head">
+				<span className="dtcp-panel-title">{ t( 'comments' ) }</span>
 				<button
 					type="button"
-					className="wpcp-icon-btn"
+					className="dtcp-icon-btn"
 					onClick={ onClose }
 					aria-label={ t( 'panel_close' ) }
 				>
@@ -65,13 +65,13 @@ export default function CommentPanel( {
 				</button>
 			</div>
 
-			<div className="wpcp-panel-filters">
+			<div className="dtcp-panel-filters">
 				{ FILTERS.map( ( key ) => (
 					<button
 						key={ key }
 						type="button"
 						className={
-							'wpcp-chip' + ( filter === key ? ' is-active' : '' )
+							'dtcp-chip' + ( filter === key ? ' is-active' : '' )
 						}
 						onClick={ () => onFilter( key ) }
 					>
@@ -81,11 +81,11 @@ export default function CommentPanel( {
 			</div>
 
 			<label
-				className="wpcp-panel-showresolved"
-				htmlFor="wpcp-show-resolved"
+				className="dtcp-panel-showresolved"
+				htmlFor="dtcp-show-resolved"
 			>
 				<input
-					id="wpcp-show-resolved"
+					id="dtcp-show-resolved"
 					type="checkbox"
 					checked={ showResolved }
 					onChange={ ( e ) => onToggleResolved( e.target.checked ) }
@@ -93,9 +93,9 @@ export default function CommentPanel( {
 				{ t( 'show_resolved' ) }
 			</label>
 
-			<div className="wpcp-panel-list">
+			<div className="dtcp-panel-list">
 				{ list.length === 0 && (
-					<div className="wpcp-panel-empty">
+					<div className="dtcp-panel-empty">
 						{ pins.length === 0
 							? t( 'no_comments' )
 							: t( 'no_match' ) }
@@ -110,36 +110,36 @@ export default function CommentPanel( {
 							key={ pin.id }
 							type="button"
 							className={
-								'wpcp-panel-item' +
+								'dtcp-panel-item' +
 								( resolved ? ' is-resolved' : '' )
 							}
 							onClick={ () => onJump( pin ) }
 						>
 							<span
-								className="wpcp-avatar is-sm"
+								className="dtcp-avatar is-sm"
 								style={ { background: avatarColor( name ) } }
 								aria-hidden="true"
 							>
 								{ initials( name ) }
 							</span>
-							<div className="wpcp-panel-item-body">
-								<div className="wpcp-panel-item-head">
-									<span className="wpcp-name">{ name }</span>
-									<span className="wpcp-date">
+							<div className="dtcp-panel-item-body">
+								<div className="dtcp-panel-item-head">
+									<span className="dtcp-name">{ name }</span>
+									<span className="dtcp-date">
 										{ relativeTime( pin.created_at ) }
 									</span>
 								</div>
-								<div className="wpcp-panel-item-text">
+								<div className="dtcp-panel-item-text">
 									{ snippet( pin.comment_text, 90 ) }
 								</div>
-								<div className="wpcp-panel-item-meta">
+								<div className="dtcp-panel-item-meta">
 									{ resolved && (
-										<span className="wpcp-badge is-resolved is-sm">
+										<span className="dtcp-badge is-resolved is-sm">
 											{ t( 'resolved' ) }
 										</span>
 									) }
 									{ pin.reply_count > 0 && (
-										<span className="wpcp-reply-count">
+										<span className="dtcp-reply-count">
 											{ pin.reply_count === 1
 												? t( 'one_reply' )
 												: t( 'many_replies' ).replace(

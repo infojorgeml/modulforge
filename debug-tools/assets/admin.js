@@ -1,16 +1,16 @@
 /**
- * SuiteWP Debug & Logs — admin page behaviour (vanilla JS, no build step).
+ * DevTools Debug & Logs — admin page behaviour (vanilla JS, no build step).
  */
 (function () {
     'use strict';
 
-    var cfg = window.suitewpDebug || {};
+    var cfg = window.devToolsDebug || {};
     var i18n = cfg.i18n || {};
     var entries = [];
     var autoTimer = null;
 
     document.addEventListener('DOMContentLoaded', function () {
-        var form = document.getElementById('suitewp-debug-form');
+        var form = document.getElementById('devtools-debug-form');
         if (!form) {
             return;
         }
@@ -18,22 +18,22 @@
         form.addEventListener('submit', saveSettings);
         bindMasterToggle(form);
 
-        on('suitewp-debug-restore', 'click', restoreBackup);
-        on('suitewp-debug-refresh', 'click', loadLog);
-        on('suitewp-debug-clear', 'click', clearLog);
-        on('suitewp-debug-download', 'click', function () {
+        on('devtools-debug-restore', 'click', restoreBackup);
+        on('devtools-debug-refresh', 'click', loadLog);
+        on('devtools-debug-clear', 'click', clearLog);
+        on('devtools-debug-download', 'click', function () {
             window.location.href = cfg.download_url;
         });
 
-        var search = document.getElementById('suitewp-debug-search');
+        var search = document.getElementById('devtools-debug-search');
         if (search) {
             search.addEventListener('input', render);
         }
-        document.querySelectorAll('.suitewp-debug-filters input').forEach(function (cb) {
+        document.querySelectorAll('.devtools-debug-filters input').forEach(function (cb) {
             cb.addEventListener('change', render);
         });
 
-        var auto = document.getElementById('suitewp-debug-autorefresh');
+        var auto = document.getElementById('devtools-debug-autorefresh');
         if (auto) {
             auto.addEventListener('change', function () {
                 if (auto.checked) {
@@ -67,7 +67,7 @@
     }
 
     function notice(message, type) {
-        var box = document.getElementById('suitewp-debug-notice');
+        var box = document.getElementById('devtools-debug-notice');
         if (!box) {
             return;
         }
@@ -80,7 +80,7 @@
 
     function bindMasterToggle(form) {
         var master = form.querySelector('input[name="wp_debug"]');
-        var subs = form.querySelectorAll('.suitewp-debug-sub input');
+        var subs = form.querySelectorAll('.devtools-debug-sub input');
         if (!master) {
             return;
         }
@@ -97,7 +97,7 @@
         e.preventDefault();
         var form = e.currentTarget;
         var data = new URLSearchParams();
-        data.append('action', 'suitewp_debug_save_settings');
+        data.append('action', 'dev_tools_debug_save_settings');
         data.append('nonce', cfg.nonce);
         form.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
             data.append('settings[' + cb.name + ']', cb.checked ? '1' : '0');
@@ -105,7 +105,7 @@
 
         post(data)
             .then(function (res) {
-                var manual = document.getElementById('suitewp-debug-manual');
+                var manual = document.getElementById('devtools-debug-manual');
                 if (res && res.success) {
                     if (manual) {
                         manual.style.display = 'none';
@@ -131,7 +131,7 @@
             return;
         }
         var data = new URLSearchParams();
-        data.append('action', 'suitewp_debug_restore_backup');
+        data.append('action', 'dev_tools_debug_restore_backup');
         data.append('nonce', cfg.nonce);
         post(data)
             .then(function (res) {
@@ -151,12 +151,12 @@
         if (!state) {
             return;
         }
-        var el = document.getElementById('suitewp-debug-runtime');
+        var el = document.getElementById('devtools-debug-runtime');
         if (el) {
             // Saved intent differs from runtime until pages reload; keep it informative.
             el.dataset.active = state.runtime && state.runtime.wp_debug ? '1' : '0';
         }
-        var restore = document.getElementById('suitewp-debug-restore');
+        var restore = document.getElementById('devtools-debug-restore');
         if (restore) {
             restore.style.display = state.has_backup ? '' : 'none';
         }
@@ -166,7 +166,7 @@
 
     function loadLog() {
         var data = new URLSearchParams();
-        data.append('action', 'suitewp_debug_get_log');
+        data.append('action', 'dev_tools_debug_get_log');
         data.append('nonce', cfg.nonce);
         post(data)
             .then(function (res) {
@@ -185,7 +185,7 @@
             return;
         }
         var data = new URLSearchParams();
-        data.append('action', 'suitewp_debug_clear_log');
+        data.append('action', 'dev_tools_debug_clear_log');
         data.append('nonce', cfg.nonce);
         post(data)
             .then(function (res) {
@@ -243,7 +243,7 @@
 
     function activeLevels() {
         var set = {};
-        document.querySelectorAll('.suitewp-debug-filters input').forEach(function (cb) {
+        document.querySelectorAll('.devtools-debug-filters input').forEach(function (cb) {
             if (cb.checked) {
                 set[cb.value] = true;
             }
@@ -252,12 +252,12 @@
     }
 
     function render(scrollToEnd) {
-        var logEl = document.getElementById('suitewp-debug-log');
+        var logEl = document.getElementById('devtools-debug-log');
         if (!logEl) {
             return;
         }
         var levels = activeLevels();
-        var searchEl = document.getElementById('suitewp-debug-search');
+        var searchEl = document.getElementById('devtools-debug-search');
         var q = searchEl ? searchEl.value.trim().toLowerCase() : '';
 
         var filtered = entries.filter(function (e) {
@@ -278,7 +278,7 @@
         var frag = document.createDocumentFragment();
         filtered.forEach(function (e) {
             var row = document.createElement('div');
-            row.className = 'suitewp-debug-entry lvl-' + e.level;
+            row.className = 'devtools-debug-entry lvl-' + e.level;
             row.textContent = e.text;
             frag.appendChild(row);
         });
@@ -291,13 +291,13 @@
 
     function emptyRow(text) {
         var div = document.createElement('div');
-        div.className = 'suitewp-debug-empty';
+        div.className = 'devtools-debug-empty';
         div.textContent = text || '';
         return div;
     }
 
     function renderMeta(data) {
-        var meta = document.getElementById('suitewp-debug-meta');
+        var meta = document.getElementById('devtools-debug-meta');
         if (!meta) {
             return;
         }

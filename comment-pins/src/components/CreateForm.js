@@ -21,12 +21,12 @@ export default function CreateForm( { draft, onSave, onCancel } ) {
 
 	return (
 		<div
-			className="wpcp-form"
+			className="dtcp-form"
 			style={ { left: draft.pageX + 'px', top: draft.pageY + 18 + 'px' } }
 		>
 			<textarea
 				ref={ ref }
-				className="wpcp-textarea"
+				className="dtcp-textarea"
 				value={ text }
 				rows={ 3 }
 				placeholder={ t( 'placeholder' ) }
@@ -37,17 +37,17 @@ export default function CreateForm( { draft, onSave, onCancel } ) {
 					}
 				} }
 			/>
-			<div className="wpcp-form-actions">
+			<div className="dtcp-form-actions">
 				<button
 					type="button"
-					className="wpcp-text-btn"
+					className="dtcp-text-btn"
 					onClick={ onCancel }
 				>
 					{ t( 'cancel' ) }
 				</button>
 				<button
 					type="button"
-					className="wpcp-btn-primary"
+					className="dtcp-btn-primary"
 					onClick={ submit }
 					disabled={ ! text.trim() }
 				>

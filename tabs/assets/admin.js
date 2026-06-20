@@ -14,15 +14,15 @@
         },
 
         strings: function(key, fallback) {
-            if (window.pto_ajax && pto_ajax.strings && pto_ajax.strings[key]) {
-                return pto_ajax.strings[key];
+            if (window.dtpt_ajax && dtpt_ajax.strings && dtpt_ajax.strings[key]) {
+                return dtpt_ajax.strings[key];
             }
             return fallback || key;
         },
 
         bindEvents: function() {
             // Tab form.
-            $('#pto-tab-form').on('submit', this.saveTab);
+            $('#dtpt-tab-form').on('submit', this.saveTab);
             $('#cancel-edit').on('click', this.cancelEdit);
 
             // Tab buttons.
@@ -35,18 +35,18 @@
             $('.page-tab-select').on('change', this.onTabSelectChange);
 
             // Modal and "Create New Tab" button.
-            $('#pto-create-new-tab').on('click', this.openCreateTabModal);
-            $('#pto-quick-tab-form').on('submit', this.createTabQuick);
-            $('#pto-manage-tab-form').on('submit', this.updateTab);
+            $('#dtpt-create-new-tab').on('click', this.openCreateTabModal);
+            $('#dtpt-quick-tab-form').on('submit', this.createTabQuick);
+            $('#dtpt-manage-tab-form').on('submit', this.updateTab);
 
             // Modal controls.
-            $('.pto-modal-close, #pto-modal-cancel, #pto-modal-cancel-manage').on('click', this.closeModal);
-            $('.pto-modal-backdrop').on('click', this.closeModal);
-            $('#pto-modal-delete').on('click', this.deleteTabFromModal);
+            $('.dtpt-modal-close, #dtpt-modal-cancel, #dtpt-modal-cancel-manage').on('click', this.closeModal);
+            $('.dtpt-modal-backdrop').on('click', this.closeModal);
+            $('#dtpt-modal-delete').on('click', this.deleteTabFromModal);
 
             // Tab links on the Pages screen.
-            $('.pto-tab-link').on('contextmenu', this.onTabRightClick);
-            $('.pto-tab-link').on('dblclick', this.onTabDoubleClick);
+            $('.dtpt-tab-link').on('contextmenu', this.onTabRightClick);
+            $('.dtpt-tab-link').on('dblclick', this.onTabDoubleClick);
 
             // Close modal with ESC.
             $(document).on('keydown', this.handleEscKey);
@@ -80,8 +80,8 @@
             $button.addClass('loading');
 
             var data = {
-                action: 'pto_save_tab',
-                nonce: pto_ajax.nonce,
+                action: 'dtpt_save_tab',
+                nonce: dtpt_ajax.nonce,
                 tab_id: $('#tab-id').val(),
                 name: name,
                 description: $('#tab-description').val(),
@@ -89,7 +89,7 @@
                 position: $('#tab-position').val()
             };
 
-            $.post(pto_ajax.ajax_url, data)
+            $.post(dtpt_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data.message, 'success');
@@ -119,11 +119,11 @@
             $('#tab-color').val(tabData.color);
             $('#tab-position').val(tabData.position);
 
-            $('#pto-tab-form button[type="submit"] .button-text').text(PTO.strings('update_tab', 'Update Tab'));
+            $('#dtpt-tab-form button[type="submit"] .button-text').text(PTO.strings('update_tab', 'Update Tab'));
             $('#cancel-edit').show();
 
             $('html, body').animate({
-                scrollTop: $('#pto-tab-form').offset().top - 50
+                scrollTop: $('#dtpt-tab-form').offset().top - 50
             }, 500);
 
             $('#tab-name').focus();
@@ -135,11 +135,11 @@
         },
 
         resetForm: function() {
-            $('#pto-tab-form')[0].reset();
+            $('#dtpt-tab-form')[0].reset();
             $('#tab-id').val('0');
             $('#tab-color').val('#0073aa');
             $('#tab-position').val('0');
-            $('#pto-tab-form button[type="submit"] .button-text').text(PTO.strings('create_tab', 'Create Tab'));
+            $('#dtpt-tab-form button[type="submit"] .button-text').text(PTO.strings('create_tab', 'Create Tab'));
             $('#cancel-edit').hide();
         },
 
@@ -157,12 +157,12 @@
             $row.addClass('updating');
 
             var data = {
-                action: 'pto_delete_tab',
-                nonce: pto_ajax.nonce,
+                action: 'dtpt_delete_tab',
+                nonce: dtpt_ajax.nonce,
                 tab_id: tabId
             };
 
-            $.post(pto_ajax.ajax_url, data)
+            $.post(dtpt_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data, 'success');
@@ -170,7 +170,7 @@
                         $row.fadeOut(300, function() {
                             $(this).remove();
 
-                            if ($('.pto-tabs-list tbody tr').length === 0) {
+                            if ($('.dtpt-tabs-list tbody tr').length === 0) {
                                 setTimeout(function() {
                                     window.location.reload();
                                 }, 1000);
@@ -225,13 +225,13 @@
             $row.addClass('updating');
 
             var data = {
-                action: 'pto_assign_page_to_tab',
-                nonce: pto_ajax.nonce,
+                action: 'dtpt_assign_page_to_tab',
+                nonce: dtpt_ajax.nonce,
                 page_id: pageId,
                 tab_id: tabId
             };
 
-            $.post(pto_ajax.ajax_url, data)
+            $.post(dtpt_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data, 'success');
@@ -265,13 +265,13 @@
             $row.addClass('updating');
 
             var data = {
-                action: 'pto_remove_page_from_tab',
-                nonce: pto_ajax.nonce,
+                action: 'dtpt_remove_page_from_tab',
+                nonce: dtpt_ajax.nonce,
                 page_id: pageId,
                 tab_id: tabId
             };
 
-            $.post(pto_ajax.ajax_url, data)
+            $.post(dtpt_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data, 'success');
@@ -291,7 +291,7 @@
         },
 
         showMessage: function(message, type) {
-            var $messageDiv = $('#pto-messages');
+            var $messageDiv = $('#dtpt-messages');
             var $messageText = $messageDiv.find('p');
 
             $messageDiv.removeClass('notice-success notice-error notice-warning');
@@ -319,12 +319,12 @@
         // Modal and tab management.
         openCreateTabModal: function(e) {
             e.preventDefault();
-            $('#pto-create-tab-modal').show();
+            $('#dtpt-create-tab-modal').show();
             $('#quick-tab-name').focus();
         },
 
         openManageTabModal: function(tabId) {
-            var $tabLink = $('.pto-tab-link[data-tab-id="' + tabId + '"]');
+            var $tabLink = $('.dtpt-tab-link[data-tab-id="' + tabId + '"]');
             if ($tabLink.length === 0) return;
 
             var tabText = $tabLink.text().trim();
@@ -342,17 +342,17 @@
             $('#manage-tab-color').val(tabColor || '#0073aa');
             $('#manage-tab-position').val(0);
 
-            $('#pto-manage-tab-title').text('Manage: ' + tabName);
+            $('#dtpt-manage-tab-title').text('Manage: ' + tabName);
 
-            $('#pto-manage-tab-modal').show();
+            $('#dtpt-manage-tab-modal').show();
             $('#manage-tab-name').focus().select();
         },
 
         closeModal: function(e) {
             e.preventDefault();
-            var $modal = $(e.target).closest('.pto-modal');
+            var $modal = $(e.target).closest('.dtpt-modal');
             if ($modal.length === 0) {
-                $modal = $('.pto-modal:visible');
+                $modal = $('.dtpt-modal:visible');
             }
 
             $modal.addClass('closing');
@@ -364,7 +364,7 @@
 
         handleEscKey: function(e) {
             if (e.keyCode === 27) { // ESC
-                var $visibleModal = $('.pto-modal:visible');
+                var $visibleModal = $('.dtpt-modal:visible');
                 if ($visibleModal.length > 0) {
                     PTO.closeModal(e);
                 }
@@ -374,7 +374,7 @@
         createTabQuick: function(e) {
             e.preventDefault();
 
-            var $button = $('#pto-modal-create');
+            var $button = $('#dtpt-modal-create');
 
             var name = $('#quick-tab-name').val().trim();
             if (!name) {
@@ -385,21 +385,21 @@
             $button.addClass('loading');
 
             var data = {
-                action: 'pto_create_tab_quick',
-                nonce: pto_ajax.nonce,
+                action: 'dtpt_create_tab_quick',
+                nonce: dtpt_ajax.nonce,
                 name: name,
                 color: $('#quick-tab-color').val(),
-                post_type: (window.pto_ajax && pto_ajax.current_post_type) ? pto_ajax.current_post_type : 'page'
+                post_type: (window.dtpt_ajax && dtpt_ajax.current_post_type) ? dtpt_ajax.current_post_type : 'page'
             };
 
-            $.post(pto_ajax.ajax_url, data)
+            $.post(dtpt_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data.message, 'success');
 
-                        $('#pto-create-tab-modal').addClass('closing');
+                        $('#dtpt-create-tab-modal').addClass('closing');
                         setTimeout(function() {
-                            $('#pto-create-tab-modal').hide().removeClass('closing');
+                            $('#dtpt-create-tab-modal').hide().removeClass('closing');
                         }, 150);
 
                         setTimeout(function() {
@@ -420,7 +420,7 @@
         updateTab: function(e) {
             e.preventDefault();
 
-            var $button = $('#pto-modal-update');
+            var $button = $('#dtpt-modal-update');
 
             var name = $('#manage-tab-name').val().trim();
             if (!name) {
@@ -431,8 +431,8 @@
             $button.addClass('loading');
 
             var data = {
-                action: 'pto_save_tab',
-                nonce: pto_ajax.nonce,
+                action: 'dtpt_save_tab',
+                nonce: dtpt_ajax.nonce,
                 tab_id: $('#manage-tab-id').val(),
                 name: name,
                 description: $('#manage-tab-description').val(),
@@ -440,14 +440,14 @@
                 position: $('#manage-tab-position').val()
             };
 
-            $.post(pto_ajax.ajax_url, data)
+            $.post(dtpt_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data.message, 'success');
 
-                        $('#pto-manage-tab-modal').addClass('closing');
+                        $('#dtpt-manage-tab-modal').addClass('closing');
                         setTimeout(function() {
-                            $('#pto-manage-tab-modal').hide().removeClass('closing');
+                            $('#dtpt-manage-tab-modal').hide().removeClass('closing');
                         }, 150);
 
                         setTimeout(function() {
@@ -478,19 +478,19 @@
             $button.addClass('loading');
 
             var data = {
-                action: 'pto_delete_tab',
-                nonce: pto_ajax.nonce,
+                action: 'dtpt_delete_tab',
+                nonce: dtpt_ajax.nonce,
                 tab_id: tabId
             };
 
-            $.post(pto_ajax.ajax_url, data)
+            $.post(dtpt_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data, 'success');
 
-                        $('#pto-manage-tab-modal').addClass('closing');
+                        $('#dtpt-manage-tab-modal').addClass('closing');
                         setTimeout(function() {
-                            $('#pto-manage-tab-modal').hide().removeClass('closing');
+                            $('#dtpt-manage-tab-modal').hide().removeClass('closing');
                         }, 150);
 
                         setTimeout(function() {
@@ -525,15 +525,15 @@
         },
 
         initializeColumnSelectors: function() {
-            if (window.pto_ajax && pto_ajax.current_post_type) {
+            if (window.dtpt_ajax && dtpt_ajax.current_post_type) {
                 this.setupPageTabSelectors();
             }
         },
 
         setupPageTabSelectors: function() {
-            $(document).on('change', '.pto-page-tab-selector', this.handleTabSelectorChange);
+            $(document).on('change', '.dtpt-page-tab-selector', this.handleTabSelectorChange);
 
-            $('.pto-page-tab-selector').each(function() {
+            $('.dtpt-page-tab-selector').each(function() {
                 PTO.updateSelectorAppearance($(this));
             });
         },
@@ -548,13 +548,13 @@
             $selector.addClass('updating');
 
             var data = {
-                action: 'pto_update_page_tab',
-                nonce: pto_ajax.nonce,
+                action: 'dtpt_update_page_tab',
+                nonce: dtpt_ajax.nonce,
                 page_id: pageId,
                 tab_id: tabId
             };
 
-            $.post(pto_ajax.ajax_url, data)
+            $.post(dtpt_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data.message, 'success');

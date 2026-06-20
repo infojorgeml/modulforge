@@ -1,6 +1,6 @@
 # Page Tabs Organizer
 
-A WordPress mini-plugin (part of SuiteWP) that organizes **pages, posts and any
+A WordPress mini-plugin (part of DevTools) that organizes **pages, posts and any
 public Custom Post Type (CPT)** with customizable tabs, improving content
 management in the admin.
 
@@ -48,9 +48,9 @@ post-type list screen.
 - `{prefix}page_tab_relations` — page↔tab relations, with a **UNIQUE key on
   `page_id`** enforcing the 1:1 model
 
-Tables are created/upgraded through the SuiteWP lifecycle (`maybe_install_schema`,
-version-gated via the `pto_db_version` option). They are removed on uninstall only
-when SuiteWP's "Delete all data" opt-in is enabled.
+Tables are created/upgraded through the DevTools lifecycle (`maybe_install_schema`,
+version-gated via the `dtpt_db_version` option). They are removed on uninstall only
+when DevTools's "Delete all data" opt-in is enabled.
 
 ### Security
 - Nonce verification on all AJAX operations
@@ -74,7 +74,7 @@ when SuiteWP's "Delete all data" opt-in is enabled.
   - Consolidated to a 1:1 page→tab model with a unique index
   - Closed an IDOR in page-assignment AJAX (per-object `edit_post`)
   - Removed N+1 queries on list screens
-  - English UI under the `suitewp` text domain
+  - English UI under the `devtools` text domain
   - Removed legacy "force DB update" emergency tooling (superseded by the lifecycle)
 
 ---

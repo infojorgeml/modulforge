@@ -13,7 +13,7 @@ import CommentThread from './components/CommentThread';
 import CommentPanel from './components/CommentPanel';
 import CreateForm from './components/CreateForm';
 
-const cfg = window.wpCommentPins || {};
+const cfg = window.devToolsCommentPins || {};
 const TOGGLE_ID = 'wp-admin-bar-comment-pins-toggle';
 
 export default function App() {
@@ -54,10 +54,10 @@ export default function App() {
 
 	// Reflect active state on <body> and the toggle button.
 	useEffect( () => {
-		document.body.classList.toggle( 'wpcp-active', active );
+		document.body.classList.toggle( 'dtcp-active', active );
 		const btn = document.getElementById( TOGGLE_ID );
 		if ( btn ) {
-			btn.classList.toggle( 'wpcp-on', active );
+			btn.classList.toggle( 'dtcp-on', active );
 		}
 		if ( ! active ) {
 			setDraft( null );
@@ -267,7 +267,7 @@ export default function App() {
 
 	return (
 		<Fragment>
-			<div className="wpcp-overlay" />
+			<div className="dtcp-overlay" />
 
 			{ visiblePins.map( ( pin ) => (
 				<CommentPin
@@ -297,7 +297,7 @@ export default function App() {
 			{ draft && (
 				<Fragment>
 					<div
-						className="wpcp-pin is-draft"
+						className="dtcp-pin is-draft"
 						style={ {
 							left: draft.pageX + 'px',
 							top: draft.pageY + 'px',
@@ -326,7 +326,7 @@ export default function App() {
 			<button
 				type="button"
 				className={
-					'wpcp-panel-toggle' + ( panelOpen ? ' is-open' : '' )
+					'dtcp-panel-toggle' + ( panelOpen ? ' is-open' : '' )
 				}
 				onClick={ () => setPanelOpen( ( o ) => ! o ) }
 				aria-label={
@@ -347,7 +347,7 @@ export default function App() {
 					/>
 				</svg>
 				{ openCount > 0 && (
-					<span className="wpcp-panel-toggle-count">
+					<span className="dtcp-panel-toggle-count">
 						{ openCount }
 					</span>
 				) }

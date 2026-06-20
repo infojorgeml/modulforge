@@ -8,7 +8,7 @@
  * Requires at least: 5.0
  * Requires PHP: 7.4
  *
- * @package PageStatePlugin
+ * @package DevToolsPageState
  */
 
 // Prevent direct access.
@@ -16,12 +16,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists('PageStatePlugin')) :
+if (!class_exists('DevToolsPageState')) :
 
 /**
  * Page state management: status, notes and responsive checkboxes on pages.
  */
-class PageStatePlugin {
+class DevToolsPageState {
 
     const VERSION = '2.0.0';
 
@@ -100,9 +100,9 @@ class PageStatePlugin {
         foreach ($columns as $key => $value) {
             $new_columns[$key] = $value;
             if ($key === 'title') {
-                $new_columns['page_status']     = __('Status', 'suitewp');
-                $new_columns['page_notes']      = __('Notes', 'suitewp');
-                $new_columns['page_responsive'] = __('Responsive', 'suitewp');
+                $new_columns['page_status']     = __('Status', 'dev-tools');
+                $new_columns['page_notes']      = __('Notes', 'dev-tools');
+                $new_columns['page_responsive'] = __('Responsive', 'dev-tools');
             }
         }
         return $new_columns;
@@ -122,11 +122,11 @@ class PageStatePlugin {
         $status = get_post_meta($post_id, 'page_status', true);
         ?>
         <select class="page-status-selector" data-post="<?php echo esc_attr($post_id); ?>">
-            <option value="">— <?php esc_html_e('None', 'suitewp'); ?> —</option>
-            <option value="draft" <?php selected($status, 'draft'); ?>>⚪ <?php esc_html_e('Draft', 'suitewp'); ?></option>
-            <option value="revision" <?php selected($status, 'revision'); ?>>🟡 <?php esc_html_e('Revision', 'suitewp'); ?></option>
-            <option value="process" <?php selected($status, 'process'); ?>>🔵 <?php esc_html_e('In Progress', 'suitewp'); ?></option>
-            <option value="done" <?php selected($status, 'done'); ?>>🟢 <?php esc_html_e('Done', 'suitewp'); ?></option>
+            <option value="">— <?php esc_html_e('None', 'dev-tools'); ?> —</option>
+            <option value="draft" <?php selected($status, 'draft'); ?>>⚪ <?php esc_html_e('Draft', 'dev-tools'); ?></option>
+            <option value="revision" <?php selected($status, 'revision'); ?>>🟡 <?php esc_html_e('Revision', 'dev-tools'); ?></option>
+            <option value="process" <?php selected($status, 'process'); ?>>🔵 <?php esc_html_e('In Progress', 'dev-tools'); ?></option>
+            <option value="done" <?php selected($status, 'done'); ?>>🟢 <?php esc_html_e('Done', 'dev-tools'); ?></option>
         </select>
         <div class="page-status-loading" style="display: none;">
             <span class="spinner" style="visibility: visible; float: none;"></span>
@@ -143,7 +143,7 @@ class PageStatePlugin {
                 data-post="<?php echo esc_attr($post_id); ?>"
                 rows="2"
                 style="width: 100%; min-height: 60px; resize: vertical;"
-                placeholder="<?php esc_attr_e('Add notes...', 'suitewp'); ?>"
+                placeholder="<?php esc_attr_e('Add notes...', 'dev-tools'); ?>"
             ><?php echo $notes; ?></textarea>
             <div class="page-notes-status" style="font-size: 11px; color: #666; margin-top: 3px;"></div>
         </div>
@@ -160,17 +160,17 @@ class PageStatePlugin {
                 <label class="responsive-checkbox-label">
                     <input type="checkbox" class="responsive-checkbox" data-device="desktop" <?php checked($desktop, true); ?>>
                     <span class="device-icon">🖥️</span>
-                    <span class="device-label"><?php esc_html_e('Desktop', 'suitewp'); ?></span>
+                    <span class="device-label"><?php esc_html_e('Desktop', 'dev-tools'); ?></span>
                 </label>
                 <label class="responsive-checkbox-label">
                     <input type="checkbox" class="responsive-checkbox" data-device="tablet" <?php checked($tablet, true); ?>>
                     <span class="device-icon">📱</span>
-                    <span class="device-label"><?php esc_html_e('Tablet', 'suitewp'); ?></span>
+                    <span class="device-label"><?php esc_html_e('Tablet', 'dev-tools'); ?></span>
                 </label>
                 <label class="responsive-checkbox-label">
                     <input type="checkbox" class="responsive-checkbox" data-device="mobile" <?php checked($mobile, true); ?>>
                     <span class="device-icon">📲</span>
-                    <span class="device-label"><?php esc_html_e('Mobile', 'suitewp'); ?></span>
+                    <span class="device-label"><?php esc_html_e('Mobile', 'dev-tools'); ?></span>
                 </label>
             </div>
             <div class="responsive-status" style="font-size: 11px; color: #666; margin-top: 3px;"></div>
@@ -195,13 +195,13 @@ class PageStatePlugin {
             true
         );
 
-        wp_localize_script('page-state-plugin', 'pageStateAjax', [
+        wp_localize_script('page-state-plugin', 'devToolsPageState', [
             'ajaxurl'  => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('page_state_nonce'),
+            'nonce'    => wp_create_nonce('dtps_nonce'),
             'messages' => [
-                'saved'  => __('Saved', 'suitewp'),
-                'saving' => __('Saving...', 'suitewp'),
-                'error'  => __('Error saving', 'suitewp'),
+                'saved'  => __('Saved', 'dev-tools'),
+                'saving' => __('Saving...', 'dev-tools'),
+                'error'  => __('Error saving', 'dev-tools'),
             ],
         ]);
 
@@ -214,68 +214,68 @@ class PageStatePlugin {
     }
 
     public function ajax_save_page_status() {
-        check_ajax_referer('page_state_nonce', 'nonce');
+        check_ajax_referer('dtps_nonce', 'nonce');
 
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
         $status  = isset($_POST['status']) ? $this->sanitize_status(wp_unslash($_POST['status'])) : '';
 
         if (!$post_id || get_post_type($post_id) !== 'page') {
-            wp_send_json_error(['message' => __('Invalid page ID', 'suitewp')]);
+            wp_send_json_error(['message' => __('Invalid page ID', 'dev-tools')]);
         }
 
         if (!current_user_can('edit_page', $post_id)) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'suitewp')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'dev-tools')]);
         }
 
         update_post_meta($post_id, 'page_status', $status);
-        wp_send_json_success(['message' => __('Status saved successfully', 'suitewp')]);
+        wp_send_json_success(['message' => __('Status saved successfully', 'dev-tools')]);
     }
 
     public function ajax_save_page_notes() {
-        check_ajax_referer('page_state_nonce', 'nonce');
+        check_ajax_referer('dtps_nonce', 'nonce');
 
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
         $notes   = isset($_POST['notes']) ? sanitize_textarea_field(wp_unslash($_POST['notes'])) : '';
 
         if (!$post_id || get_post_type($post_id) !== 'page') {
-            wp_send_json_error(['message' => __('Invalid page ID', 'suitewp')]);
+            wp_send_json_error(['message' => __('Invalid page ID', 'dev-tools')]);
         }
 
         if (!current_user_can('edit_page', $post_id)) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'suitewp')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'dev-tools')]);
         }
 
         update_post_meta($post_id, 'page_notes', $notes);
-        wp_send_json_success(['message' => __('Notes saved successfully', 'suitewp')]);
+        wp_send_json_success(['message' => __('Notes saved successfully', 'dev-tools')]);
     }
 
     public function ajax_save_page_responsive() {
-        check_ajax_referer('page_state_nonce', 'nonce');
+        check_ajax_referer('dtps_nonce', 'nonce');
 
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
         $device  = isset($_POST['device']) ? sanitize_text_field(wp_unslash($_POST['device'])) : '';
         $checked = isset($_POST['checked']) ? rest_sanitize_boolean(wp_unslash($_POST['checked'])) : false;
 
         if (!$post_id || get_post_type($post_id) !== 'page') {
-            wp_send_json_error(['message' => __('Invalid page ID', 'suitewp')]);
+            wp_send_json_error(['message' => __('Invalid page ID', 'dev-tools')]);
         }
 
         if (!current_user_can('edit_page', $post_id)) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'suitewp')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'dev-tools')]);
         }
 
         $allowed_devices = ['desktop', 'tablet', 'mobile'];
         if (!in_array($device, $allowed_devices, true)) {
-            wp_send_json_error(['message' => __('Invalid device type', 'suitewp')]);
+            wp_send_json_error(['message' => __('Invalid device type', 'dev-tools')]);
         }
 
         update_post_meta($post_id, 'responsive_' . $device, $checked);
-        wp_send_json_success(['message' => __('Responsive status saved successfully', 'suitewp')]);
+        wp_send_json_success(['message' => __('Responsive status saved successfully', 'dev-tools')]);
     }
 }
 
 endif;
 
-if (!defined('SUITEWP_LIFECYCLE_RUN')) {
-    new PageStatePlugin();
+if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
+    new DevToolsPageState();
 }

@@ -4,11 +4,14 @@ import './style.scss';
 
 /** Mount the React overlay into a dedicated root appended to <body>. */
 function mount() {
-	if ( ! window.wpCommentPins || document.getElementById( 'wpcp-root' ) ) {
+	if (
+		! window.devToolsCommentPins ||
+		document.getElementById( 'dtcp-root' )
+	) {
 		return;
 	}
 	const root = document.createElement( 'div' );
-	root.id = 'wpcp-root';
+	root.id = 'dtcp-root';
 	document.body.appendChild( root );
 	createRoot( root ).render( <App /> );
 }

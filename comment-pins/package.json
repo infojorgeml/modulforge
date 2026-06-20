@@ -1,8 +1,8 @@
 {
-  "name": "wp-comment-pins",
+  "name": "dev-tools-comment-pins",
   "version": "2.2.0",
   "private": true,
-  "description": "Visual comment pins for WordPress (SuiteWP module).",
+  "description": "Visual comment pins for WordPress (DevTools module).",
   "author": "Jorge ML",
   "license": "GPL-2.0-or-later",
   "scripts": {

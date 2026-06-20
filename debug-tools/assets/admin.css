@@ -1,6 +1,6 @@
-/* SuiteWP Debug & Logs — admin page styles */
+/* DevTools Debug & Logs — admin page styles */
 
-.suitewp-debug-grid {
+.devtools-debug-grid {
 	display: grid;
 	grid-template-columns: minmax(300px, 360px) 1fr;
 	gap: 20px;
@@ -9,24 +9,24 @@
 }
 
 @media screen and (max-width: 960px) {
-	.suitewp-debug-grid {
+	.devtools-debug-grid {
 		grid-template-columns: 1fr;
 	}
 }
 
-.suitewp-debug-card {
+.devtools-debug-card {
 	background: #fff;
 	border: 1px solid #c3c4c7;
 	border-radius: 6px;
 	padding: 16px 20px;
 }
 
-.suitewp-debug-card h2 {
+.devtools-debug-card h2 {
 	margin-top: 0;
 }
 
 /* Settings */
-.suitewp-debug-toggle {
+.devtools-debug-toggle {
 	display: flex;
 	align-items: flex-start;
 	gap: 8px;
@@ -35,28 +35,28 @@
 	line-height: 1.5;
 }
 
-.suitewp-debug-toggle.is-master {
+.devtools-debug-toggle.is-master {
 	font-size: 14px;
 	font-weight: 600;
 }
 
-.suitewp-debug-toggle code {
+.devtools-debug-toggle code {
 	font-size: 12px;
 }
 
-.suitewp-debug-sub {
+.devtools-debug-sub {
 	margin: 8px 0 8px 6px;
 	padding-left: 14px;
 	border-left: 2px solid #e0e0e0;
 }
 
-.suitewp-debug-manual textarea {
+.devtools-debug-manual textarea {
 	width: 100%;
 	font-family: Menlo, Consolas, monospace;
 	font-size: 12px;
 }
 
-.suitewp-debug-runtime {
+.devtools-debug-runtime {
 	margin: 12px 0 0;
 	padding: 8px 12px;
 	border-radius: 4px;
@@ -65,14 +65,14 @@
 	color: #50575e;
 }
 
-.suitewp-debug-runtime[data-active="1"] {
+.devtools-debug-runtime[data-active="1"] {
 	background: #e7f6ee;
 	color: #0f7b4f;
 	font-weight: 600;
 }
 
 /* Viewer */
-.suitewp-debug-toolbar {
+.devtools-debug-toolbar {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 10px 16px;
@@ -81,40 +81,40 @@
 	margin-bottom: 10px;
 }
 
-.suitewp-debug-filters {
+.devtools-debug-filters {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 4px 12px;
 }
 
-.suitewp-debug-filters label {
+.devtools-debug-filters label {
 	font-size: 12px;
 	white-space: nowrap;
 }
 
-.suitewp-debug-tools {
+.devtools-debug-tools {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	gap: 6px;
 }
 
-.suitewp-debug-tools input[type="search"] {
+.devtools-debug-tools input[type="search"] {
 	min-width: 160px;
 }
 
-.suitewp-debug-auto {
+.devtools-debug-auto {
 	font-size: 12px;
 	white-space: nowrap;
 }
 
-.suitewp-debug-metabar {
+.devtools-debug-metabar {
 	margin-bottom: 6px;
 	font-size: 12px;
 	color: #787c82;
 }
 
-.suitewp-debug-log {
+.devtools-debug-log {
 	max-height: 60vh;
 	overflow: auto;
 	padding: 8px;
@@ -125,7 +125,7 @@
 	line-height: 1.5;
 }
 
-.suitewp-debug-entry {
+.devtools-debug-entry {
 	white-space: pre-wrap;
 	word-break: break-word;
 	padding: 4px 8px 4px 10px;
@@ -136,31 +136,31 @@
 	background: rgba(255, 255, 255, 0.03);
 }
 
-.suitewp-debug-entry.lvl-fatal {
+.devtools-debug-entry.lvl-fatal {
 	border-left-color: #ff6b6b;
 	background: rgba(255, 107, 107, 0.12);
 }
 
-.suitewp-debug-entry.lvl-error {
+.devtools-debug-entry.lvl-error {
 	border-left-color: #ff924d;
 	background: rgba(255, 146, 77, 0.1);
 }
 
-.suitewp-debug-entry.lvl-warning {
+.devtools-debug-entry.lvl-warning {
 	border-left-color: #f0b849;
 	background: rgba(240, 184, 73, 0.1);
 }
 
-.suitewp-debug-entry.lvl-notice {
+.devtools-debug-entry.lvl-notice {
 	border-left-color: #4fa3e3;
 }
 
-.suitewp-debug-entry.lvl-deprecated {
+.devtools-debug-entry.lvl-deprecated {
 	border-left-color: #9aa0a6;
 	color: #b9bcc0;
 }
 
-.suitewp-debug-empty {
+.devtools-debug-empty {
 	padding: 24px 8px;
 	color: #9aa0a6;
 	text-align: center;
