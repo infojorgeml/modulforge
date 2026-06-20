@@ -5,11 +5,12 @@ import {
 	useMemo,
 	Fragment,
 } from '@wordpress/element';
-import { fetchPins, createPin, deletePin } from './api';
-import { anchorFromPoint, isPluginNode } from './anchor';
+import { fetchPins, createPin, deletePin, resolvePin } from './api';
+import { anchorFromPoint, isPluginNode, resolveAnchor } from './anchor';
 import { t } from './util';
 import CommentPin from './components/CommentPin';
-import CommentPopover from './components/CommentPopover';
+import CommentThread from './components/CommentThread';
+import CommentPanel from './components/CommentPanel';
 import CreateForm from './components/CreateForm';
 
 const cfg = window.wpCommentPins || {};
@@ -21,6 +22,9 @@ export default function App() {
 	const [ draft, setDraft ] = useState( null );
 	const [ activeId, setActiveId ] = useState( null );
 	const [ tick, setTick ] = useState( 0 );
+	const [ panelOpen, setPanelOpen ] = useState( false );
+	const [ filter, setFilter ] = useState( 'all' );
+	const [ showResolved, setShowResolved ] = useState( false );
 
 	// Load existing pins for this URL once.
 	useEffect( () => {
@@ -58,11 +62,11 @@ export default function App() {
 		if ( ! active ) {
 			setDraft( null );
 			setActiveId( null );
+			setPanelOpen( false );
 		}
 	}, [ active ] );
 
-	// Recompute pin positions when the layout changes (not on scroll — absolute
-	// page coordinates already scroll with the document).
+	// Recompute pin positions when the layout changes.
 	useEffect( () => {
 		const bump = () => setTick( ( n ) => n + 1 );
 		window.addEventListener( 'resize', bump );
@@ -143,6 +147,10 @@ export default function App() {
 								display_name: t( 'you' ),
 								created_at: res.data.created_at,
 								can_delete: true,
+								status: 'open',
+								reply_count: 0,
+								is_mine: true,
+								resolved_by_name: null,
 							},
 						] );
 					} else {
@@ -178,10 +186,79 @@ export default function App() {
 			.catch( () => window.alert( t( 'connect_error' ) ) );
 	}, [] );
 
+	const handleResolve = useCallback( ( id, resolved ) => {
+		resolvePin( id, resolved )
+			.then( ( res ) => {
+				if ( res && res.success ) {
+					setPins( ( prev ) =>
+						prev.map( ( p ) =>
+							String( p.id ) === String( id )
+								? {
+										...p,
+										status: res.data.status,
+										resolved_by_name:
+											res.data.resolved_by_name,
+								  }
+								: p
+						)
+					);
+				} else {
+					window.alert(
+						( res && res.data && res.data.message ) ||
+							t( 'save_error' )
+					);
+				}
+			} )
+			.catch( () => window.alert( t( 'connect_error' ) ) );
+	}, [] );
+
+	const handleReplyCountChange = useCallback( ( id, delta ) => {
+		setPins( ( prev ) =>
+			prev.map( ( p ) =>
+				String( p.id ) === String( id )
+					? {
+							...p,
+							reply_count: Math.max(
+								0,
+								( p.reply_count || 0 ) + delta
+							),
+					  }
+					: p
+			)
+		);
+	}, [] );
+
+	const jumpToPin = useCallback( ( pin ) => {
+		const el = resolveAnchor( pin.anchor_selector );
+		if ( el && el.scrollIntoView ) {
+			el.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+		}
+		setDraft( null );
+		setActiveId( pin.id );
+	}, [] );
+
 	const activePin = useMemo(
 		() =>
 			pins.find( ( p ) => String( p.id ) === String( activeId ) ) || null,
 		[ pins, activeId ]
+	);
+
+	// Resolved pins are hidden on the page unless "show resolved" is on or the
+	// pin is currently open.
+	const visiblePins = useMemo(
+		() =>
+			pins.filter(
+				( p ) =>
+					p.status !== 'resolved' ||
+					showResolved ||
+					String( p.id ) === String( activeId )
+			),
+		[ pins, showResolved, activeId ]
+	);
+
+	const openCount = useMemo(
+		() => pins.filter( ( p ) => p.status !== 'resolved' ).length,
+		[ pins ]
 	);
 
 	if ( ! active ) {
@@ -192,7 +269,7 @@ export default function App() {
 		<Fragment>
 			<div className="wpcp-overlay" />
 
-			{ pins.map( ( pin ) => (
+			{ visiblePins.map( ( pin ) => (
 				<CommentPin
 					key={ pin.id }
 					pin={ pin }
@@ -206,11 +283,14 @@ export default function App() {
 			) ) }
 
 			{ activePin && (
-				<CommentPopover
+				<CommentThread
+					key={ activePin.id }
 					pin={ activePin }
 					tick={ tick }
 					onClose={ () => setActiveId( null ) }
 					onDelete={ handleDelete }
+					onResolve={ handleResolve }
+					onReplyCountChange={ handleReplyCountChange }
 				/>
 			) }
 
@@ -230,6 +310,48 @@ export default function App() {
 					/>
 				</Fragment>
 			) }
+
+			{ panelOpen && (
+				<CommentPanel
+					pins={ pins }
+					filter={ filter }
+					onFilter={ setFilter }
+					showResolved={ showResolved }
+					onToggleResolved={ setShowResolved }
+					onJump={ jumpToPin }
+					onClose={ () => setPanelOpen( false ) }
+				/>
+			) }
+
+			<button
+				type="button"
+				className={
+					'wpcp-panel-toggle' + ( panelOpen ? ' is-open' : '' )
+				}
+				onClick={ () => setPanelOpen( ( o ) => ! o ) }
+				aria-label={
+					panelOpen ? t( 'panel_close' ) : t( 'panel_open' )
+				}
+			>
+				<svg
+					width="18"
+					height="18"
+					viewBox="0 0 18 18"
+					aria-hidden="true"
+				>
+					<path
+						d="M3 5h12M3 9h12M3 13h7"
+						stroke="currentColor"
+						strokeWidth="1.6"
+						strokeLinecap="round"
+					/>
+				</svg>
+				{ openCount > 0 && (
+					<span className="wpcp-panel-toggle-count">
+						{ openCount }
+					</span>
+				) }
+			</button>
 		</Fragment>
 	);
 }

@@ -98,3 +98,11 @@ export function avatarColor( name ) {
 	}
 	return AVATAR_COLORS[ hash % AVATAR_COLORS.length ];
 }
+
+/** Truncated single-line snippet for list views. */
+export function snippet( text, max = 80 ) {
+	const clean = String( text || '' )
+		.replace( /\s+/g, ' ' )
+		.trim();
+	return clean.length > max ? clean.slice( 0, max - 1 ) + '…' : clean;
+}

@@ -178,7 +178,7 @@ final class SuiteWP {
                 'description' => __('Visual comment pins system for WordPress. Add visual comments anywhere on a page.', 'suitewp'),
                 'file'        => $base_path . 'wp-comment/wp-comment-pins.php',
                 'class'       => 'WPCommentPins',
-                'version'     => '2.1.0',
+                'version'     => '2.2.0',
                 'icon'        => 'dashicons-admin-comments',
             ),
         );

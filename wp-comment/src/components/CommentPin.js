@@ -3,9 +3,10 @@ import { computePinPosition } from '../anchor';
 import { initials, avatarColor } from '../util';
 
 /**
- * A single pin, positioned from its DOM anchor. Shows the author's initials and
- * is tinted by author. The `tick` prop changes on layout events to force a
- * position recompute. Orphaned pins (anchor gone) render nothing.
+ * A single pin, positioned from its DOM anchor. Open pins show the author's
+ * initials and are tinted by author; resolved pins show a check and render
+ * muted. The `tick` prop changes on layout events to force a position
+ * recompute. Orphaned pins (anchor gone) render nothing.
  */
 export default function CommentPin( { pin, tick, isActive, onOpen } ) {
 	const pos = useMemo( () => computePinPosition( pin ), [ pin, tick ] );
@@ -14,10 +15,16 @@ export default function CommentPin( { pin, tick, isActive, onOpen } ) {
 		return null;
 	}
 
+	const resolved = pin.status === 'resolved';
+
 	return (
 		<button
 			type="button"
-			className={ 'wpcp-pin' + ( isActive ? ' is-active' : '' ) }
+			className={
+				'wpcp-pin' +
+				( isActive ? ' is-active' : '' ) +
+				( resolved ? ' is-resolved' : '' )
+			}
 			style={ {
 				left: pos.x + 'px',
 				top: pos.y + 'px',
@@ -30,9 +37,28 @@ export default function CommentPin( { pin, tick, isActive, onOpen } ) {
 			} }
 			aria-label={ pin.comment_text || '' }
 		>
-			<span className="wpcp-pin-initial">
-				{ initials( pin.display_name ) }
-			</span>
+			{ resolved ? (
+				<svg
+					className="wpcp-pin-check"
+					width="14"
+					height="14"
+					viewBox="0 0 14 14"
+					aria-hidden="true"
+				>
+					<path
+						d="M3 7.4l2.6 2.6L11 4.4"
+						stroke="currentColor"
+						strokeWidth="1.8"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						fill="none"
+					/>
+				</svg>
+			) : (
+				<span className="wpcp-pin-initial">
+					{ initials( pin.display_name ) }
+				</span>
+			) }
 		</button>
 	);
 }

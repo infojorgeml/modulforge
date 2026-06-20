@@ -64,7 +64,13 @@ for its dependency list and cache-busting version.
 
 ## Versions
 
-- **v2.1.0** (current)
+- **v2.2.0** (current)
+  - Resolve/reopen comments (collaborative; resolved pins hidden on the page by default)
+  - Side panel listing every comment with filters (all/open/resolved/mine) and jump-to-pin
+  - Flat reply threads on each comment
+  - Schema: `status`/`resolved_at`/`resolved_by` on pins + a `comment_pin_replies` table
+
+- **v2.1.0**
   - Minimalist redesign (Linear/Notion): per-author tinted pins with initials, a light
     card popover (avatar + name + relative time) and a refined composer. Scoped under
     `#wpcp-root` so styles never leak into the theme.

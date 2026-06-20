@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WP Comment Pins
  * Description: Visual comment pins system for WordPress (React front end).
- * Version: 2.1.0
+ * Version: 2.2.0
  * Author: Jorge ML
  */
 
@@ -15,40 +15,51 @@ if (!class_exists('WPCommentPins')) :
 
 class WPCommentPins {
 
-    const VERSION             = '2.1.0';
-    const DB_VERSION          = '2.0.0';
+    const VERSION             = '2.2.0';
+    const DB_VERSION          = '2.1.0';
     const DB_VERSION_OPTION   = 'wpcp_db_version';
     const NONCE_ACTION        = 'comment_pins_nonce';
     const MAX_COMMENT_LENGTH  = 2000;
     const MAX_SELECTOR_LENGTH = 1000;
 
     /**
-     * Fully-qualified table name.
+     * Fully-qualified table names.
      *
      * @var string
      */
     private $table_name;
+    private $replies_table;
 
     public function __construct() {
-        $this->table_name = self::table_name();
+        $this->table_name    = self::table_name();
+        $this->replies_table = self::replies_table_name();
 
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_action('wp_ajax_save_comment_pin', array($this, 'save_comment_pin'));
         add_action('wp_ajax_get_comment_pins', array($this, 'get_comment_pins'));
         add_action('wp_ajax_delete_comment_pin', array($this, 'delete_comment_pin'));
+        add_action('wp_ajax_resolve_comment_pin', array($this, 'resolve_comment_pin'));
+        add_action('wp_ajax_get_comment_replies', array($this, 'get_comment_replies'));
+        add_action('wp_ajax_add_comment_reply', array($this, 'add_comment_reply'));
+        add_action('wp_ajax_delete_comment_reply', array($this, 'delete_comment_reply'));
         add_action('admin_bar_menu', array($this, 'add_admin_bar_button'), 100);
     }
 
-    /**
-     * Fully-qualified table name. Static so lifecycle methods need no instance.
-     */
+    /** Pins table. Static so lifecycle methods need no instance. */
     private static function table_name(): string {
         global $wpdb;
         return $wpdb->prefix . 'comment_pins';
     }
 
+    /** Replies table. */
+    private static function replies_table_name(): string {
+        global $wpdb;
+        return $wpdb->prefix . 'comment_pin_replies';
+    }
+
     /**
-     * Capability required to create, read or delete comment pins. Filterable.
+     * Capability required to create, read, resolve or reply to comment pins.
+     * Filterable. Deleting others' content additionally requires edit_others_posts.
      */
     private function get_required_capability(): string {
         return apply_filters('wp_comment_pins_capability', 'edit_posts');
@@ -68,18 +79,20 @@ class WPCommentPins {
      */
     public static function uninstall(): void {
         global $wpdb;
-        $table = self::table_name();
-        $wpdb->query("DROP TABLE IF EXISTS {$table}"); // phpcs:ignore WordPress.DB
+        $pins    = self::table_name();
+        $replies = self::replies_table_name();
+        $wpdb->query("DROP TABLE IF EXISTS {$replies}"); // phpcs:ignore WordPress.DB
+        $wpdb->query("DROP TABLE IF EXISTS {$pins}");    // phpcs:ignore WordPress.DB
         delete_option(self::DB_VERSION_OPTION);
     }
 
     /**
      * Create/upgrade the schema only when the stored version is behind.
      *
-     * 2.0.0 replaces the old absolute-pixel position model (x_position,
-     * y_position) with a DOM-anchored model (anchor_selector + offset_x/y).
-     * The previous schema holds no production data, so the table is recreated
-     * cleanly on upgrade.
+     * 2.0.0 introduced the DOM-anchored model. 2.1.0 adds resolve state
+     * (status/resolved_at/resolved_by) to pins and a replies table. The upgrade
+     * is additive (dbDelta adds the columns and the new table); the legacy drop
+     * only applies to pre-2.0.0 installs.
      */
     public static function maybe_install_schema(): void {
         $installed = (string) get_option(self::DB_VERSION_OPTION, '0');
@@ -88,16 +101,17 @@ class WPCommentPins {
         }
 
         global $wpdb;
-        $table = self::table_name();
+        $table   = self::table_name();
+        $replies = self::replies_table_name();
 
-        // Drop the legacy table when migrating from the pre-anchor schema.
+        // Drop the legacy table only when migrating from the pre-anchor schema.
         if ('0' !== $installed && version_compare($installed, '2.0.0', '<')) {
             $wpdb->query("DROP TABLE IF EXISTS {$table}"); // phpcs:ignore WordPress.DB
         }
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE {$table} (
+        $sql_pins = "CREATE TABLE {$table} (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             post_url varchar(255) NOT NULL,
             user_id bigint(20) NOT NULL,
@@ -105,14 +119,29 @@ class WPCommentPins {
             offset_x decimal(7,3) NOT NULL DEFAULT 0,
             offset_y decimal(7,3) NOT NULL DEFAULT 0,
             comment_text text NOT NULL,
+            status varchar(20) NOT NULL DEFAULT 'open',
+            resolved_at datetime NULL,
+            resolved_by bigint(20) NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (id),
             KEY post_url (post_url),
-            KEY user_id (user_id)
+            KEY user_id (user_id),
+            KEY status (status)
+        ) {$charset_collate};";
+
+        $sql_replies = "CREATE TABLE {$replies} (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            pin_id mediumint(9) NOT NULL,
+            user_id bigint(20) NOT NULL,
+            comment_text text NOT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id),
+            KEY pin_id (pin_id)
         ) {$charset_collate};";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql);
+        dbDelta($sql_pins);
+        dbDelta($sql_replies);
 
         update_option(self::DB_VERSION_OPTION, self::DB_VERSION);
     }
@@ -161,17 +190,40 @@ class WPCommentPins {
             'nonce'       => wp_create_nonce(self::NONCE_ACTION),
             'current_url' => self::current_url(),
             'i18n'        => array(
-                'placeholder'    => __('Write your comment here...', 'suitewp'),
-                'cancel'         => __('Cancel', 'suitewp'),
-                'save'           => __('Save', 'suitewp'),
-                'delete'         => __('Delete', 'suitewp'),
-                'close'          => __('Close', 'suitewp'),
-                'you'            => __('You', 'suitewp'),
-                'user'           => __('User', 'suitewp'),
-                'save_error'     => __('Error saving comment', 'suitewp'),
-                'delete_error'   => __('Error deleting comment', 'suitewp'),
-                'connect_error'  => __('Connection error', 'suitewp'),
-                'confirm_delete' => __('Delete this comment?', 'suitewp'),
+                'placeholder'          => __('Write your comment here...', 'suitewp'),
+                'cancel'               => __('Cancel', 'suitewp'),
+                'save'                 => __('Save', 'suitewp'),
+                'delete'               => __('Delete', 'suitewp'),
+                'close'                => __('Close', 'suitewp'),
+                'you'                  => __('You', 'suitewp'),
+                'user'                 => __('User', 'suitewp'),
+                'save_error'           => __('Error saving comment', 'suitewp'),
+                'delete_error'         => __('Error deleting comment', 'suitewp'),
+                'connect_error'        => __('Connection error', 'suitewp'),
+                'confirm_delete'       => __('Delete this comment?', 'suitewp'),
+                'confirm_delete_reply' => __('Delete this reply?', 'suitewp'),
+                'reply'                => __('Reply', 'suitewp'),
+                'reply_placeholder'    => __('Write a reply...', 'suitewp'),
+                'resolve'              => __('Resolve', 'suitewp'),
+                'reopen'               => __('Reopen', 'suitewp'),
+                'resolved'             => __('Resolved', 'suitewp'),
+                'open'                 => __('Open', 'suitewp'),
+                'comments'             => __('Comments', 'suitewp'),
+                'filter_all'           => __('All', 'suitewp'),
+                'filter_open'          => __('Open', 'suitewp'),
+                'filter_resolved'      => __('Resolved', 'suitewp'),
+                'filter_mine'          => __('Mine', 'suitewp'),
+                'show_resolved'        => __('Show resolved on page', 'suitewp'),
+                'no_comments'          => __('No comments on this page yet.', 'suitewp'),
+                'no_match'             => __('Nothing matches this filter.', 'suitewp'),
+                'loading'              => __('Loading…', 'suitewp'),
+                'panel_open'           => __('Open comments panel', 'suitewp'),
+                'panel_close'          => __('Close panel', 'suitewp'),
+                /* translators: %s: user name. */
+                'resolved_by'          => __('Resolved by %s', 'suitewp'),
+                'one_reply'            => __('1 reply', 'suitewp'),
+                /* translators: %d: number of replies. */
+                'many_replies'         => __('%d replies', 'suitewp'),
             ),
         ));
     }
@@ -252,9 +304,10 @@ class WPCommentPins {
                 'offset_x'        => $offset_x,
                 'offset_y'        => $offset_y,
                 'comment_text'    => $comment_text,
+                'status'          => 'open',
                 'created_at'      => $created_at,
             ),
-            array('%s', '%d', '%s', '%f', '%f', '%s', '%s')
+            array('%s', '%d', '%s', '%f', '%f', '%s', '%s', '%s')
         );
 
         if (false === $result) {
@@ -283,26 +336,48 @@ class WPCommentPins {
         $can_edit_others = current_user_can('edit_others_posts');
 
         $pins = $wpdb->get_results($wpdb->prepare(
-            "SELECT cp.id, cp.anchor_selector, cp.offset_x, cp.offset_y, cp.comment_text, cp.created_at, cp.user_id, u.display_name
+            "SELECT cp.id, cp.anchor_selector, cp.offset_x, cp.offset_y, cp.comment_text, cp.created_at,
+                    cp.user_id, cp.status, cp.resolved_at, u.display_name, ru.display_name AS resolved_by_name
              FROM {$this->table_name} cp
              LEFT JOIN {$wpdb->users} u ON cp.user_id = u.ID
+             LEFT JOIN {$wpdb->users} ru ON cp.resolved_by = ru.ID
              WHERE cp.post_url = %s
              ORDER BY cp.created_at ASC",
             $post_url
         ));
 
+        // Reply counts in a single aggregate query (no N+1).
+        $counts = array();
+        $count_rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT r.pin_id AS pin_id, COUNT(*) AS c
+             FROM {$this->replies_table} r
+             JOIN {$this->table_name} cp ON r.pin_id = cp.id
+             WHERE cp.post_url = %s
+             GROUP BY r.pin_id",
+            $post_url
+        ));
+        foreach ((array) $count_rows as $row) {
+            $counts[(int) $row->pin_id] = (int) $row->c;
+        }
+
         $out = array();
         foreach ((array) $pins as $pin) {
+            $id = (int) $pin->id;
             $out[] = array(
-                'id'              => (int) $pin->id,
-                'anchor_selector' => $pin->anchor_selector,
-                'offset_x'        => (float) $pin->offset_x,
-                'offset_y'        => (float) $pin->offset_y,
-                'comment_text'    => $pin->comment_text,
-                'created_at'      => $pin->created_at,
-                'display_name'    => $pin->display_name ? $pin->display_name : __('User', 'suitewp'),
+                'id'               => $id,
+                'anchor_selector'  => $pin->anchor_selector,
+                'offset_x'         => (float) $pin->offset_x,
+                'offset_y'         => (float) $pin->offset_y,
+                'comment_text'     => $pin->comment_text,
+                'created_at'       => $pin->created_at,
+                'display_name'     => $pin->display_name ? $pin->display_name : __('User', 'suitewp'),
+                'status'           => $pin->status ? $pin->status : 'open',
+                'resolved_at'      => $pin->resolved_at,
+                'resolved_by_name' => $pin->resolved_by_name,
+                'reply_count'      => isset($counts[$id]) ? $counts[$id] : 0,
+                'is_mine'          => ((int) $pin->user_id === $current_user),
                 // Boolean only — never expose the raw author id to the client.
-                'can_delete'      => ((int) $pin->user_id === $current_user) || $can_edit_others,
+                'can_delete'       => ((int) $pin->user_id === $current_user) || $can_edit_others,
             );
         }
 
@@ -337,7 +412,175 @@ class WPCommentPins {
             wp_send_json_error(array('message' => __('Error deleting comment.', 'suitewp')), 500);
         }
 
+        // Cascade: remove the pin's replies.
+        $wpdb->delete($this->replies_table, array('pin_id' => $pin_id), array('%d'));
+
         wp_send_json_success(array('id' => $pin_id));
+    }
+
+    /**
+     * Resolve or reopen a pin. Collaborative: any user with the capability may
+     * do it; we record who and when.
+     */
+    public function resolve_comment_pin() {
+        $this->verify_request();
+
+        $pin_id   = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0;
+        $resolved = isset($_POST['resolved']) ? wp_validate_boolean(wp_unslash($_POST['resolved'])) : false;
+        if (!$pin_id) {
+            wp_send_json_error(array('message' => __('Invalid pin.', 'suitewp')), 400);
+        }
+
+        global $wpdb;
+        $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE id = %d", $pin_id));
+        if (null === $exists) {
+            wp_send_json_error(array('message' => __('Pin not found.', 'suitewp')), 404);
+        }
+
+        $current = get_current_user_id();
+        $name    = '';
+
+        if ($resolved) {
+            $result = $wpdb->query($wpdb->prepare(
+                "UPDATE {$this->table_name} SET status = 'resolved', resolved_at = %s, resolved_by = %d WHERE id = %d",
+                current_time('mysql'),
+                $current,
+                $pin_id
+            ));
+            $name = $wpdb->get_var($wpdb->prepare("SELECT display_name FROM {$wpdb->users} WHERE ID = %d", $current));
+        } else {
+            $result = $wpdb->query($wpdb->prepare(
+                "UPDATE {$this->table_name} SET status = 'open', resolved_at = NULL, resolved_by = NULL WHERE id = %d",
+                $pin_id
+            ));
+        }
+
+        if (false === $result) {
+            wp_send_json_error(array('message' => __('Error updating comment.', 'suitewp')), 500);
+        }
+
+        wp_send_json_success(array(
+            'id'               => $pin_id,
+            'status'           => $resolved ? 'resolved' : 'open',
+            'resolved_by_name' => $name ? $name : null,
+        ));
+    }
+
+    public function get_comment_replies() {
+        $this->verify_request();
+
+        $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0;
+        if (!$pin_id) {
+            wp_send_json_error(array('message' => __('Invalid pin.', 'suitewp')), 400);
+        }
+
+        global $wpdb;
+        $current_user    = get_current_user_id();
+        $can_edit_others = current_user_can('edit_others_posts');
+
+        $replies = $wpdb->get_results($wpdb->prepare(
+            "SELECT r.id, r.comment_text, r.created_at, r.user_id, u.display_name
+             FROM {$this->replies_table} r
+             LEFT JOIN {$wpdb->users} u ON r.user_id = u.ID
+             WHERE r.pin_id = %d
+             ORDER BY r.created_at ASC",
+            $pin_id
+        ));
+
+        $out = array();
+        foreach ((array) $replies as $reply) {
+            $out[] = array(
+                'id'           => (int) $reply->id,
+                'comment_text' => $reply->comment_text,
+                'created_at'   => $reply->created_at,
+                'display_name' => $reply->display_name ? $reply->display_name : __('User', 'suitewp'),
+                'can_delete'   => ((int) $reply->user_id === $current_user) || $can_edit_others,
+            );
+        }
+
+        wp_send_json_success($out);
+    }
+
+    public function add_comment_reply() {
+        $this->verify_request();
+
+        $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0;
+        $text   = isset($_POST['comment_text']) ? sanitize_textarea_field(wp_unslash($_POST['comment_text'])) : '';
+
+        if (!$pin_id) {
+            wp_send_json_error(array('message' => __('Invalid pin.', 'suitewp')), 400);
+        }
+        if ('' === $text) {
+            wp_send_json_error(array('message' => __('Comment cannot be empty.', 'suitewp')), 400);
+        }
+        if (mb_strlen($text) > self::MAX_COMMENT_LENGTH) {
+            wp_send_json_error(array('message' => __('Comment is too long.', 'suitewp')), 400);
+        }
+
+        global $wpdb;
+        $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE id = %d", $pin_id));
+        if (null === $exists) {
+            wp_send_json_error(array('message' => __('Pin not found.', 'suitewp')), 404);
+        }
+
+        $current    = get_current_user_id();
+        $created_at = current_time('mysql');
+
+        $result = $wpdb->insert(
+            $this->replies_table,
+            array(
+                'pin_id'       => $pin_id,
+                'user_id'      => $current,
+                'comment_text' => $text,
+                'created_at'   => $created_at,
+            ),
+            array('%d', '%d', '%s', '%s')
+        );
+
+        if (false === $result) {
+            wp_send_json_error(array('message' => __('Error saving comment.', 'suitewp')), 500);
+        }
+
+        $name = $wpdb->get_var($wpdb->prepare("SELECT display_name FROM {$wpdb->users} WHERE ID = %d", $current));
+
+        wp_send_json_success(array(
+            'id'           => (int) $wpdb->insert_id,
+            'pin_id'       => $pin_id,
+            'comment_text' => $text,
+            'created_at'   => $created_at,
+            'display_name' => $name ? $name : __('User', 'suitewp'),
+            'can_delete'   => true,
+        ));
+    }
+
+    public function delete_comment_reply() {
+        $this->verify_request();
+
+        $reply_id = isset($_POST['reply_id']) ? absint(wp_unslash($_POST['reply_id'])) : 0;
+        if (!$reply_id) {
+            wp_send_json_error(array('message' => __('Invalid reply.', 'suitewp')), 400);
+        }
+
+        global $wpdb;
+        $owner = $wpdb->get_var($wpdb->prepare(
+            "SELECT user_id FROM {$this->replies_table} WHERE id = %d",
+            $reply_id
+        ));
+
+        if (null === $owner) {
+            wp_send_json_error(array('message' => __('Reply not found.', 'suitewp')), 404);
+        }
+
+        if ((int) $owner !== get_current_user_id() && !current_user_can('edit_others_posts')) {
+            wp_send_json_error(array('message' => __('You cannot delete this reply.', 'suitewp')), 403);
+        }
+
+        $deleted = $wpdb->delete($this->replies_table, array('id' => $reply_id), array('%d'));
+        if (false === $deleted) {
+            wp_send_json_error(array('message' => __('Error deleting comment.', 'suitewp')), 500);
+        }
+
+        wp_send_json_success(array('id' => $reply_id));
     }
 
     /* --------------------------------------------------------------------- */
