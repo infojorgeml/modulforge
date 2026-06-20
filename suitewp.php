@@ -2,7 +2,7 @@
 /*
 Plugin Name: SuiteWP
 Description: Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins.
-Version: 1.3.0
+Version: 1.4.0
 Author: JorgeML
 */
 
@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
  * Main SuiteWP Plugin Controller.
  */
 final class SuiteWP {
-    private const VERSION       = '1.3.0';
+    private const VERSION       = '1.4.0';
     private const OPTION_KEY     = 'suitewp_active_plugins';
     private const OPTION_DELETE_DATA = 'suitewp_delete_data_on_uninstall';
     private const MENU_SLUG   = 'suitewp';
@@ -180,6 +180,14 @@ final class SuiteWP {
                 'class'       => 'WPCommentPins',
                 'version'     => '2.2.0',
                 'icon'        => 'dashicons-admin-comments',
+            ),
+            'debug-tools'  => array(
+                'name'        => __('Debug & Logs', 'suitewp'),
+                'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'suitewp'),
+                'file'        => $base_path . 'debug-tools/debug-tools.php',
+                'class'       => 'SuiteWPDebugTools',
+                'version'     => '1.0.0',
+                'icon'        => 'dashicons-code',
             ),
         );
 

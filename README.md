@@ -10,6 +10,11 @@ SuiteWP is a WordPress controller plugin that allows you to manage and individua
 - **Performance Optimization**: Only active mini-plugins are loaded
 - **Responsive Design**: Interface adapts to different screen sizes
 
+## 🆕 What's New in 1.4.0
+
+- **New module — Debug & Logs**: toggle `WP_DEBUG` (and `WP_DEBUG_LOG` / `WP_DEBUG_DISPLAY` / `SCRIPT_DEBUG` / `SAVEQUERIES`) from **Tools → Debug & Logs** via safe `wp-config.php` editing with backup/restore, plus a `debug.log` viewer (level filters, search, auto-refresh, clear, download)
+- WP Comment Pins reached **2.2.0**: resolve/reopen, a side panel with filters, and reply threads
+
 ## 🆕 What's New in 1.3.0
 
 - **WP Comment Pins rebuilt in React** (`@wordpress/scripts` / `wp-element`, with a build step)
@@ -41,12 +46,16 @@ Page organization through tabs:
 - Support for multiple post types
 - Visual management from page list
 
-### 3. WP Comment Pins (v2.0.0)
-Visual comment system:
-- Comment pins anywhere on the page
-- Visual comments for feedback
-- Admin bar integration
-- User management
+### 3. WP Comment Pins (v2.2.0)
+Visual feedback system (React):
+- DOM-anchored pins that stay in place across screens and scroll
+- Resolve/reopen and a side panel with filters (all/open/resolved/mine)
+- Reply threads on each comment
+
+### 4. Debug & Logs (v1.0.0)
+Developer debugging from the admin:
+- Toggle WP_DEBUG and related constants via safe wp-config editing (backup + restore)
+- debug.log viewer with level filters, search, auto-refresh, clear and download
 
 ## 🛠️ Installation
 
@@ -82,6 +91,7 @@ SuiteWP/
 ├── page-state/              # State management mini-plugin
 ├── tabs/                    # Tab organization mini-plugin
 ├── wp-comment/              # Visual comments mini-plugin
+├── debug-tools/             # Debug toggles + log viewer
 └── README.md                # This file
 ```
 
@@ -154,5 +164,5 @@ GPL v2 or later - https://www.gnu.org/licenses/gpl-2.0.html
 ---
 
 **Author**: JorgeML  
-**Version**: 1.3.0  
+**Version**: 1.4.0  
 **Last updated**: 2026
