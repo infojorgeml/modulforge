@@ -1,0 +1,216 @@
+/**
+ * SuiteWP Admin JavaScript
+ * Handles switch functionality and AJAX calls
+ */
+
+(function($) {
+    'use strict';
+
+    const SELECTORS = {
+        card: '.suitewp-plugin-card',
+        checkbox: '.suitewp-plugin-checkbox',
+        notice: '.suitewp-notice'
+    };
+
+    const ADDITIONAL_CSS = `
+        .suitewp-plugin-card.success-flash {
+            border-color: #00a32a !important;
+            box-shadow: 0 0 10px rgba(0, 163, 42, 0.3) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .suitewp-plugin-card.error-flash {
+            border-color: #dc3232 !important;
+            box-shadow: 0 0 10px rgba(220, 50, 50, 0.3) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .suitewp-notice {
+            animation: suitewp-slide-down 0.3s ease-out;
+        }
+
+        @keyframes suitewp-slide-down {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    `;
+
+    const SuiteWPAdmin = {
+        noticeTimer: null,
+
+        init() {
+            this.appendAdditionalStyles();
+            this.decorateCards();
+            this.bindEvents();
+        },
+
+        bindEvents() {
+            $(document).on('change', SELECTORS.checkbox, (event) => this.handleToggle(event));
+            $(document).on('change', '#suitewp-delete-data', (event) => this.handleUninstallPref(event));
+        },
+
+        handleUninstallPref(event) {
+            const enabled = $(event.currentTarget).is(':checked');
+
+            $.ajax({
+                url: suitewp_ajax.ajax_url,
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'suitewp_set_uninstall_pref',
+                    nonce: suitewp_ajax.nonce,
+                    enabled: enabled ? '1' : '0'
+                }
+            }).done((response) => {
+                if (response && response.success) {
+                    this.renderNotice(response.data.message, 'success');
+                } else {
+                    const message = response && response.data && response.data.message
+                        ? response.data.message
+                        : suitewp_ajax.strings.generic_error;
+                    this.renderNotice(message, 'error');
+                }
+            }).fail(() => {
+                this.renderNotice(suitewp_ajax.strings.generic_error, 'error');
+            });
+        },
+
+        decorateCards() {
+            $(SELECTORS.card).each(function() {
+                const $card = $(this);
+                const pluginName = $card.find('h3').text();
+                $card.attr('title', SuiteWPAdmin.formatToggleHint(pluginName));
+            });
+        },
+
+        handleToggle(event) {
+            const $checkbox = $(event.currentTarget);
+            const $card = $checkbox.closest(SELECTORS.card);
+            const pluginKey = $checkbox.data('plugin');
+            const desiredState = $checkbox.is(':checked');
+
+            if ($card.hasClass('loading')) {
+                event.preventDefault();
+                return false;
+            }
+
+            this.setLoadingState($card, true);
+
+            $.ajax({
+                url: suitewp_ajax.ajax_url,
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'suitewp_toggle_plugin',
+                    plugin: pluginKey,
+                    nonce: suitewp_ajax.nonce,
+                    should_activate: desiredState ? '1' : '0'
+                }
+            }).done((response) => {
+                if (response && response.success && response.data) {
+                    this.updateCardState($card, response.data.status, response.data.statusLabel);
+                    this.renderNotice(response.data.message, 'success');
+                } else {
+                    const message = response && response.data && response.data.message
+                        ? response.data.message
+                        : suitewp_ajax.strings.generic_error;
+                    this.handleError($card, $checkbox, message, desiredState);
+                }
+            }).fail((jqXHR) => {
+                const message = jqXHR && jqXHR.responseJSON && jqXHR.responseJSON.data && jqXHR.responseJSON.data.message
+                    ? jqXHR.responseJSON.data.message
+                    : suitewp_ajax.strings.generic_error;
+                this.handleError($card, $checkbox, message, desiredState);
+            }).always(() => {
+                this.setLoadingState($card, false);
+            });
+        },
+
+        setLoadingState($card, isLoading) {
+            const $checkbox = $card.find(SELECTORS.checkbox);
+            $card.toggleClass('loading', isLoading);
+            $checkbox.prop('disabled', isLoading);
+        },
+
+        updateCardState($card, status, statusLabel) {
+            const isActive = status === 'active';
+            const label = statusLabel || (isActive ? suitewp_ajax.strings.status_active : suitewp_ajax.strings.status_inactive);
+
+            $card.toggleClass('active', isActive).toggleClass('inactive', !isActive);
+            $card.find(SELECTORS.checkbox).prop('checked', isActive);
+            $card.find('.suitewp-status-indicator')
+                .toggleClass('active', isActive)
+                .toggleClass('inactive', !isActive)
+                .text(label);
+
+            $card.removeClass('error-flash');
+            $card.addClass('success-flash');
+            window.setTimeout(() => $card.removeClass('success-flash'), 1000);
+        },
+
+        handleError($card, $checkbox, message, desiredState) {
+            $checkbox.prop('checked', !desiredState);
+            $card.removeClass('success-flash');
+            $card.addClass('error-flash');
+            window.setTimeout(() => $card.removeClass('error-flash'), 1000);
+            this.renderNotice(message, 'error');
+        },
+
+        renderNotice(message, type) {
+            if (this.noticeTimer) {
+                window.clearTimeout(this.noticeTimer);
+                this.noticeTimer = null;
+            }
+
+            $(SELECTORS.notice).remove();
+
+            const $notice = $('<div />', {
+                class: `suitewp-notice ${type}`,
+                text: message
+            });
+
+            $('.wrap h1').after($notice);
+
+            this.noticeTimer = window.setTimeout(() => {
+                $notice.fadeOut(() => {
+                    $notice.remove();
+                    this.noticeTimer = null;
+                });
+            }, 5000);
+
+            $('html, body').animate({
+                scrollTop: $notice.offset().top - 50
+            }, 300);
+        },
+
+        appendAdditionalStyles() {
+            if ($('#suitewp-admin-effects').length) {
+                return;
+            }
+
+            $('<style>', {
+                id: 'suitewp-admin-effects',
+                text: ADDITIONAL_CSS
+            }).appendTo('head');
+        },
+
+        formatToggleHint(pluginName) {
+            if (!suitewp_ajax.strings.toggle_hint) {
+                return pluginName;
+            }
+
+            return suitewp_ajax.strings.toggle_hint.replace('%s', pluginName);
+        }
+    };
+
+    $(document).ready(() => {
+        SuiteWPAdmin.init();
+        window.SuiteWPAdmin = SuiteWPAdmin;
+    });
+})(jQuery);

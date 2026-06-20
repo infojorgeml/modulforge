@@ -1,0 +1,580 @@
+/* Page Tabs Organizer - Admin styles */
+
+.pto-admin-container {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.pto-tabs-section,
+.pto-pages-section {
+    flex: 1;
+}
+
+.pto-tabs-section {
+    max-width: 500px;
+}
+
+.pto-pages-section {
+    min-width: 600px;
+}
+
+/* Tab form */
+.pto-add-tab-form {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.pto-add-tab-form h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1d2327;
+}
+
+.pto-add-tab-form .form-table th {
+    width: 120px;
+    padding: 15px 10px 15px 0;
+}
+
+.pto-add-tab-form .form-table td {
+    padding: 15px 0;
+}
+
+.pto-add-tab-form .regular-text {
+    width: 100%;
+    max-width: 300px;
+}
+
+.pto-add-tab-form textarea.regular-text {
+    height: 80px;
+    resize: vertical;
+}
+
+.pto-add-tab-form input[type="color"] {
+    width: 50px;
+    height: 30px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.pto-add-tab-form .submit {
+    margin: 10px 0 0 0;
+    padding: 0;
+}
+
+.pto-add-tab-form .button {
+    position: relative;
+}
+
+.pto-add-tab-form .spinner {
+    display: none;
+    float: none;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+}
+
+.pto-add-tab-form .button.loading .spinner {
+    display: block;
+    visibility: visible;
+}
+
+.pto-add-tab-form .button.loading .button-text {
+    opacity: 0.6;
+}
+
+/* Tab list */
+.pto-tabs-list {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.pto-tabs-list h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1d2327;
+}
+
+.pto-tabs-list .wp-list-table {
+    border: none;
+    box-shadow: none;
+}
+
+.pto-tabs-list .color-preview {
+    border: 1px solid #c3c4c7;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.pto-tabs-list .button-small {
+    margin-right: 5px;
+}
+
+/* Pages section */
+.pto-pages-section {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.pto-pages-section h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #1d2327;
+}
+
+.pto-pages-assignment .wp-list-table {
+    border: none;
+    box-shadow: none;
+}
+
+.page-tab-select {
+    min-width: 150px;
+    margin-bottom: 5px;
+}
+
+.current-tab {
+    font-size: 12px;
+    padding: 2px 8px;
+    background: rgba(0, 115, 170, 0.1);
+    border-radius: 3px;
+    display: inline-block;
+}
+
+/* Tabs on the Pages screen - native WordPress style */
+.pto-tab-link {
+    line-height: 2;
+    padding: .2em;
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+}
+
+.pto-tab-link:hover {
+    text-decoration: none;
+}
+
+.pto-tab-link.current {
+    font-weight: 600;
+}
+
+.pto-tab-link .count {
+    color: #50575e;
+    font-weight: 400;
+}
+
+.pto-tab-link.current .count {
+    color: #50575e;
+    font-weight: 400;
+}
+
+/* Tabs without color indicators - clean design */
+
+/* Create New Tab button */
+#pto-create-new-tab {
+    margin-left: 10px;
+    font-weight: 600;
+}
+
+/* Tab filter */
+select[name="tab_filter"] {
+    margin-left: 10px;
+    min-width: 150px;
+}
+
+/* Notification messages */
+#pto-messages {
+    position: fixed;
+    top: 32px;
+    right: 20px;
+    z-index: 10000;
+    max-width: 400px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#pto-messages.notice-success {
+    border-left-color: #00a32a;
+}
+
+#pto-messages.notice-error {
+    border-left-color: #d63638;
+}
+
+#pto-messages.show {
+    display: block !important;
+    animation: slideInRight 0.3s ease-out;
+}
+
+#pto-messages.hide {
+    animation: slideOutRight 0.3s ease-in;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+/* Loading states */
+.button.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+tr.updating {
+    opacity: 0.6;
+}
+
+/* Responsive */
+@media screen and (max-width: 1200px) {
+    .pto-admin-container {
+        flex-direction: column;
+    }
+
+    .pto-tabs-section {
+        max-width: none;
+    }
+
+    .pto-pages-section {
+        min-width: auto;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .pto-admin-container {
+        gap: 20px;
+    }
+
+    .pto-add-tab-form,
+    .pto-tabs-list,
+    .pto-pages-section {
+        padding: 15px;
+    }
+
+    .pto-add-tab-form .form-table th,
+    .pto-add-tab-form .form-table td {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .pto-add-tab-form .form-table th {
+        padding-bottom: 5px;
+    }
+
+    .page-tab-select {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+/* Modal styles */
+.pto-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100000;
+}
+
+.pto-modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.pto-modal-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 3px 30px rgba(0, 0, 0, 0.3);
+    min-width: 500px;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.pto-modal-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.pto-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 0;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.pto-modal-header h2 {
+    margin: 0 0 20px 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.pto-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.pto-modal-close:hover {
+    background: #f0f0f0;
+    color: #000;
+}
+
+.pto-modal-body {
+    padding: 0 24px;
+    flex: 1;
+}
+
+.pto-modal-body .form-table {
+    margin: 0;
+}
+
+.pto-modal-body .form-table th {
+    width: 140px;
+    padding: 15px 10px 15px 0;
+    vertical-align: top;
+}
+
+.pto-modal-body .form-table td {
+    padding: 15px 0;
+}
+
+.pto-modal-body .regular-text {
+    width: 100%;
+    max-width: 350px;
+}
+
+.pto-modal-body textarea.regular-text {
+    height: 80px;
+    resize: vertical;
+}
+
+.pto-modal-body input[type="color"] {
+    width: 50px;
+    height: 30px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.pto-modal-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-top: 1px solid #ddd;
+    background: #f9f9f9;
+    border-radius: 0 0 4px 4px;
+}
+
+.pto-modal-actions-right {
+    display: flex;
+    gap: 10px;
+}
+
+.pto-modal-footer .button {
+    position: relative;
+}
+
+.pto-modal-footer .spinner {
+    display: none;
+    float: none;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+}
+
+.pto-modal-footer .button.loading .spinner {
+    display: block;
+    visibility: visible;
+}
+
+.pto-modal-footer .button.loading .button-text {
+    opacity: 0.6;
+}
+
+/* Modal animations */
+.pto-modal {
+    animation: pto-modal-fade-in 0.15s ease-out;
+}
+
+.pto-modal.closing {
+    animation: pto-modal-fade-out 0.15s ease-in;
+}
+
+@keyframes pto-modal-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pto-modal-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.pto-modal-wrap {
+    animation: pto-modal-slide-in 0.15s ease-out;
+}
+
+.pto-modal.closing .pto-modal-wrap {
+    animation: pto-modal-slide-out 0.15s ease-in;
+}
+
+@keyframes pto-modal-slide-in {
+    from {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes pto-modal-slide-out {
+    from {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0;
+    }
+}
+
+/* Modal responsive */
+@media screen and (max-width: 600px) {
+    .pto-modal-wrap {
+        min-width: auto;
+        width: 90%;
+        margin: 20px;
+        position: fixed;
+        top: 20px;
+        left: 5%;
+        transform: none;
+        max-height: calc(100vh - 40px);
+    }
+
+    .pto-modal-header,
+    .pto-modal-body,
+    .pto-modal-footer {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .pto-modal-body .form-table th,
+    .pto-modal-body .form-table td {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .pto-modal-body .form-table th {
+        padding-bottom: 5px;
+    }
+}
+
+/* Tab column styles */
+.column-page_tab {
+    width: 150px;
+}
+
+.pto-page-tab-selector {
+    width: 100%;
+    max-width: 140px;
+    padding: 4px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #fff;
+    font-size: 12px;
+}
+
+.pto-page-tab-selector:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+    outline: none;
+}
+
+/* Tab indicator removed for a cleaner design */
+
+/* Selector states */
+.pto-page-tab-selector.updating {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.pto-page-tab-selector option {
+    padding: 2px 4px;
+}
+
+/* Info messages */
+#pto-messages.notice-info {
+    border-left-color: #0073aa;
+}
+
+/* Column responsive */
+@media screen and (max-width: 782px) {
+    .column-page_tab {
+        display: none;
+    }
+}

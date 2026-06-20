@@ -1,0 +1,235 @@
+import {
+	useState,
+	useEffect,
+	useCallback,
+	useMemo,
+	Fragment,
+} from '@wordpress/element';
+import { fetchPins, createPin, deletePin } from './api';
+import { anchorFromPoint, isPluginNode } from './anchor';
+import { t } from './util';
+import CommentPin from './components/CommentPin';
+import CommentPopover from './components/CommentPopover';
+import CreateForm from './components/CreateForm';
+
+const cfg = window.wpCommentPins || {};
+const TOGGLE_ID = 'wp-admin-bar-comment-pins-toggle';
+
+export default function App() {
+	const [ active, setActive ] = useState( false );
+	const [ pins, setPins ] = useState( [] );
+	const [ draft, setDraft ] = useState( null );
+	const [ activeId, setActiveId ] = useState( null );
+	const [ tick, setTick ] = useState( 0 );
+
+	// Load existing pins for this URL once.
+	useEffect( () => {
+		fetchPins( cfg.current_url )
+			.then( ( res ) => {
+				if ( res && res.success && Array.isArray( res.data ) ) {
+					setPins( res.data );
+				}
+			} )
+			.catch( () => {} );
+	}, [] );
+
+	// Toggle comment mode from the admin-bar button.
+	useEffect( () => {
+		const btn = document.getElementById( TOGGLE_ID );
+		if ( ! btn ) {
+			return undefined;
+		}
+		const onClick = ( e ) => {
+			e.preventDefault();
+			e.stopPropagation();
+			setActive( ( a ) => ! a );
+		};
+		btn.addEventListener( 'click', onClick );
+		return () => btn.removeEventListener( 'click', onClick );
+	}, [] );
+
+	// Reflect active state on <body> and the toggle button.
+	useEffect( () => {
+		document.body.classList.toggle( 'wpcp-active', active );
+		const btn = document.getElementById( TOGGLE_ID );
+		if ( btn ) {
+			btn.classList.toggle( 'wpcp-on', active );
+		}
+		if ( ! active ) {
+			setDraft( null );
+			setActiveId( null );
+		}
+	}, [ active ] );
+
+	// Recompute pin positions when the layout changes (not on scroll — absolute
+	// page coordinates already scroll with the document).
+	useEffect( () => {
+		const bump = () => setTick( ( n ) => n + 1 );
+		window.addEventListener( 'resize', bump );
+		window.addEventListener( 'load', bump );
+		let ro;
+		if ( window.ResizeObserver ) {
+			ro = new window.ResizeObserver( bump );
+			ro.observe( document.body );
+		}
+		return () => {
+			window.removeEventListener( 'resize', bump );
+			window.removeEventListener( 'load', bump );
+			if ( ro ) {
+				ro.disconnect();
+			}
+		};
+	}, [] );
+
+	// While active: click the page to start a draft; Esc cancels.
+	useEffect( () => {
+		if ( ! active ) {
+			return undefined;
+		}
+		const onClick = ( e ) => {
+			if (
+				isPluginNode( e.target ) ||
+				( e.target.closest && e.target.closest( '#wpadminbar' ) )
+			) {
+				return;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+			setActiveId( null );
+			setDraft( {
+				anchor: anchorFromPoint( e.clientX, e.clientY ),
+				pageX: e.pageX,
+				pageY: e.pageY,
+			} );
+		};
+		const onKey = ( e ) => {
+			if ( e.key === 'Escape' ) {
+				setDraft( null );
+				setActiveId( null );
+			}
+		};
+		document.addEventListener( 'click', onClick, true );
+		document.addEventListener( 'keydown', onKey );
+		return () => {
+			document.removeEventListener( 'click', onClick, true );
+			document.removeEventListener( 'keydown', onKey );
+		};
+	}, [ active ] );
+
+	const handleSave = useCallback(
+		( text ) => {
+			if ( ! draft ) {
+				return;
+			}
+			const d = draft;
+			setDraft( null );
+			createPin( {
+				post_url: cfg.current_url,
+				anchor_selector: d.anchor.selector,
+				offset_x: d.anchor.offsetX,
+				offset_y: d.anchor.offsetY,
+				comment_text: text,
+			} )
+				.then( ( res ) => {
+					if ( res && res.success ) {
+						setPins( ( prev ) => [
+							...prev,
+							{
+								id: res.data.id,
+								anchor_selector: d.anchor.selector,
+								offset_x: d.anchor.offsetX,
+								offset_y: d.anchor.offsetY,
+								comment_text: text,
+								display_name: t( 'you' ),
+								created_at: res.data.created_at,
+								can_delete: true,
+							},
+						] );
+					} else {
+						window.alert(
+							( res && res.data && res.data.message ) ||
+								t( 'save_error' )
+						);
+					}
+				} )
+				.catch( () => window.alert( t( 'connect_error' ) ) );
+		},
+		[ draft ]
+	);
+
+	const handleDelete = useCallback( ( id ) => {
+		if ( ! window.confirm( t( 'confirm_delete' ) ) ) {
+			return;
+		}
+		deletePin( id )
+			.then( ( res ) => {
+				if ( res && res.success ) {
+					setPins( ( prev ) =>
+						prev.filter( ( p ) => String( p.id ) !== String( id ) )
+					);
+					setActiveId( null );
+				} else {
+					window.alert(
+						( res && res.data && res.data.message ) ||
+							t( 'delete_error' )
+					);
+				}
+			} )
+			.catch( () => window.alert( t( 'connect_error' ) ) );
+	}, [] );
+
+	const activePin = useMemo(
+		() =>
+			pins.find( ( p ) => String( p.id ) === String( activeId ) ) || null,
+		[ pins, activeId ]
+	);
+
+	if ( ! active ) {
+		return null;
+	}
+
+	return (
+		<Fragment>
+			<div className="wpcp-overlay" />
+
+			{ pins.map( ( pin ) => (
+				<CommentPin
+					key={ pin.id }
+					pin={ pin }
+					tick={ tick }
+					isActive={ String( activeId ) === String( pin.id ) }
+					onOpen={ () => {
+						setDraft( null );
+						setActiveId( pin.id );
+					} }
+				/>
+			) ) }
+
+			{ activePin && (
+				<CommentPopover
+					pin={ activePin }
+					tick={ tick }
+					onClose={ () => setActiveId( null ) }
+					onDelete={ handleDelete }
+				/>
+			) }
+
+			{ draft && (
+				<Fragment>
+					<div
+						className="wpcp-pin is-draft"
+						style={ {
+							left: draft.pageX + 'px',
+							top: draft.pageY + 'px',
+						} }
+					/>
+					<CreateForm
+						draft={ draft }
+						onSave={ handleSave }
+						onCancel={ () => setDraft( null ) }
+					/>
+				</Fragment>
+			) }
+		</Fragment>
+	);
+}

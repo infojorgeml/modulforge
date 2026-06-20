@@ -1,0 +1,89 @@
+/* Column widths */
+.column-page_status { width: 130px !important; }
+.column-page_notes  { width: 350px !important; }
+.column-page_responsive { width: 120px !important; }
+
+/* Row background colors by status */
+.status-draft    { background-color: #f0f0f0 !important; }
+.status-revision { background-color: #fff9db !important; }
+.status-process  { background-color: #e7f1ff !important; }
+.status-done     { background-color: #e6ffed !important; }
+
+/* Status selector dropdown */
+.page-status-selector {
+    width: 100%;
+    max-width: 150px;
+}
+
+/* Notes container and textarea */
+.page-notes-container {
+    position: relative;
+}
+.page-notes-textarea {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 6px 8px;
+    transition: border-color 0.2s ease;
+}
+.page-notes-textarea:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+    outline: none;
+}
+.page-notes-status {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.page-notes-status.show {
+    opacity: 1;
+}
+
+/* Loading spinner for status */
+.page-status-loading {
+    position: absolute;
+    top: 5px;
+    right: 25px;
+}
+
+/* Responsive checkboxes container */
+.page-responsive-container {
+    position: relative;
+}
+.responsive-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.responsive-checkbox-label {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    margin: 0;
+    cursor: pointer;
+    padding: 2px 0;
+}
+.responsive-checkbox-label:hover {
+    background-color: #f0f0f0;
+    border-radius: 3px;
+}
+.responsive-checkbox {
+    margin: 0 4px 0 0 !important;
+}
+.device-icon {
+    margin-right: 4px;
+    font-size: 12px;
+}
+.device-label {
+    font-size: 11px;
+    color: #555;
+}
+.responsive-status {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.responsive-status.show {
+    opacity: 1;
+}

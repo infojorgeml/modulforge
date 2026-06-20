@@ -1,0 +1,17 @@
+{
+  "name": "wp-comment-pins",
+  "version": "2.1.0",
+  "private": true,
+  "description": "Visual comment pins for WordPress (SuiteWP module).",
+  "author": "Jorge ML",
+  "license": "GPL-2.0-or-later",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "lint:js": "wp-scripts lint-js src",
+    "lint:js:fix": "wp-scripts lint-js src --fix"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^32.4.1"
+  }
+}

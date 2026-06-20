@@ -1,0 +1,8 @@
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Build tooling — not shipped (only wp-comment/build/ is committed)
+node_modules/

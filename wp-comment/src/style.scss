@@ -1,0 +1,352 @@
+/**
+ * WP Comment Pins — front-end overlay styles (minimalist, Linear/Notion-like).
+ * Compiled by wp-scripts to build/style-index.css.
+ *
+ * Everything visual is nested under #wpcp-root so it gains id-level specificity
+ * over the host theme (no !important needed) and never leaks out.
+ */
+
+// Design tokens
+$surface: #ffffff;
+$text: #1f2328;
+$muted: #6b7280;
+$border: #e5e7eb;
+$hover-bg: #f3f4f6;
+$accent: #5b5bd6;
+$accent-hover: #4f4fcf;
+$accent-ring: rgba(91, 91, 214, 0.15);
+$danger: #e5484d;
+$danger-hover: #d13c41;
+
+$radius-card: 12px;
+$radius-btn: 8px;
+$shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.12);
+$shadow-pin: 0 1px 3px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.14);
+$shadow-pin-hover: 0 2px 6px rgba(0, 0, 0, 0.24), 0 8px 18px rgba(0, 0, 0, 0.2);
+
+$font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+	sans-serif;
+$ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+#wpcp-root {
+	position: static;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	/* Mode dimming layer (kept transparent — the crosshair signals the mode). */
+	.wpcp-overlay {
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+		z-index: 99990;
+	}
+
+	/* Pin marker: a clean circle with the author's initials, tinted per author. */
+	.wpcp-pin {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		margin: 0;
+		padding: 0;
+		transform: translate(-50%, -50%);
+		border: 2px solid #fff;
+		border-radius: 50%;
+		background: var(--wpcp-pin-color, #{$accent});
+		box-shadow: $shadow-pin;
+		color: #fff;
+		font-family: $font;
+		cursor: pointer;
+		appearance: none;
+		-webkit-appearance: none;
+		z-index: 99992;
+		transition: transform 0.14s $ease, box-shadow 0.14s $ease;
+
+		&:hover,
+		&.is-active {
+			transform: translate(-50%, -50%) translateY(-1px) scale(1.06);
+			box-shadow: $shadow-pin-hover;
+		}
+
+		&.is-active {
+			outline: 2px solid $accent-ring;
+			outline-offset: 2px;
+		}
+
+		&.is-draft {
+			background: $accent;
+			pointer-events: none;
+			animation: wpcp-pin-in 0.28s $ease;
+		}
+	}
+
+	.wpcp-pin-initial {
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 1;
+		letter-spacing: 0.02em;
+		user-select: none;
+	}
+
+	/* Reusable initials avatar. */
+	.wpcp-avatar {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		color: #fff;
+		font-family: $font;
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 1;
+		user-select: none;
+	}
+
+	/* Read popover: a light card. */
+	.wpcp-popover {
+		position: absolute;
+		width: 300px;
+		max-width: calc(100vw - 24px);
+		padding: 14px;
+		transform: translateX(-50%);
+		background: $surface;
+		color: $text;
+		border: 1px solid $border;
+		border-radius: $radius-card;
+		box-shadow: $shadow-card;
+		font-family: $font;
+		font-size: 14px;
+		line-height: 1.5;
+		outline: none;
+		z-index: 99994;
+		animation: wpcp-card-in 0.16s $ease;
+	}
+
+	.wpcp-popover-head {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 10px;
+	}
+
+	.wpcp-meta {
+		display: flex;
+		flex-direction: column;
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	.wpcp-name {
+		overflow: hidden;
+		font-size: 13px;
+		font-weight: 600;
+		color: $text;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.wpcp-date {
+		font-size: 12px;
+		color: $muted;
+	}
+
+	.wpcp-comment {
+		font-size: 14px;
+		color: $text;
+		white-space: pre-wrap;
+		word-wrap: break-word;
+	}
+
+	.wpcp-popover-foot {
+		display: flex;
+		justify-content: flex-end;
+		margin-top: 12px;
+		padding-top: 10px;
+		border-top: 1px solid $border;
+	}
+
+	/* Composer card. */
+	.wpcp-form {
+		position: absolute;
+		width: 300px;
+		max-width: calc(100vw - 24px);
+		padding: 12px;
+		transform: translateX(-50%);
+		background: $surface;
+		border: 1px solid $border;
+		border-radius: $radius-card;
+		box-shadow: $shadow-card;
+		font-family: $font;
+		z-index: 99994;
+		animation: wpcp-card-in 0.16s $ease;
+	}
+
+	.wpcp-textarea {
+		display: block;
+		width: 100%;
+		min-height: 72px;
+		margin: 0;
+		padding: 10px 12px;
+		border: 1px solid $border;
+		border-radius: $radius-btn;
+		background: #fff;
+		color: $text;
+		font-family: $font;
+		font-size: 14px;
+		line-height: 1.5;
+		resize: vertical;
+		outline: none;
+		transition: border-color 0.12s, box-shadow 0.12s;
+
+		&::placeholder {
+			color: #9ca3af;
+		}
+
+		&:focus {
+			border-color: $accent;
+			box-shadow: 0 0 0 3px $accent-ring;
+		}
+	}
+
+	.wpcp-form-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 6px;
+		margin-top: 10px;
+	}
+
+	/* Buttons */
+	.wpcp-icon-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
+		width: 26px;
+		height: 26px;
+		padding: 0;
+		border: none;
+		border-radius: 6px;
+		background: transparent;
+		color: $muted;
+		cursor: pointer;
+		transition: background 0.12s, color 0.12s;
+
+		&:hover {
+			background: $hover-bg;
+			color: $text;
+		}
+	}
+
+	.wpcp-text-btn {
+		padding: 6px 10px;
+		border: none;
+		border-radius: $radius-btn;
+		background: transparent;
+		color: $muted;
+		font-family: $font;
+		font-size: 13px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: background 0.12s, color 0.12s;
+
+		&:hover {
+			background: $hover-bg;
+			color: $text;
+		}
+
+		&.is-danger {
+			color: $danger;
+
+			&:hover {
+				background: rgba(229, 72, 77, 0.08);
+				color: $danger-hover;
+			}
+		}
+	}
+
+	.wpcp-btn-primary {
+		padding: 6px 14px;
+		border: none;
+		border-radius: $radius-btn;
+		background: $accent;
+		color: #fff;
+		font-family: $font;
+		font-size: 13px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background 0.12s, opacity 0.12s;
+
+		&:hover {
+			background: $accent-hover;
+		}
+
+		&:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+	}
+}
+
+/* Cursor hint while in comment mode. */
+body.wpcp-active {
+	cursor: crosshair;
+}
+
+/* Admin-bar toggle: active state. */
+#wp-admin-bar-comment-pins-toggle {
+	.ab-icon {
+		margin-right: 5px !important;
+		vertical-align: middle;
+	}
+
+	&.wpcp-on .ab-item {
+		background: #{$accent} !important;
+		color: #fff !important;
+	}
+}
+
+@keyframes wpcp-card-in {
+	from {
+		opacity: 0;
+		transform: translateX(-50%) translateY(4px) scale(0.97);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(-50%) translateY(0) scale(1);
+	}
+}
+
+@keyframes wpcp-pin-in {
+	0% {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0);
+	}
+	60% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1.15);
+	}
+	100% {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#wpcp-root {
+		.wpcp-pin,
+		.wpcp-popover,
+		.wpcp-form {
+			animation: none !important;
+			transition: none !important;
+		}
+	}
+}
