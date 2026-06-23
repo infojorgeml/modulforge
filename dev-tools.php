@@ -2,7 +2,7 @@
 /*
 Plugin Name: DevTools
 Description: Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins.
-Version: 2.1.0
+Version: 2.1.1
 Author: JorgeML
 Text Domain: dev-tools
 Domain Path: /languages
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
  * Main DevTools Plugin Controller.
  */
 final class DevTools {
-    private const VERSION       = '2.1.0';
+    private const VERSION       = '2.1.1';
     private const OPTION_KEY     = 'dev_tools_active_plugins';
     private const OPTION_DELETE_DATA = 'dev_tools_delete_data_on_uninstall';
     private const MENU_SLUG   = 'dev-tools';
@@ -165,7 +165,6 @@ final class DevTools {
                 'file'        => $base_path . 'page-state/page-state.php',
                 'class'       => 'DevToolsPageState',
                 'version'     => '2.0.0',
-                'icon'        => 'dashicons-edit-page',
             ),
             'page-tabs'    => array(
                 'name'        => __('Page Tabs Organizer', 'dev-tools'),
@@ -173,7 +172,6 @@ final class DevTools {
                 'file'        => $base_path . 'tabs/page-tabs-organizer.php',
                 'class'       => 'DevToolsPageTabs',
                 'version'     => '1.0.8',
-                'icon'        => 'dashicons-category',
             ),
             'comment-pins' => array(
                 'name'        => __('Comment Pins', 'dev-tools'),
@@ -181,7 +179,6 @@ final class DevTools {
                 'file'        => $base_path . 'comment-pins/comment-pins.php',
                 'class'       => 'DevToolsCommentPins',
                 'version'     => '2.2.0',
-                'icon'        => 'dashicons-admin-comments',
             ),
             'debug-tools'  => array(
                 'name'        => __('Debug & Logs', 'dev-tools'),
@@ -189,7 +186,6 @@ final class DevTools {
                 'file'        => $base_path . 'debug-tools/debug-tools.php',
                 'class'       => 'DevToolsDebug',
                 'version'     => '1.0.1',
-                'icon'        => 'dashicons-code',
             ),
             'convert-webp' => array(
                 'name'        => __('Convert to WebP', 'dev-tools'),
@@ -197,7 +193,6 @@ final class DevTools {
                 'file'        => $base_path . 'convert-webp/convert-webp.php',
                 'class'       => 'DevToolsWebP',
                 'version'     => '1.0.0',
-                'icon'        => 'dashicons-format-image',
             ),
         );
 
@@ -262,8 +257,6 @@ final class DevTools {
                     'deactivating'      => __('Deactivating...', 'dev-tools'),
                     'error'             => __('Operation error', 'dev-tools'),
                     'generic_error'     => __('An unexpected error occurred. Please try again.', 'dev-tools'),
-                    'status_active'     => __('Active', 'dev-tools'),
-                    'status_inactive'   => __('Inactive', 'dev-tools'),
                     /* translators: %s: mini-plugin name. */
                     'toggle_hint'       => __('Click the switch to activate or deactivate %s.', 'dev-tools'),
                 ),
@@ -303,9 +296,6 @@ final class DevTools {
         ?>
         <div class="devtools-plugin-card <?php echo esc_attr($state_class); ?>" data-plugin="<?php echo esc_attr($plugin_key); ?>">
             <div class="devtools-plugin-header">
-                <div class="devtools-plugin-icon">
-                    <span class="dashicons <?php echo esc_attr($plugin_data['icon']); ?>"></span>
-                </div>
                 <div class="devtools-plugin-title">
                     <h3><?php echo esc_html($plugin_data['name']); ?></h3>
                     <span class="devtools-plugin-version">v<?php echo esc_html($plugin_data['version']); ?></span>
@@ -324,11 +314,6 @@ final class DevTools {
             </div>
             <div class="devtools-plugin-description">
                 <p><?php echo esc_html($plugin_data['description']); ?></p>
-            </div>
-            <div class="devtools-plugin-status">
-                <span class="devtools-status-indicator <?php echo esc_attr($state_class); ?>">
-                    <?php echo $is_active ? esc_html__('Active', 'dev-tools') : esc_html__('Inactive', 'dev-tools'); ?>
-                </span>
             </div>
         </div>
         <?php
@@ -522,7 +507,6 @@ final class DevTools {
                     $this->mini_plugins[$plugin_key]['name']
                 ),
                 'status'      => 'active',
-                'statusLabel' => __('Active', 'dev-tools'),
             ));
         }
 
@@ -535,7 +519,6 @@ final class DevTools {
                 $this->mini_plugins[$plugin_key]['name']
             ),
             'status'      => 'inactive',
-            'statusLabel' => __('Inactive', 'dev-tools'),
         ));
     }
 

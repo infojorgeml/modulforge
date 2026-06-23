@@ -2,22 +2,22 @@
 # This file is distributed under the same license as the DevTools plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: DevTools 2.1.0\n"
+"Project-Id-Version: DevTools 2.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dev-tools\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-23T13:28:56+00:00\n"
+"POT-Creation-Date: 2026-06-23T20:24:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dev-tools\n"
 
 #. Plugin Name of the plugin
 #: dev-tools.php
-#: dev-tools.php:221
-#: dev-tools.php:222
+#: dev-tools.php:216
+#: dev-tools.php:217
 msgid "DevTools"
 msgstr ""
 
@@ -261,7 +261,7 @@ msgstr ""
 #: convert-webp/convert-webp.php:105
 #: convert-webp/convert-webp.php:106
 #: convert-webp/includes/admin-page.php:16
-#: dev-tools.php:195
+#: dev-tools.php:191
 msgid "Convert to WebP"
 msgstr ""
 
@@ -409,7 +409,7 @@ msgstr ""
 
 #: debug-tools/debug-tools.php:101
 #: debug-tools/debug-tools.php:102
-#: dev-tools.php:187
+#: dev-tools.php:184
 msgid "Debug & Logs"
 msgstr ""
 
@@ -590,154 +590,142 @@ msgstr ""
 msgid "Complete page state management system with status tracking, notes, and responsive design checkboxes."
 msgstr ""
 
-#: dev-tools.php:171
+#: dev-tools.php:170
 msgid "Page Tabs Organizer"
 msgstr ""
 
-#: dev-tools.php:172
+#: dev-tools.php:171
 msgid "Organize WordPress pages with customizable tabs to improve admin panel management."
 msgstr ""
 
-#: dev-tools.php:179
+#: dev-tools.php:177
 msgid "Comment Pins"
 msgstr ""
 
-#: dev-tools.php:180
+#: dev-tools.php:178
 msgid "Visual comment pins system for WordPress. Add visual comments anywhere on a page."
 msgstr ""
 
-#: dev-tools.php:188
+#: dev-tools.php:185
 msgid "Toggle WordPress debugging and read the debug log from the admin, without FTP or server access."
 msgstr ""
 
-#: dev-tools.php:196
+#: dev-tools.php:192
 msgid "Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals."
 msgstr ""
 
-#: dev-tools.php:261
+#: dev-tools.php:256
 msgid "Activating..."
 msgstr ""
 
-#: dev-tools.php:262
+#: dev-tools.php:257
 msgid "Deactivating..."
 msgstr ""
 
-#: dev-tools.php:263
+#: dev-tools.php:258
 #: tabs/page-tabs-organizer.php:252
 msgid "Operation error"
 msgstr ""
 
-#: dev-tools.php:264
+#: dev-tools.php:259
 msgid "An unexpected error occurred. Please try again."
 msgstr ""
 
-#: dev-tools.php:265
-#: dev-tools.php:330
-#: dev-tools.php:525
-msgid "Active"
-msgstr ""
-
-#: dev-tools.php:266
-#: dev-tools.php:330
-#: dev-tools.php:538
-msgid "Inactive"
-msgstr ""
-
 #. translators: %s: mini-plugin name.
-#: dev-tools.php:268
+#: dev-tools.php:261
 #, php-format
 msgid "Click the switch to activate or deactivate %s."
 msgstr ""
 
-#: dev-tools.php:281
+#: dev-tools.php:274
 msgid "Manage the mini-plugins included in DevTools. You can activate or deactivate each one according to your needs."
 msgstr ""
 
-#: dev-tools.php:343
+#: dev-tools.php:328
 msgid "Information"
 msgstr ""
 
-#: dev-tools.php:346
+#: dev-tools.php:331
 msgid "How does it work?"
 msgstr ""
 
-#: dev-tools.php:347
+#: dev-tools.php:332
 msgid "DevTools acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance."
 msgstr ""
 
-#: dev-tools.php:350
+#: dev-tools.php:335
 msgid "Included mini-plugins"
 msgstr ""
 
-#: dev-tools.php:353
+#: dev-tools.php:338
 msgid "Page State Management:"
 msgstr ""
 
-#: dev-tools.php:354
+#: dev-tools.php:339
 msgid "Page state management"
 msgstr ""
 
-#: dev-tools.php:357
+#: dev-tools.php:342
 msgid "Page Tabs Organizer:"
 msgstr ""
 
-#: dev-tools.php:358
+#: dev-tools.php:343
 msgid "Tab organization"
 msgstr ""
 
-#: dev-tools.php:361
+#: dev-tools.php:346
 msgid "Comment Pins:"
 msgstr ""
 
-#: dev-tools.php:362
+#: dev-tools.php:347
 msgid "Visual comment system"
 msgstr ""
 
-#: dev-tools.php:367
+#: dev-tools.php:352
 msgid "Data on uninstall"
 msgstr ""
 
-#: dev-tools.php:368
+#: dev-tools.php:353
 msgid "By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled."
 msgstr ""
 
-#: dev-tools.php:371
+#: dev-tools.php:356
 msgid "Delete all data on uninstall"
 msgstr ""
 
-#: dev-tools.php:495
-#: dev-tools.php:550
+#: dev-tools.php:480
+#: dev-tools.php:533
 #: tabs/page-tabs-organizer.php:487
 #: tabs/page-tabs-organizer.php:537
 #: tabs/page-tabs-organizer.php:590
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: dev-tools.php:503
+#: dev-tools.php:488
 msgid "Plugin not found."
 msgstr ""
 
-#: dev-tools.php:509
+#: dev-tools.php:494
 msgid "Invalid request."
 msgstr ""
 
 #. translators: %s: mini-plugin name.
-#: dev-tools.php:521
+#: dev-tools.php:506
 #, php-format
 msgid "%s activated successfully."
 msgstr ""
 
 #. translators: %s: mini-plugin name.
-#: dev-tools.php:534
+#: dev-tools.php:518
 #, php-format
 msgid "%s deactivated successfully."
 msgstr ""
 
-#: dev-tools.php:560
+#: dev-tools.php:543
 msgid "Plugin data will be deleted on uninstall."
 msgstr ""
 
-#: dev-tools.php:561
+#: dev-tools.php:544
 msgid "Plugin data will be kept on uninstall."
 msgstr ""
 

@@ -14,8 +14,8 @@
 
     const ADDITIONAL_CSS = `
         .devtools-plugin-card.success-flash {
-            border-color: #00a32a !important;
-            box-shadow: 0 0 10px rgba(0, 163, 42, 0.3) !important;
+            border-color: #2271b1 !important;
+            box-shadow: 0 0 10px rgba(34, 113, 177, 0.3) !important;
             transition: all 0.3s ease !important;
         }
 
@@ -114,7 +114,7 @@
                 }
             }).done((response) => {
                 if (response && response.success && response.data) {
-                    this.updateCardState($card, response.data.status, response.data.statusLabel);
+                    this.updateCardState($card, response.data.status);
                     this.renderNotice(response.data.message, 'success');
                 } else {
                     const message = response && response.data && response.data.message
@@ -138,16 +138,11 @@
             $checkbox.prop('disabled', isLoading);
         },
 
-        updateCardState($card, status, statusLabel) {
+        updateCardState($card, status) {
             const isActive = status === 'active';
-            const label = statusLabel || (isActive ? dev_tools_ajax.strings.status_active : dev_tools_ajax.strings.status_inactive);
 
             $card.toggleClass('active', isActive).toggleClass('inactive', !isActive);
             $card.find(SELECTORS.checkbox).prop('checked', isActive);
-            $card.find('.devtools-status-indicator')
-                .toggleClass('active', isActive)
-                .toggleClass('inactive', !isActive)
-                .text(label);
 
             $card.removeClass('error-flash');
             $card.addClass('success-flash');
