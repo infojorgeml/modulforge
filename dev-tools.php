@@ -2,7 +2,7 @@
 /*
 Plugin Name: DevTools
 Description: Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins.
-Version: 2.1.2
+Version: 2.1.3
 Author: JorgeML
 Text Domain: dev-tools
 Domain Path: /languages
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
  * Main DevTools Plugin Controller.
  */
 final class DevTools {
-    private const VERSION       = '2.1.2';
+    private const VERSION       = '2.1.3';
     private const OPTION_KEY     = 'dev_tools_active_plugins';
     private const OPTION_DELETE_DATA = 'dev_tools_delete_data_on_uninstall';
     private const MENU_SLUG   = 'dev-tools';
@@ -130,6 +130,7 @@ final class DevTools {
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
         add_action('wp_ajax_dev_tools_toggle_plugin', array($this, 'ajax_toggle_plugin'));
         add_action('wp_ajax_dev_tools_set_uninstall_pref', array($this, 'ajax_set_uninstall_pref'));
+        add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'add_action_links'));
     }
 
     /**
@@ -266,6 +267,32 @@ final class DevTools {
             'dashicons-admin-plugins',
             30
         );
+
+        // Rename the auto-generated first submenu (a duplicate "DevTools") to "Tools".
+        add_submenu_page(
+            self::MENU_SLUG,
+            __('Tools', 'dev-tools'),
+            __('Tools', 'dev-tools'),
+            self::CAPABILITY,
+            self::MENU_SLUG,
+            array($this, 'render_admin_page')
+        );
+    }
+
+    /**
+     * Add a "Settings" link (pointing to the Tools page) on the plugins list row.
+     *
+     * @param string[] $links Existing action links.
+     * @return string[]
+     */
+    public function add_action_links(array $links): array {
+        $settings = sprintf(
+            '<a href="%s">%s</a>',
+            esc_url(admin_url('admin.php?page=' . self::MENU_SLUG)),
+            esc_html__('Settings', 'dev-tools')
+        );
+        array_unshift($links, $settings);
+        return $links;
     }
 
     /**
