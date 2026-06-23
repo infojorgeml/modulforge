@@ -2,8 +2,10 @@
 /*
 Plugin Name: DevTools
 Description: Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins.
-Version: 2.0.0
+Version: 2.0.1
 Author: JorgeML
+Text Domain: dev-tools
+Domain Path: /languages
 */
 
 // Prevent direct access.
@@ -15,7 +17,7 @@ if (!defined('ABSPATH')) {
  * Main DevTools Plugin Controller.
  */
 final class DevTools {
-    private const VERSION       = '2.0.0';
+    private const VERSION       = '2.0.1';
     private const OPTION_KEY     = 'dev_tools_active_plugins';
     private const OPTION_DELETE_DATA = 'dev_tools_delete_data_on_uninstall';
     private const MENU_SLUG   = 'dev-tools';
@@ -254,6 +256,7 @@ final class DevTools {
                     'generic_error'     => __('An unexpected error occurred. Please try again.', 'dev-tools'),
                     'status_active'     => __('Active', 'dev-tools'),
                     'status_inactive'   => __('Inactive', 'dev-tools'),
+                    /* translators: %s: mini-plugin name. */
                     'toggle_hint'       => __('Click the switch to activate or deactivate %s.', 'dev-tools'),
                 ),
             )

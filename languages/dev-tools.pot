@@ -1,0 +1,945 @@
+# Copyright (C) 2026 JorgeML
+# This file is distributed under the same license as the DevTools plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: DevTools 2.0.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dev-tools\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-23T10:19:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: dev-tools\n"
+
+#. Plugin Name of the plugin
+#: dev-tools.php
+#: dev-tools.php:213
+#: dev-tools.php:214
+msgid "DevTools"
+msgstr ""
+
+#. Description of the plugin
+#: dev-tools.php
+msgid "Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins."
+msgstr ""
+
+#. Author of the plugin
+#: dev-tools.php
+msgid "JorgeML"
+msgstr ""
+
+#: comment-pins/comment-pins.php:193
+msgid "Write your comment here..."
+msgstr ""
+
+#: comment-pins/comment-pins.php:194
+#: tabs/includes/admin-page.php:87
+#: tabs/includes/tab-modal.php:48
+#: tabs/includes/tab-modal.php:121
+msgid "Cancel"
+msgstr ""
+
+#: comment-pins/comment-pins.php:195
+msgid "Save"
+msgstr ""
+
+#: comment-pins/comment-pins.php:196
+#: tabs/includes/admin-page.php:138
+msgid "Delete"
+msgstr ""
+
+#: comment-pins/comment-pins.php:197
+msgid "Close"
+msgstr ""
+
+#: comment-pins/comment-pins.php:198
+msgid "You"
+msgstr ""
+
+#: comment-pins/comment-pins.php:199
+#: comment-pins/comment-pins.php:373
+#: comment-pins/comment-pins.php:496
+#: comment-pins/comment-pins.php:551
+msgid "User"
+msgstr ""
+
+#: comment-pins/comment-pins.php:200
+msgid "Error saving comment"
+msgstr ""
+
+#: comment-pins/comment-pins.php:201
+msgid "Error deleting comment"
+msgstr ""
+
+#: comment-pins/comment-pins.php:202
+#: tabs/page-tabs-organizer.php:250
+msgid "Connection error"
+msgstr ""
+
+#: comment-pins/comment-pins.php:203
+msgid "Delete this comment?"
+msgstr ""
+
+#: comment-pins/comment-pins.php:204
+msgid "Delete this reply?"
+msgstr ""
+
+#: comment-pins/comment-pins.php:205
+msgid "Reply"
+msgstr ""
+
+#: comment-pins/comment-pins.php:206
+msgid "Write a reply..."
+msgstr ""
+
+#: comment-pins/comment-pins.php:207
+msgid "Resolve"
+msgstr ""
+
+#: comment-pins/comment-pins.php:208
+msgid "Reopen"
+msgstr ""
+
+#: comment-pins/comment-pins.php:209
+#: comment-pins/comment-pins.php:214
+msgid "Resolved"
+msgstr ""
+
+#: comment-pins/comment-pins.php:210
+#: comment-pins/comment-pins.php:213
+msgid "Open"
+msgstr ""
+
+#: comment-pins/comment-pins.php:211
+msgid "Comments"
+msgstr ""
+
+#: comment-pins/comment-pins.php:212
+msgid "All"
+msgstr ""
+
+#: comment-pins/comment-pins.php:215
+msgid "Mine"
+msgstr ""
+
+#: comment-pins/comment-pins.php:216
+msgid "Show resolved on page"
+msgstr ""
+
+#: comment-pins/comment-pins.php:217
+msgid "No comments on this page yet."
+msgstr ""
+
+#: comment-pins/comment-pins.php:218
+msgid "Nothing matches this filter."
+msgstr ""
+
+#: comment-pins/comment-pins.php:219
+msgid "Loading…"
+msgstr ""
+
+#: comment-pins/comment-pins.php:220
+msgid "Open comments panel"
+msgstr ""
+
+#: comment-pins/comment-pins.php:221
+msgid "Close panel"
+msgstr ""
+
+#. translators: %s: user name.
+#: comment-pins/comment-pins.php:223
+#, php-format
+msgid "Resolved by %s"
+msgstr ""
+
+#: comment-pins/comment-pins.php:224
+msgid "1 reply"
+msgstr ""
+
+#. translators: %d: number of replies.
+#: comment-pins/comment-pins.php:226
+#, php-format
+msgid "%d replies"
+msgstr ""
+
+#: comment-pins/comment-pins.php:238
+msgid "Comment"
+msgstr ""
+
+#: comment-pins/comment-pins.php:242
+msgid "Toggle comment mode"
+msgstr ""
+
+#: comment-pins/comment-pins.php:257
+#: debug-tools/debug-tools.php:165
+msgid "Security check failed."
+msgstr ""
+
+#: comment-pins/comment-pins.php:261
+#: debug-tools/debug-tools.php:168
+msgid "Insufficient permissions."
+msgstr ""
+
+#: comment-pins/comment-pins.php:277
+msgid "Invalid page URL."
+msgstr ""
+
+#: comment-pins/comment-pins.php:280
+msgid "URL is too long."
+msgstr ""
+
+#: comment-pins/comment-pins.php:283
+msgid "Invalid anchor."
+msgstr ""
+
+#: comment-pins/comment-pins.php:286
+#: comment-pins/comment-pins.php:514
+msgid "Comment cannot be empty."
+msgstr ""
+
+#: comment-pins/comment-pins.php:289
+#: comment-pins/comment-pins.php:517
+msgid "Comment is too long."
+msgstr ""
+
+#: comment-pins/comment-pins.php:292
+msgid "Invalid pin position."
+msgstr ""
+
+#: comment-pins/comment-pins.php:314
+#: comment-pins/comment-pins.php:541
+msgid "Error saving comment."
+msgstr ""
+
+#: comment-pins/comment-pins.php:320
+msgid "Comment saved successfully."
+msgstr ""
+
+#: comment-pins/comment-pins.php:392
+#: comment-pins/comment-pins.php:431
+#: comment-pins/comment-pins.php:474
+#: comment-pins/comment-pins.php:511
+msgid "Invalid pin."
+msgstr ""
+
+#: comment-pins/comment-pins.php:402
+#: comment-pins/comment-pins.php:437
+#: comment-pins/comment-pins.php:523
+msgid "Pin not found."
+msgstr ""
+
+#: comment-pins/comment-pins.php:407
+msgid "You cannot delete this pin."
+msgstr ""
+
+#: comment-pins/comment-pins.php:412
+#: comment-pins/comment-pins.php:580
+msgid "Error deleting comment."
+msgstr ""
+
+#: comment-pins/comment-pins.php:459
+msgid "Error updating comment."
+msgstr ""
+
+#: comment-pins/comment-pins.php:561
+msgid "Invalid reply."
+msgstr ""
+
+#: comment-pins/comment-pins.php:571
+msgid "Reply not found."
+msgstr ""
+
+#: comment-pins/comment-pins.php:575
+msgid "You cannot delete this reply."
+msgstr ""
+
+#: debug-tools/debug-tools.php:101
+#: debug-tools/debug-tools.php:102
+#: dev-tools.php:187
+msgid "Debug & Logs"
+msgstr ""
+
+#: debug-tools/debug-tools.php:111
+#: tabs/includes/admin-page.php:8
+#: tabs/page-tabs-organizer.php:262
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: debug-tools/debug-tools.php:146
+msgid "Settings saved. Reload pages to apply."
+msgstr ""
+
+#: debug-tools/debug-tools.php:147
+msgid "Could not save settings."
+msgstr ""
+
+#: debug-tools/debug-tools.php:148
+msgid "Connection error."
+msgstr ""
+
+#: debug-tools/debug-tools.php:149
+msgid "Clear the debug log? This cannot be undone."
+msgstr ""
+
+#: debug-tools/debug-tools.php:150
+msgid "Restore wp-config.php from the original backup?"
+msgstr ""
+
+#: debug-tools/debug-tools.php:151
+#: debug-tools/debug-tools.php:230
+msgid "Log cleared."
+msgstr ""
+
+#: debug-tools/debug-tools.php:152
+msgid "The debug log is empty."
+msgstr ""
+
+#: debug-tools/debug-tools.php:153
+msgid "No entries match the current filter."
+msgstr ""
+
+#: debug-tools/debug-tools.php:154
+msgid "wp-config.php restored from backup."
+msgstr ""
+
+#: debug-tools/debug-tools.php:200
+msgid "Settings saved."
+msgstr ""
+
+#: debug-tools/debug-tools.php:240
+msgid "wp-config.php is not writable."
+msgstr ""
+
+#: debug-tools/debug-tools.php:243
+msgid "No backup found."
+msgstr ""
+
+#: debug-tools/debug-tools.php:248
+msgid "Could not restore wp-config.php."
+msgstr ""
+
+#: debug-tools/debug-tools.php:252
+msgid "Restored."
+msgstr ""
+
+#: debug-tools/debug-tools.php:257
+msgid "Access denied."
+msgstr ""
+
+#: debug-tools/debug-tools.php:262
+msgid "No log file."
+msgstr ""
+
+#: debug-tools/debug-tools.php:296
+msgid "wp-config.php could not be located."
+msgstr ""
+
+#: debug-tools/debug-tools.php:299
+msgid "wp-config.php is not writable. Add the block below manually."
+msgstr ""
+
+#: debug-tools/debug-tools.php:304
+msgid "Could not read wp-config.php."
+msgstr ""
+
+#: debug-tools/debug-tools.php:320
+msgid "Could not write wp-config.php."
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:17
+msgid "Fatal"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:18
+msgid "Error"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:19
+msgid "Warning"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:20
+msgid "Notice"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:21
+msgid "Deprecated"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:22
+msgid "Other"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:26
+msgid "Debug &amp; Logs"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:30
+msgid "wp-config.php is not writable. Saving will show a block you can paste manually."
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:38
+msgid "Debug settings"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:43
+msgid "master switch"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:49
+msgid "write errors to debug.log"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:53
+msgid "show errors on screen (avoid on live sites)"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:57
+msgid "load unminified core assets"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:61
+msgid "record DB queries (uses memory)"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:66
+msgid "Save settings"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:68
+msgid "Restore wp-config backup"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:74
+msgid "Paste this into wp-config.php, just above the \"stop editing\" line:"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:82
+msgid "Debug is currently ACTIVE on the site."
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:83
+msgid "Debug is currently OFF on the site."
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:89
+msgid "Debug log"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:101
+msgid "Search…"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:103
+msgid "Auto"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:105
+msgid "Refresh"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:106
+msgid "Download"
+msgstr ""
+
+#: debug-tools/includes/admin-page.php:107
+msgid "Clear"
+msgstr ""
+
+#: dev-tools.php:163
+msgid "Page State Management"
+msgstr ""
+
+#: dev-tools.php:164
+msgid "Complete page state management system with status tracking, notes, and responsive design checkboxes."
+msgstr ""
+
+#: dev-tools.php:171
+msgid "Page Tabs Organizer"
+msgstr ""
+
+#: dev-tools.php:172
+msgid "Organize WordPress pages with customizable tabs to improve admin panel management."
+msgstr ""
+
+#: dev-tools.php:179
+msgid "Comment Pins"
+msgstr ""
+
+#: dev-tools.php:180
+msgid "Visual comment pins system for WordPress. Add visual comments anywhere on a page."
+msgstr ""
+
+#: dev-tools.php:188
+msgid "Toggle WordPress debugging and read the debug log from the admin, without FTP or server access."
+msgstr ""
+
+#: dev-tools.php:253
+msgid "Activating..."
+msgstr ""
+
+#: dev-tools.php:254
+msgid "Deactivating..."
+msgstr ""
+
+#: dev-tools.php:255
+#: tabs/page-tabs-organizer.php:252
+msgid "Operation error"
+msgstr ""
+
+#: dev-tools.php:256
+msgid "An unexpected error occurred. Please try again."
+msgstr ""
+
+#: dev-tools.php:257
+#: dev-tools.php:322
+#: dev-tools.php:517
+msgid "Active"
+msgstr ""
+
+#: dev-tools.php:258
+#: dev-tools.php:322
+#: dev-tools.php:530
+msgid "Inactive"
+msgstr ""
+
+#. translators: %s: mini-plugin name.
+#: dev-tools.php:260
+#, php-format
+msgid "Click the switch to activate or deactivate %s."
+msgstr ""
+
+#: dev-tools.php:273
+msgid "Manage the mini-plugins included in DevTools. You can activate or deactivate each one according to your needs."
+msgstr ""
+
+#: dev-tools.php:335
+msgid "Information"
+msgstr ""
+
+#: dev-tools.php:338
+msgid "How does it work?"
+msgstr ""
+
+#: dev-tools.php:339
+msgid "DevTools acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance."
+msgstr ""
+
+#: dev-tools.php:342
+msgid "Included mini-plugins"
+msgstr ""
+
+#: dev-tools.php:345
+msgid "Page State Management:"
+msgstr ""
+
+#: dev-tools.php:346
+msgid "Page state management"
+msgstr ""
+
+#: dev-tools.php:349
+msgid "Page Tabs Organizer:"
+msgstr ""
+
+#: dev-tools.php:350
+msgid "Tab organization"
+msgstr ""
+
+#: dev-tools.php:353
+msgid "Comment Pins:"
+msgstr ""
+
+#: dev-tools.php:354
+msgid "Visual comment system"
+msgstr ""
+
+#: dev-tools.php:359
+msgid "Data on uninstall"
+msgstr ""
+
+#: dev-tools.php:360
+msgid "By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled."
+msgstr ""
+
+#: dev-tools.php:363
+msgid "Delete all data on uninstall"
+msgstr ""
+
+#: dev-tools.php:487
+#: dev-tools.php:542
+#: tabs/page-tabs-organizer.php:487
+#: tabs/page-tabs-organizer.php:537
+#: tabs/page-tabs-organizer.php:590
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: dev-tools.php:495
+msgid "Plugin not found."
+msgstr ""
+
+#: dev-tools.php:501
+msgid "Invalid request."
+msgstr ""
+
+#. translators: %s: mini-plugin name.
+#: dev-tools.php:513
+#, php-format
+msgid "%s activated successfully."
+msgstr ""
+
+#. translators: %s: mini-plugin name.
+#: dev-tools.php:526
+#, php-format
+msgid "%s deactivated successfully."
+msgstr ""
+
+#: dev-tools.php:552
+msgid "Plugin data will be deleted on uninstall."
+msgstr ""
+
+#: dev-tools.php:553
+msgid "Plugin data will be kept on uninstall."
+msgstr ""
+
+#: page-state/page-state.php:103
+#: tabs/includes/admin-page.php:163
+msgid "Status"
+msgstr ""
+
+#: page-state/page-state.php:104
+msgid "Notes"
+msgstr ""
+
+#: page-state/page-state.php:105
+msgid "Responsive"
+msgstr ""
+
+#: page-state/page-state.php:125
+msgid "None"
+msgstr ""
+
+#: page-state/page-state.php:126
+msgid "Draft"
+msgstr ""
+
+#: page-state/page-state.php:127
+msgid "Revision"
+msgstr ""
+
+#: page-state/page-state.php:128
+msgid "In Progress"
+msgstr ""
+
+#: page-state/page-state.php:129
+msgid "Done"
+msgstr ""
+
+#: page-state/page-state.php:146
+msgid "Add notes..."
+msgstr ""
+
+#: page-state/page-state.php:163
+msgid "Desktop"
+msgstr ""
+
+#: page-state/page-state.php:168
+msgid "Tablet"
+msgstr ""
+
+#: page-state/page-state.php:173
+msgid "Mobile"
+msgstr ""
+
+#: page-state/page-state.php:202
+msgid "Saved"
+msgstr ""
+
+#: page-state/page-state.php:203
+msgid "Saving..."
+msgstr ""
+
+#: page-state/page-state.php:204
+msgid "Error saving"
+msgstr ""
+
+#: page-state/page-state.php:223
+#: page-state/page-state.php:241
+#: page-state/page-state.php:260
+msgid "Invalid page ID"
+msgstr ""
+
+#: page-state/page-state.php:227
+#: page-state/page-state.php:245
+#: page-state/page-state.php:264
+msgid "Insufficient permissions"
+msgstr ""
+
+#: page-state/page-state.php:231
+msgid "Status saved successfully"
+msgstr ""
+
+#: page-state/page-state.php:249
+msgid "Notes saved successfully"
+msgstr ""
+
+#: page-state/page-state.php:269
+msgid "Invalid device type"
+msgstr ""
+
+#: page-state/page-state.php:273
+msgid "Responsive status saved successfully"
+msgstr ""
+
+#: tabs/includes/admin-page.php:33
+msgid "Manage Page Tabs"
+msgstr ""
+
+#: tabs/includes/admin-page.php:38
+#: tabs/page-tabs-organizer.php:221
+msgid "Tabs"
+msgstr ""
+
+#: tabs/includes/admin-page.php:41
+#: tabs/includes/tab-modal.php:14
+#: tabs/page-tabs-organizer.php:393
+msgid "Create New Tab"
+msgstr ""
+
+#: tabs/includes/admin-page.php:48
+#: tabs/includes/admin-page.php:103
+msgid "Name"
+msgstr ""
+
+#: tabs/includes/admin-page.php:56
+#: tabs/includes/admin-page.php:104
+#: tabs/includes/tab-modal.php:87
+msgid "Description"
+msgstr ""
+
+#: tabs/includes/admin-page.php:64
+#: tabs/includes/admin-page.php:105
+#: tabs/includes/tab-modal.php:35
+#: tabs/includes/tab-modal.php:96
+msgid "Color"
+msgstr ""
+
+#: tabs/includes/admin-page.php:72
+#: tabs/includes/admin-page.php:107
+#: tabs/includes/tab-modal.php:104
+msgid "Position"
+msgstr ""
+
+#: tabs/includes/admin-page.php:76
+#: tabs/includes/tab-modal.php:108
+msgid "Display order (0 = first position)"
+msgstr ""
+
+#: tabs/includes/admin-page.php:83
+#: tabs/includes/tab-modal.php:51
+#: tabs/page-tabs-organizer.php:254
+msgid "Create Tab"
+msgstr ""
+
+#: tabs/includes/admin-page.php:95
+msgid "Existing Tabs"
+msgstr ""
+
+#: tabs/includes/admin-page.php:98
+msgid "No tabs created yet."
+msgstr ""
+
+#: tabs/includes/admin-page.php:106
+msgid "Pages"
+msgstr ""
+
+#: tabs/includes/admin-page.php:108
+#: tabs/includes/admin-page.php:165
+msgid "Actions"
+msgstr ""
+
+#: tabs/includes/admin-page.php:134
+msgid "Edit"
+msgstr ""
+
+#: tabs/includes/admin-page.php:151
+msgid "Assign Pages to Tabs"
+msgstr ""
+
+#: tabs/includes/admin-page.php:154
+msgid "You must create at least one tab before you can assign pages."
+msgstr ""
+
+#: tabs/includes/admin-page.php:156
+msgid "No pages available to assign."
+msgstr ""
+
+#: tabs/includes/admin-page.php:162
+msgid "Page"
+msgstr ""
+
+#: tabs/includes/admin-page.php:164
+msgid "Assigned Tab"
+msgstr ""
+
+#: tabs/includes/admin-page.php:180
+msgid "View"
+msgstr ""
+
+#: tabs/includes/admin-page.php:208
+#: tabs/page-tabs-organizer.php:435
+msgid "No tab"
+msgstr ""
+
+#: tabs/includes/admin-page.php:227
+msgid "Assign"
+msgstr ""
+
+#: tabs/includes/admin-page.php:234
+msgid "Remove"
+msgstr ""
+
+#: tabs/includes/tab-modal.php:16
+#: tabs/includes/tab-modal.php:67
+msgid "Close modal"
+msgstr ""
+
+#: tabs/includes/tab-modal.php:26
+#: tabs/includes/tab-modal.php:79
+msgid "Tab Name"
+msgstr ""
+
+#: tabs/includes/tab-modal.php:30
+msgid "E.g. Legal Pages, Services, Blog..."
+msgstr ""
+
+#: tabs/includes/tab-modal.php:39
+msgid "Pick a color to visually identify this tab"
+msgstr ""
+
+#: tabs/includes/tab-modal.php:65
+msgid "Manage Tab"
+msgstr ""
+
+#: tabs/includes/tab-modal.php:91
+msgid "Optional tab description"
+msgstr ""
+
+#: tabs/includes/tab-modal.php:117
+msgid "Delete Tab"
+msgstr ""
+
+#: tabs/includes/tab-modal.php:124
+#: tabs/page-tabs-organizer.php:255
+msgid "Update Tab"
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:220
+msgid "Manage Tabs"
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:246
+msgid "Are you sure you want to delete this tab?"
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:247
+msgid "Are you sure you want to remove this page from the tab?"
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:248
+#: tabs/page-tabs-organizer.php:499
+#: tabs/page-tabs-organizer.php:547
+msgid "The tab name is required."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:249
+msgid "Please select a tab first."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:251
+msgid "Unknown error"
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:253
+msgid "Operation completed successfully"
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:347
+msgid "All tabs"
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:411
+msgid "Tab"
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:427
+msgid "No tabs available"
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:525
+msgid "Tab created successfully."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:530
+msgid "Error creating the tab."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:579
+msgid "Tab saved successfully."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:583
+msgid "Error saving the tab."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:595
+#: tabs/page-tabs-organizer.php:632
+#: tabs/page-tabs-organizer.php:674
+msgid "Invalid tab."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:604
+msgid "Tab deleted successfully."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:607
+msgid "Error deleting the tab."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:619
+#: tabs/page-tabs-organizer.php:670
+#: tabs/page-tabs-organizer.php:699
+msgid "You do not have permission to edit this page."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:653
+msgid "Page removed from all tabs."
+msgstr ""
+
+#. translators: %s: tab name.
+#: tabs/page-tabs-organizer.php:654
+#, php-format
+msgid "Page assigned to \"%s\"."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:660
+msgid "Error updating the tab assignment."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:686
+msgid "Page assigned to the tab successfully."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:689
+msgid "Error assigning the page to the tab."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:711
+msgid "Page removed from the tab successfully."
+msgstr ""
+
+#: tabs/page-tabs-organizer.php:714
+msgid "Error removing the page from the tab."
+msgstr ""
