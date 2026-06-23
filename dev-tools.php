@@ -2,7 +2,7 @@
 /*
 Plugin Name: DevTools
 Description: Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins.
-Version: 2.1.1
+Version: 2.1.2
 Author: JorgeML
 Text Domain: dev-tools
 Domain Path: /languages
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
  * Main DevTools Plugin Controller.
  */
 final class DevTools {
-    private const VERSION       = '2.1.1';
+    private const VERSION       = '2.1.2';
     private const OPTION_KEY     = 'dev_tools_active_plugins';
     private const OPTION_DELETE_DATA = 'dev_tools_delete_data_on_uninstall';
     private const MENU_SLUG   = 'dev-tools';
@@ -160,45 +160,90 @@ final class DevTools {
 
         $plugins = array(
             'page-state'   => array(
-                'name'        => __('Page State Management', 'dev-tools'),
-                'description' => __('Complete page state management system with status tracking, notes, and responsive design checkboxes.', 'dev-tools'),
-                'file'        => $base_path . 'page-state/page-state.php',
-                'class'       => 'DevToolsPageState',
-                'version'     => '2.0.0',
+                'file'    => $base_path . 'page-state/page-state.php',
+                'class'   => 'DevToolsPageState',
+                'version' => '2.0.0',
             ),
             'page-tabs'    => array(
-                'name'        => __('Page Tabs Organizer', 'dev-tools'),
-                'description' => __('Organize WordPress pages with customizable tabs to improve admin panel management.', 'dev-tools'),
-                'file'        => $base_path . 'tabs/page-tabs-organizer.php',
-                'class'       => 'DevToolsPageTabs',
-                'version'     => '1.0.8',
+                'file'    => $base_path . 'tabs/page-tabs-organizer.php',
+                'class'   => 'DevToolsPageTabs',
+                'version' => '1.0.8',
             ),
             'comment-pins' => array(
-                'name'        => __('Comment Pins', 'dev-tools'),
-                'description' => __('Visual comment pins system for WordPress. Add visual comments anywhere on a page.', 'dev-tools'),
-                'file'        => $base_path . 'comment-pins/comment-pins.php',
-                'class'       => 'DevToolsCommentPins',
-                'version'     => '2.2.0',
+                'file'    => $base_path . 'comment-pins/comment-pins.php',
+                'class'   => 'DevToolsCommentPins',
+                'version' => '2.2.0',
             ),
             'debug-tools'  => array(
-                'name'        => __('Debug & Logs', 'dev-tools'),
-                'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'dev-tools'),
-                'file'        => $base_path . 'debug-tools/debug-tools.php',
-                'class'       => 'DevToolsDebug',
-                'version'     => '1.0.1',
+                'file'    => $base_path . 'debug-tools/debug-tools.php',
+                'class'   => 'DevToolsDebug',
+                'version' => '1.0.1',
             ),
             'convert-webp' => array(
-                'name'        => __('Convert to WebP', 'dev-tools'),
-                'description' => __('Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals.', 'dev-tools'),
-                'file'        => $base_path . 'convert-webp/convert-webp.php',
-                'class'       => 'DevToolsWebP',
-                'version'     => '1.0.0',
+                'file'    => $base_path . 'convert-webp/convert-webp.php',
+                'class'   => 'DevToolsWebP',
+                'version' => '1.0.0',
             ),
         );
 
         $cache = apply_filters('dev_tools_mini_plugins', $plugins);
 
         return $cache;
+    }
+
+    /**
+     * Translatable labels (name + description) for each bundled mini-plugin.
+     *
+     * Kept separate from get_mini_plugin_definitions() so the controller can
+     * boot and load modules without calling __() before the `init` hook —
+     * WordPress 6.7+ warns about just-in-time textdomain loading otherwise.
+     * Only invoked from admin output (render + AJAX), which runs after init.
+     *
+     * @return array<string, array<string, string>>
+     */
+    private static function get_mini_plugin_labels(): array {
+        return array(
+            'page-state'   => array(
+                'name'        => __('Page State Management', 'dev-tools'),
+                'description' => __('Complete page state management system with status tracking, notes, and responsive design checkboxes.', 'dev-tools'),
+            ),
+            'page-tabs'    => array(
+                'name'        => __('Page Tabs Organizer', 'dev-tools'),
+                'description' => __('Organize WordPress pages with customizable tabs to improve admin panel management.', 'dev-tools'),
+            ),
+            'comment-pins' => array(
+                'name'        => __('Comment Pins', 'dev-tools'),
+                'description' => __('Visual comment pins system for WordPress. Add visual comments anywhere on a page.', 'dev-tools'),
+            ),
+            'debug-tools'  => array(
+                'name'        => __('Debug & Logs', 'dev-tools'),
+                'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'dev-tools'),
+            ),
+            'convert-webp' => array(
+                'name'        => __('Convert to WebP', 'dev-tools'),
+                'description' => __('Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals.', 'dev-tools'),
+            ),
+        );
+    }
+
+    /**
+     * Get the translated name + description for a single mini-plugin.
+     *
+     * Falls back to the raw key (and to any name/description supplied through
+     * the `dev_tools_mini_plugins` filter) so third-party modules keep working.
+     *
+     * @param array<string, string> $plugin_data Definition data for fallback.
+     * @return array<string, string>
+     */
+    private static function get_mini_plugin_label(string $plugin_key, array $plugin_data = array()): array {
+        $labels = self::get_mini_plugin_labels();
+        if (isset($labels[$plugin_key])) {
+            return $labels[$plugin_key];
+        }
+        return array(
+            'name'        => isset($plugin_data['name']) ? $plugin_data['name'] : $plugin_key,
+            'description' => isset($plugin_data['description']) ? $plugin_data['description'] : '',
+        );
     }
 
     /**
@@ -293,11 +338,12 @@ final class DevTools {
      */
     private function render_plugin_card(string $plugin_key, array $plugin_data, bool $is_active): void {
         $state_class = $is_active ? 'active' : 'inactive';
+        $label       = self::get_mini_plugin_label($plugin_key, $plugin_data);
         ?>
         <div class="devtools-plugin-card <?php echo esc_attr($state_class); ?>" data-plugin="<?php echo esc_attr($plugin_key); ?>">
             <div class="devtools-plugin-header">
                 <div class="devtools-plugin-title">
-                    <h3><?php echo esc_html($plugin_data['name']); ?></h3>
+                    <h3><?php echo esc_html($label['name']); ?></h3>
                     <span class="devtools-plugin-version">v<?php echo esc_html($plugin_data['version']); ?></span>
                 </div>
                 <div class="devtools-plugin-toggle">
@@ -313,7 +359,7 @@ final class DevTools {
                 </div>
             </div>
             <div class="devtools-plugin-description">
-                <p><?php echo esc_html($plugin_data['description']); ?></p>
+                <p><?php echo esc_html($label['description']); ?></p>
             </div>
         </div>
         <?php
@@ -504,7 +550,7 @@ final class DevTools {
                 'message'     => sprintf(
                     /* translators: %s: mini-plugin name. */
                     __('%s activated successfully.', 'dev-tools'),
-                    $this->mini_plugins[$plugin_key]['name']
+                    self::get_mini_plugin_label($plugin_key)['name']
                 ),
                 'status'      => 'active',
             ));
@@ -516,7 +562,7 @@ final class DevTools {
             'message'     => sprintf(
                 /* translators: %s: mini-plugin name. */
                 __('%s deactivated successfully.', 'dev-tools'),
-                $this->mini_plugins[$plugin_key]['name']
+                self::get_mini_plugin_label($plugin_key)['name']
             ),
             'status'      => 'inactive',
         ));
