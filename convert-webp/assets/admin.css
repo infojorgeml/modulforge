@@ -1,0 +1,77 @@
+.devtools-webp .devtools-webp-msg {
+    margin-left: 8px;
+    font-weight: 600;
+}
+.devtools-webp .devtools-webp-msg.is-success {
+    color: #1a7f37;
+}
+.devtools-webp .devtools-webp-msg.is-error {
+    color: #b32d2e;
+}
+
+.devtools-webp .devtools-webp-pending {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.devtools-webp .devtools-webp-warning {
+    border-left-color: #dba617;
+    max-width: 720px;
+}
+
+.devtools-webp .devtools-webp-progress {
+    max-width: 720px;
+    margin: 12px 0;
+}
+.devtools-webp .devtools-webp-progress-track {
+    background: #e0e0e0;
+    border-radius: 4px;
+    height: 18px;
+    overflow: hidden;
+}
+.devtools-webp .devtools-webp-progress-bar {
+    background: #2271b1;
+    height: 100%;
+    width: 0;
+    transition: width 0.2s ease;
+}
+.devtools-webp .devtools-webp-progress-text {
+    margin: 6px 0 0;
+    font-weight: 600;
+}
+
+.devtools-webp .devtools-webp-log {
+    max-width: 720px;
+    max-height: 320px;
+    overflow-y: auto;
+    margin: 12px 0 0;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+}
+.devtools-webp .devtools-webp-log li {
+    margin: 0;
+    padding: 1px 0;
+    border-bottom: 1px solid #f0f0f1;
+}
+.devtools-webp .devtools-webp-log li:last-child {
+    border-bottom: 0;
+}
+.devtools-webp .dtw-log-ok {
+    color: #1a7f37;
+}
+.devtools-webp .dtw-log-skip {
+    color: #646970;
+}
+.devtools-webp .dtw-log-error {
+    color: #b32d2e;
+}
+.devtools-webp .dtw-log-summary {
+    color: #1d2327;
+    font-weight: 700;
+    margin-top: 4px;
+}

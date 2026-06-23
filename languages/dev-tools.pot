@@ -2,22 +2,22 @@
 # This file is distributed under the same license as the DevTools plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: DevTools 2.0.1\n"
+"Project-Id-Version: DevTools 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dev-tools\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-23T10:19:00+00:00\n"
+"POT-Creation-Date: 2026-06-23T13:28:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: dev-tools\n"
 
 #. Plugin Name of the plugin
 #: dev-tools.php
-#: dev-tools.php:213
-#: dev-tools.php:214
+#: dev-tools.php:221
+#: dev-tools.php:222
 msgid "DevTools"
 msgstr ""
 
@@ -174,11 +174,13 @@ msgid "Toggle comment mode"
 msgstr ""
 
 #: comment-pins/comment-pins.php:257
+#: convert-webp/convert-webp.php:169
 #: debug-tools/debug-tools.php:165
 msgid "Security check failed."
 msgstr ""
 
 #: comment-pins/comment-pins.php:261
+#: convert-webp/convert-webp.php:172
 #: debug-tools/debug-tools.php:168
 msgid "Insufficient permissions."
 msgstr ""
@@ -256,24 +258,163 @@ msgstr ""
 msgid "You cannot delete this reply."
 msgstr ""
 
-#: debug-tools/debug-tools.php:101
-#: debug-tools/debug-tools.php:102
-#: dev-tools.php:187
-msgid "Debug & Logs"
+#: convert-webp/convert-webp.php:105
+#: convert-webp/convert-webp.php:106
+#: convert-webp/includes/admin-page.php:16
+#: dev-tools.php:195
+msgid "Convert to WebP"
 msgstr ""
 
+#: convert-webp/convert-webp.php:115
 #: debug-tools/debug-tools.php:111
 #: tabs/includes/admin-page.php:8
 #: tabs/page-tabs-organizer.php:262
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: debug-tools/debug-tools.php:146
-msgid "Settings saved. Reload pages to apply."
+#: convert-webp/convert-webp.php:146
+#: convert-webp/convert-webp.php:187
+#: debug-tools/debug-tools.php:200
+msgid "Settings saved."
 msgstr ""
 
+#: convert-webp/convert-webp.php:147
 #: debug-tools/debug-tools.php:147
 msgid "Could not save settings."
+msgstr ""
+
+#: convert-webp/convert-webp.php:148
+msgid "Connection error. Please try again."
+msgstr ""
+
+#: convert-webp/convert-webp.php:149
+#: convert-webp/includes/admin-page.php:62
+msgid "Scanning the media library…"
+msgstr ""
+
+#: convert-webp/convert-webp.php:150
+msgid "No JPEG or PNG images left to convert."
+msgstr ""
+
+#: convert-webp/convert-webp.php:151
+msgid "Converting…"
+msgstr ""
+
+#: convert-webp/convert-webp.php:152
+msgid "Finished."
+msgstr ""
+
+#: convert-webp/convert-webp.php:153
+msgid "skipped"
+msgstr ""
+
+#: convert-webp/convert-webp.php:154
+msgid "failed"
+msgstr ""
+
+#. translators: 1: number converted, 2: number skipped, 3: number failed, 4: human-readable size saved.
+#: convert-webp/convert-webp.php:156
+#, php-format
+msgid "Done: %1$s converted, %2$s skipped, %3$s failed. Saved %4$s."
+msgstr ""
+
+#. translators: %s: number of images pending conversion.
+#: convert-webp/convert-webp.php:158
+#, php-format
+msgid "%s image(s) ready to convert."
+msgstr ""
+
+#: convert-webp/convert-webp.php:197
+msgid "This server cannot generate WebP images."
+msgstr ""
+
+#: convert-webp/convert-webp.php:220
+msgid "Invalid attachment ID."
+msgstr ""
+
+#: convert-webp/convert-webp.php:312
+msgid "Already WebP."
+msgstr ""
+
+#: convert-webp/convert-webp.php:318
+msgid "Not a convertible image."
+msgstr ""
+
+#: convert-webp/convert-webp.php:324
+msgid "Source file not found."
+msgstr ""
+
+#. translators: %s: human-readable size saved (e.g. "1.2 MB").
+#: convert-webp/convert-webp.php:419
+#, php-format
+msgid "Converted — saved %s."
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:18
+msgid "Convert JPEG and PNG images to WebP to reduce their file size. New uploads can be converted automatically, and you can bulk-convert everything already in the media library."
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:24
+msgid "WebP is not available on this server."
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:25
+msgid "Neither GD (with WebP support) nor Imagick is available, so images cannot be converted. Ask your host to enable WebP support in PHP."
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:30
+msgid "Settings"
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:34
+msgid "Automatic conversion"
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:38
+msgid "Convert new JPEG/PNG uploads to WebP automatically"
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:44
+msgid "WebP quality"
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:49
+msgid "Higher means better quality and larger files. 80–85 is a good balance."
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:55
+#: debug-tools/includes/admin-page.php:66
+msgid "Save settings"
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:61
+msgid "Bulk convert the media library"
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:66
+msgid "This cannot be undone."
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:67
+msgid "Each image is replaced by a WebP version and the original JPEG/PNG files (including every generated size) are permanently deleted. There is no backup. Make sure you have your own backup before continuing."
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:74
+msgid "I understand this permanently deletes the original images and cannot be undone."
+msgstr ""
+
+#: convert-webp/includes/admin-page.php:80
+msgid "Convert all to WebP"
+msgstr ""
+
+#: debug-tools/debug-tools.php:101
+#: debug-tools/debug-tools.php:102
+#: dev-tools.php:187
+msgid "Debug & Logs"
+msgstr ""
+
+#: debug-tools/debug-tools.php:146
+msgid "Settings saved. Reload pages to apply."
 msgstr ""
 
 #: debug-tools/debug-tools.php:148
@@ -303,10 +444,6 @@ msgstr ""
 
 #: debug-tools/debug-tools.php:154
 msgid "wp-config.php restored from backup."
-msgstr ""
-
-#: debug-tools/debug-tools.php:200
-msgid "Settings saved."
 msgstr ""
 
 #: debug-tools/debug-tools.php:240
@@ -405,10 +542,6 @@ msgstr ""
 msgid "record DB queries (uses memory)"
 msgstr ""
 
-#: debug-tools/includes/admin-page.php:66
-msgid "Save settings"
-msgstr ""
-
 #: debug-tools/includes/admin-page.php:68
 msgid "Restore wp-config backup"
 msgstr ""
@@ -477,130 +610,134 @@ msgstr ""
 msgid "Toggle WordPress debugging and read the debug log from the admin, without FTP or server access."
 msgstr ""
 
-#: dev-tools.php:253
+#: dev-tools.php:196
+msgid "Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals."
+msgstr ""
+
+#: dev-tools.php:261
 msgid "Activating..."
 msgstr ""
 
-#: dev-tools.php:254
+#: dev-tools.php:262
 msgid "Deactivating..."
 msgstr ""
 
-#: dev-tools.php:255
+#: dev-tools.php:263
 #: tabs/page-tabs-organizer.php:252
 msgid "Operation error"
 msgstr ""
 
-#: dev-tools.php:256
+#: dev-tools.php:264
 msgid "An unexpected error occurred. Please try again."
 msgstr ""
 
-#: dev-tools.php:257
-#: dev-tools.php:322
-#: dev-tools.php:517
+#: dev-tools.php:265
+#: dev-tools.php:330
+#: dev-tools.php:525
 msgid "Active"
 msgstr ""
 
-#: dev-tools.php:258
-#: dev-tools.php:322
-#: dev-tools.php:530
+#: dev-tools.php:266
+#: dev-tools.php:330
+#: dev-tools.php:538
 msgid "Inactive"
 msgstr ""
 
 #. translators: %s: mini-plugin name.
-#: dev-tools.php:260
+#: dev-tools.php:268
 #, php-format
 msgid "Click the switch to activate or deactivate %s."
 msgstr ""
 
-#: dev-tools.php:273
+#: dev-tools.php:281
 msgid "Manage the mini-plugins included in DevTools. You can activate or deactivate each one according to your needs."
 msgstr ""
 
-#: dev-tools.php:335
+#: dev-tools.php:343
 msgid "Information"
 msgstr ""
 
-#: dev-tools.php:338
+#: dev-tools.php:346
 msgid "How does it work?"
 msgstr ""
 
-#: dev-tools.php:339
+#: dev-tools.php:347
 msgid "DevTools acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance."
 msgstr ""
 
-#: dev-tools.php:342
+#: dev-tools.php:350
 msgid "Included mini-plugins"
 msgstr ""
 
-#: dev-tools.php:345
+#: dev-tools.php:353
 msgid "Page State Management:"
 msgstr ""
 
-#: dev-tools.php:346
+#: dev-tools.php:354
 msgid "Page state management"
 msgstr ""
 
-#: dev-tools.php:349
+#: dev-tools.php:357
 msgid "Page Tabs Organizer:"
 msgstr ""
 
-#: dev-tools.php:350
+#: dev-tools.php:358
 msgid "Tab organization"
 msgstr ""
 
-#: dev-tools.php:353
+#: dev-tools.php:361
 msgid "Comment Pins:"
 msgstr ""
 
-#: dev-tools.php:354
+#: dev-tools.php:362
 msgid "Visual comment system"
 msgstr ""
 
-#: dev-tools.php:359
+#: dev-tools.php:367
 msgid "Data on uninstall"
 msgstr ""
 
-#: dev-tools.php:360
+#: dev-tools.php:368
 msgid "By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled."
 msgstr ""
 
-#: dev-tools.php:363
+#: dev-tools.php:371
 msgid "Delete all data on uninstall"
 msgstr ""
 
-#: dev-tools.php:487
-#: dev-tools.php:542
+#: dev-tools.php:495
+#: dev-tools.php:550
 #: tabs/page-tabs-organizer.php:487
 #: tabs/page-tabs-organizer.php:537
 #: tabs/page-tabs-organizer.php:590
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: dev-tools.php:495
+#: dev-tools.php:503
 msgid "Plugin not found."
 msgstr ""
 
-#: dev-tools.php:501
+#: dev-tools.php:509
 msgid "Invalid request."
 msgstr ""
 
 #. translators: %s: mini-plugin name.
-#: dev-tools.php:513
+#: dev-tools.php:521
 #, php-format
 msgid "%s activated successfully."
 msgstr ""
 
 #. translators: %s: mini-plugin name.
-#: dev-tools.php:526
+#: dev-tools.php:534
 #, php-format
 msgid "%s deactivated successfully."
 msgstr ""
 
-#: dev-tools.php:552
+#: dev-tools.php:560
 msgid "Plugin data will be deleted on uninstall."
 msgstr ""
 
-#: dev-tools.php:553
+#: dev-tools.php:561
 msgid "Plugin data will be kept on uninstall."
 msgstr ""
 
