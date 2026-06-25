@@ -1,14 +1,12 @@
 <?php
 /**
- * Plugin Name: Suite DevTools Convert to WebP
- * Description: Convert JPEG/PNG media to WebP — bulk-convert the existing library and auto-convert new uploads. Replaces and removes the originals.
- * Version: 1.0.0
- * Author: Jorge ML
- * License: GPL2
- * Requires at least: 5.8
- * Requires PHP: 7.4
+ * Suite DevTools — Convert to WebP module.
  *
- * @package DevToolsWebP
+ * Bundled component loaded by the Suite DevTools controller; not a standalone plugin.
+ * Convert JPEG/PNG media to WebP — bulk-convert the existing library and
+ * auto-convert new uploads. Replaces and removes the originals.
+ *
+ * @package SuiteDevTools
  */
 
 // Prevent direct access.

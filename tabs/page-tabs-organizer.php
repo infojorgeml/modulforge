@@ -1,10 +1,11 @@
 <?php
 /**
- * Plugin Name: Page Tabs Organizer
- * Description: Organize WordPress pages with customizable tabs to improve admin panel management.
- * Version: 1.0.8
- * Author: Jorge ML
- * License: GPL v2 or later
+ * Suite DevTools — Page Tabs Organizer module.
+ *
+ * Bundled component loaded by the Suite DevTools controller; not a standalone plugin.
+ * Organize WordPress pages with customizable tabs to improve admin panel management.
+ *
+ * @package SuiteDevTools
  */
 
 // Prevent direct access.

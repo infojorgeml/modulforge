@@ -1,9 +1,11 @@
 <?php
 /**
- * Plugin Name: Comment Pins
- * Description: Visual comment pins system for WordPress (React front end).
- * Version: 2.2.0
- * Author: Jorge ML
+ * Suite DevTools — Comment Pins module.
+ *
+ * Bundled component loaded by the Suite DevTools controller; not a standalone plugin.
+ * Visual comment pins system for WordPress (React front end).
+ *
+ * @package SuiteDevTools
  */
 
 // Prevent direct access.

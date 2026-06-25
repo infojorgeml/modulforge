@@ -1,14 +1,12 @@
 <?php
 /**
- * Plugin Name: Page State Management
- * Description: Page management with status tracking, notes, and responsive design checkboxes for the WordPress pages list.
- * Version: 2.0.0
- * Author: Jorge ML
- * License: GPL2
- * Requires at least: 5.0
- * Requires PHP: 7.4
+ * Suite DevTools — Page State Management module.
  *
- * @package DevToolsPageState
+ * Bundled component loaded by the Suite DevTools controller; not a standalone plugin.
+ * Page management with status tracking, notes, and responsive design
+ * checkboxes for the WordPress pages list.
+ *
+ * @package SuiteDevTools
  */
 
 // Prevent direct access.

@@ -1,9 +1,11 @@
 <?php
 /**
- * Plugin Name: Suite DevTools Debug & Logs
- * Description: Toggle WordPress debugging from the admin and view the debug log without FTP.
- * Version: 1.0.1
- * Author: Jorge ML
+ * Suite DevTools — Debug & Logs module.
+ *
+ * Bundled component loaded by the Suite DevTools controller; not a standalone plugin.
+ * Toggle WordPress debugging from the admin and view the debug log without FTP.
+ *
+ * @package SuiteDevTools
  */
 
 // Prevent direct access.
