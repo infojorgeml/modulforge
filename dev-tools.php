@@ -2,8 +2,10 @@
 /*
 Plugin Name: DevTools
 Description: Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins.
-Version: 2.1.3
+Version: 2.1.4
 Author: JorgeML
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: dev-tools
 Domain Path: /languages
 */
@@ -17,7 +19,7 @@ if (!defined('ABSPATH')) {
  * Main DevTools Plugin Controller.
  */
 final class DevTools {
-    private const VERSION       = '2.1.3';
+    private const VERSION       = '2.1.4';
     private const OPTION_KEY     = 'dev_tools_active_plugins';
     private const OPTION_DELETE_DATA = 'dev_tools_delete_data_on_uninstall';
     private const MENU_SLUG   = 'dev-tools';
@@ -137,7 +139,6 @@ final class DevTools {
      * Handle tasks that should run once WordPress has loaded plugins.
      */
     public function on_plugins_loaded(): void {
-        $this->load_text_domain();
         $this->load_active_mini_plugins();
     }
 
@@ -245,13 +246,6 @@ final class DevTools {
             'name'        => isset($plugin_data['name']) ? $plugin_data['name'] : $plugin_key,
             'description' => isset($plugin_data['description']) ? $plugin_data['description'] : '',
         );
-    }
-
-    /**
-     * Load translations for the controller.
-     */
-    private function load_text_domain(): void {
-        load_plugin_textdomain('dev-tools', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
     /**
@@ -568,7 +562,7 @@ final class DevTools {
             ));
         }
 
-        $should_activate = wp_validate_boolean(wp_unslash($_POST['should_activate']));
+        $should_activate = wp_validate_boolean(wp_unslash($_POST['should_activate'])); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- wp_validate_boolean() casts to a strict boolean.
 
         if ($should_activate) {
             $this->activate_mini_plugin($plugin_key);
@@ -607,7 +601,7 @@ final class DevTools {
             ));
         }
 
-        $enabled = isset($_POST['enabled']) ? wp_validate_boolean(wp_unslash($_POST['enabled'])) : false;
+        $enabled = isset($_POST['enabled']) ? wp_validate_boolean(wp_unslash($_POST['enabled'])) : false; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- wp_validate_boolean() casts to a strict boolean.
         update_option(self::OPTION_DELETE_DATA, $enabled ? '1' : '');
 
         wp_send_json_success(array(

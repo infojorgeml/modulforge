@@ -10,10 +10,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$runtime  = $state['runtime'];
-$writable = $state['config_writable'];
+$runtime  = $state['runtime']; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
+$writable = $state['config_writable']; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
 
-$levels = array(
+$levels = array( // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
     'fatal'      => __('Fatal', 'dev-tools'),
     'error'      => __('Error', 'dev-tools'),
     'warning'    => __('Warning', 'dev-tools'),
@@ -90,7 +90,7 @@ $levels = array(
 
             <div class="devtools-debug-toolbar">
                 <div class="devtools-debug-filters">
-                    <?php foreach ($levels as $key => $label) : ?>
+                    <?php foreach ($levels as $key => $label) : // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope. ?>
                         <label class="devtools-debug-level lvl-<?php echo esc_attr($key); ?>">
                             <input type="checkbox" value="<?php echo esc_attr($key); ?>" checked />
                             <?php echo esc_html($label); ?>

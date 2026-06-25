@@ -82,11 +82,11 @@ class DevToolsDebug {
         $dir = self::backup_dir();
         foreach (array('wp-config-original.bak', '.htaccess', 'index.html') as $f) {
             if (file_exists($dir . '/' . $f)) {
-                @unlink($dir . '/' . $f);
+                wp_delete_file($dir . '/' . $f);
             }
         }
         if (is_dir($dir)) {
-            @rmdir($dir);
+            @rmdir($dir); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Removing our own empty backup directory on uninstall.
         }
     }
 
@@ -172,7 +172,7 @@ class DevToolsDebug {
     public function ajax_save_settings() {
         $this->verify();
 
-        $raw      = isset($_POST['settings']) && is_array($_POST['settings']) ? wp_unslash($_POST['settings']) : array();
+        $raw      = isset($_POST['settings']) && is_array($_POST['settings']) ? array_map('sanitize_text_field', wp_unslash($_POST['settings'])) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is verified in verify().
         $settings = array();
         foreach (self::default_settings() as $key => $unused) {
             $settings[$key] = isset($raw[$key]) ? wp_validate_boolean($raw[$key]) : false;
@@ -236,7 +236,7 @@ class DevToolsDebug {
         $path   = self::locate_wp_config();
         $backup = self::backup_dir() . '/wp-config-original.bak';
 
-        if ('' === $path || !is_writable($path)) {
+        if ('' === $path || !is_writable($path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- wp-config.php is outside WP_Filesystem's scope.
             wp_send_json_error(array('message' => __('wp-config.php is not writable.', 'dev-tools')), 400);
         }
         if (!file_exists($backup)) {
@@ -266,7 +266,7 @@ class DevToolsDebug {
         header('Content-Type: text/plain; charset=utf-8');
         header('Content-Disposition: attachment; filename="debug.log"');
         header('Content-Length: ' . filesize($path));
-        readfile($path);
+        readfile($path); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Streaming the debug log file to the browser for download.
         exit;
     }
 
@@ -295,7 +295,7 @@ class DevToolsDebug {
         if ('' === $path) {
             return new WP_Error('not_found', __('wp-config.php could not be located.', 'dev-tools'));
         }
-        if (!is_writable($path)) {
+        if (!is_writable($path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- wp-config.php is outside WP_Filesystem's scope.
             return new WP_Error('not_writable', __('wp-config.php is not writable. Add the block below manually.', 'dev-tools'));
         }
 
@@ -325,7 +325,7 @@ class DevToolsDebug {
     /** Remove our block and un-comment the originals. Used on disable/deactivate/uninstall. */
     private static function revert_wp_config(): void {
         $path = self::locate_wp_config();
-        if ('' === $path || !is_writable($path)) {
+        if ('' === $path || !is_writable($path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- wp-config.php is outside WP_Filesystem's scope.
             return;
         }
         $contents = file_get_contents($path);
@@ -428,7 +428,7 @@ class DevToolsDebug {
     /** Read up to $bytes from the end of a file, discarding the first partial line. */
     private static function tail(string $path, int $bytes): string {
         $size = (int) filesize($path);
-        $fp   = fopen($path, 'rb');
+        $fp   = fopen($path, 'rb'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Seeking the tail of a potentially large log; WP_Filesystem offers no seek.
         if (!$fp) {
             return '';
         }
@@ -437,7 +437,7 @@ class DevToolsDebug {
             fgets($fp); // drop partial first line
         }
         $data = stream_get_contents($fp);
-        fclose($fp);
+        fclose($fp); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Closing the handle opened above.
         return (false === $data) ? '' : $data;
     }
 
@@ -453,7 +453,7 @@ class DevToolsDebug {
                 'script_debug'     => defined('SCRIPT_DEBUG') && SCRIPT_DEBUG,
                 'savequeries'      => defined('SAVEQUERIES') && SAVEQUERIES,
             ),
-            'config_writable' => '' !== $cfg && is_writable($cfg),
+            'config_writable' => '' !== $cfg && is_writable($cfg), // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- wp-config.php is outside WP_Filesystem's scope.
             'has_backup'      => file_exists(self::backup_dir() . '/wp-config-original.bak'),
             'log_exists'      => file_exists($path),
             'log_size'        => file_exists($path) ? (int) filesize($path) : 0,

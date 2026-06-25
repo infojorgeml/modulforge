@@ -176,7 +176,7 @@ class DevToolsWebP {
     public function ajax_save_settings() {
         $this->verify();
 
-        $raw      = isset($_POST['settings']) && is_array($_POST['settings']) ? wp_unslash($_POST['settings']) : array();
+        $raw      = isset($_POST['settings']) && is_array($_POST['settings']) ? array_map('sanitize_text_field', wp_unslash($_POST['settings'])) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is verified in verify().
         $settings = array(
             'auto_upload' => isset($raw['auto_upload']) ? wp_validate_boolean($raw['auto_upload']) : false,
             'quality'     => isset($raw['quality']) ? max(1, min(100, (int) $raw['quality'])) : 82,
@@ -215,7 +215,7 @@ class DevToolsWebP {
     public function ajax_convert() {
         $this->verify();
 
-        $id = isset($_POST['id']) ? (int) wp_unslash($_POST['id']) : 0;
+        $id = isset($_POST['id']) ? (int) wp_unslash($_POST['id']) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in verify(); value cast to int.
         if ($id <= 0) {
             wp_send_json_error(array('message' => __('Invalid attachment ID.', 'dev-tools')));
         }
@@ -409,7 +409,7 @@ class DevToolsWebP {
         // 6) Delete the old JPEG/PNG files now that nothing points to them.
         foreach (array_keys($old_files) as $old_path) {
             if ($old_path !== $new_path && file_exists($old_path) && self::is_legacy_image($old_path)) {
-                @unlink($old_path);
+                wp_delete_file($old_path);
             }
         }
 
@@ -449,6 +449,7 @@ class DevToolsWebP {
                 continue;
             }
             $like = '%' . $wpdb->esc_like($old) . '%';
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Bulk URL rewrite in post_content; not cacheable.
             $wpdb->query(
                 $wpdb->prepare(
                     "UPDATE {$wpdb->posts} SET post_content = REPLACE(post_content, %s, %s) WHERE post_content LIKE %s",

@@ -81,8 +81,8 @@ class DevToolsCommentPins {
         global $wpdb;
         $pins    = self::table_name();
         $replies = self::replies_table_name();
-        $wpdb->query("DROP TABLE IF EXISTS {$replies}"); // phpcs:ignore WordPress.DB
-        $wpdb->query("DROP TABLE IF EXISTS {$pins}");    // phpcs:ignore WordPress.DB
+        $wpdb->query("DROP TABLE IF EXISTS {$replies}"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; no user input.
+        $wpdb->query("DROP TABLE IF EXISTS {$pins}");    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; no user input.
         delete_option(self::DB_VERSION_OPTION);
     }
 
@@ -106,7 +106,7 @@ class DevToolsCommentPins {
 
         // Drop the legacy table only when migrating from the pre-anchor schema.
         if ('0' !== $installed && version_compare($installed, '2.0.0', '<')) {
-            $wpdb->query("DROP TABLE IF EXISTS {$table}"); // phpcs:ignore WordPress.DB
+            $wpdb->query("DROP TABLE IF EXISTS {$table}"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; no user input.
         }
 
         $charset_collate = $wpdb->get_charset_collate();
@@ -265,11 +265,11 @@ class DevToolsCommentPins {
     public function save_comment_pin() {
         $this->verify_request();
 
-        $post_url     = isset($_POST['post_url']) ? esc_url_raw(wp_unslash($_POST['post_url'])) : '';
-        $anchor       = isset($_POST['anchor_selector']) ? sanitize_text_field(wp_unslash($_POST['anchor_selector'])) : '';
-        $comment_text = isset($_POST['comment_text']) ? sanitize_textarea_field(wp_unslash($_POST['comment_text'])) : '';
-        $offset_x     = isset($_POST['offset_x']) ? (float) wp_unslash($_POST['offset_x']) : -1;
-        $offset_y     = isset($_POST['offset_y']) ? (float) wp_unslash($_POST['offset_y']) : -1;
+        $post_url     = isset($_POST['post_url']) ? esc_url_raw(wp_unslash($_POST['post_url'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
+        $anchor       = isset($_POST['anchor_selector']) ? sanitize_text_field(wp_unslash($_POST['anchor_selector'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
+        $comment_text = isset($_POST['comment_text']) ? sanitize_textarea_field(wp_unslash($_POST['comment_text'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
+        $offset_x     = isset($_POST['offset_x']) ? (float) wp_unslash($_POST['offset_x']) : -1; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in verify_request(); cast to number.
+        $offset_y     = isset($_POST['offset_y']) ? (float) wp_unslash($_POST['offset_y']) : -1; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in verify_request(); cast to number.
 
         $post_url = $this->normalize_post_url($post_url);
 
@@ -295,6 +295,7 @@ class DevToolsCommentPins {
         global $wpdb;
         $created_at = current_time('mysql');
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         $result = $wpdb->insert(
             $this->table_name,
             array(
@@ -324,7 +325,7 @@ class DevToolsCommentPins {
     public function get_comment_pins() {
         $this->verify_request();
 
-        $post_url = isset($_POST['post_url']) ? esc_url_raw(wp_unslash($_POST['post_url'])) : '';
+        $post_url = isset($_POST['post_url']) ? esc_url_raw(wp_unslash($_POST['post_url'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
         $post_url = $this->normalize_post_url($post_url);
 
         if ('' === $post_url) {
@@ -335,6 +336,7 @@ class DevToolsCommentPins {
         $current_user    = get_current_user_id();
         $can_edit_others = current_user_can('edit_others_posts');
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $pins = $wpdb->get_results($wpdb->prepare(
             "SELECT cp.id, cp.anchor_selector, cp.offset_x, cp.offset_y, cp.comment_text, cp.created_at,
                     cp.user_id, cp.status, cp.resolved_at, u.display_name, ru.display_name AS resolved_by_name
@@ -348,6 +350,7 @@ class DevToolsCommentPins {
 
         // Reply counts in a single aggregate query (no N+1).
         $counts = array();
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $count_rows = $wpdb->get_results($wpdb->prepare(
             "SELECT r.pin_id AS pin_id, COUNT(*) AS c
              FROM {$this->replies_table} r
@@ -387,12 +390,13 @@ class DevToolsCommentPins {
     public function delete_comment_pin() {
         $this->verify_request();
 
-        $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0;
+        $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
         if (!$pin_id) {
             wp_send_json_error(array('message' => __('Invalid pin.', 'dev-tools')), 400);
         }
 
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $owner = $wpdb->get_var($wpdb->prepare(
             "SELECT user_id FROM {$this->table_name} WHERE id = %d",
             $pin_id
@@ -407,13 +411,13 @@ class DevToolsCommentPins {
             wp_send_json_error(array('message' => __('You cannot delete this pin.', 'dev-tools')), 403);
         }
 
-        $deleted = $wpdb->delete($this->table_name, array('id' => $pin_id), array('%d'));
+        $deleted = $wpdb->delete($this->table_name, array('id' => $pin_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         if (false === $deleted) {
             wp_send_json_error(array('message' => __('Error deleting comment.', 'dev-tools')), 500);
         }
 
         // Cascade: remove the pin's replies.
-        $wpdb->delete($this->replies_table, array('pin_id' => $pin_id), array('%d'));
+        $wpdb->delete($this->replies_table, array('pin_id' => $pin_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
 
         wp_send_json_success(array('id' => $pin_id));
     }
@@ -425,14 +429,14 @@ class DevToolsCommentPins {
     public function resolve_comment_pin() {
         $this->verify_request();
 
-        $pin_id   = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0;
-        $resolved = isset($_POST['resolved']) ? wp_validate_boolean(wp_unslash($_POST['resolved'])) : false;
+        $pin_id   = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
+        $resolved = isset($_POST['resolved']) ? wp_validate_boolean(wp_unslash($_POST['resolved'])) : false; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in verify_request(); validated with wp_validate_boolean().
         if (!$pin_id) {
             wp_send_json_error(array('message' => __('Invalid pin.', 'dev-tools')), 400);
         }
 
         global $wpdb;
-        $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE id = %d", $pin_id));
+        $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE id = %d", $pin_id)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         if (null === $exists) {
             wp_send_json_error(array('message' => __('Pin not found.', 'dev-tools')), 404);
         }
@@ -441,14 +445,16 @@ class DevToolsCommentPins {
         $name    = '';
 
         if ($resolved) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             $result = $wpdb->query($wpdb->prepare(
                 "UPDATE {$this->table_name} SET status = 'resolved', resolved_at = %s, resolved_by = %d WHERE id = %d",
                 current_time('mysql'),
                 $current,
                 $pin_id
             ));
-            $name = $wpdb->get_var($wpdb->prepare("SELECT display_name FROM {$wpdb->users} WHERE ID = %d", $current));
+            $name = $wpdb->get_var($wpdb->prepare("SELECT display_name FROM {$wpdb->users} WHERE ID = %d", $current)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query; not cacheable.
         } else {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             $result = $wpdb->query($wpdb->prepare(
                 "UPDATE {$this->table_name} SET status = 'open', resolved_at = NULL, resolved_by = NULL WHERE id = %d",
                 $pin_id
@@ -469,7 +475,7 @@ class DevToolsCommentPins {
     public function get_comment_replies() {
         $this->verify_request();
 
-        $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0;
+        $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
         if (!$pin_id) {
             wp_send_json_error(array('message' => __('Invalid pin.', 'dev-tools')), 400);
         }
@@ -478,6 +484,7 @@ class DevToolsCommentPins {
         $current_user    = get_current_user_id();
         $can_edit_others = current_user_can('edit_others_posts');
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $replies = $wpdb->get_results($wpdb->prepare(
             "SELECT r.id, r.comment_text, r.created_at, r.user_id, u.display_name
              FROM {$this->replies_table} r
@@ -504,8 +511,8 @@ class DevToolsCommentPins {
     public function add_comment_reply() {
         $this->verify_request();
 
-        $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0;
-        $text   = isset($_POST['comment_text']) ? sanitize_textarea_field(wp_unslash($_POST['comment_text'])) : '';
+        $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
+        $text   = isset($_POST['comment_text']) ? sanitize_textarea_field(wp_unslash($_POST['comment_text'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
 
         if (!$pin_id) {
             wp_send_json_error(array('message' => __('Invalid pin.', 'dev-tools')), 400);
@@ -518,7 +525,7 @@ class DevToolsCommentPins {
         }
 
         global $wpdb;
-        $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE id = %d", $pin_id));
+        $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE id = %d", $pin_id)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         if (null === $exists) {
             wp_send_json_error(array('message' => __('Pin not found.', 'dev-tools')), 404);
         }
@@ -526,6 +533,7 @@ class DevToolsCommentPins {
         $current    = get_current_user_id();
         $created_at = current_time('mysql');
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         $result = $wpdb->insert(
             $this->replies_table,
             array(
@@ -541,7 +549,7 @@ class DevToolsCommentPins {
             wp_send_json_error(array('message' => __('Error saving comment.', 'dev-tools')), 500);
         }
 
-        $name = $wpdb->get_var($wpdb->prepare("SELECT display_name FROM {$wpdb->users} WHERE ID = %d", $current));
+        $name = $wpdb->get_var($wpdb->prepare("SELECT display_name FROM {$wpdb->users} WHERE ID = %d", $current)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query; not cacheable.
 
         wp_send_json_success(array(
             'id'           => (int) $wpdb->insert_id,
@@ -556,12 +564,13 @@ class DevToolsCommentPins {
     public function delete_comment_reply() {
         $this->verify_request();
 
-        $reply_id = isset($_POST['reply_id']) ? absint(wp_unslash($_POST['reply_id'])) : 0;
+        $reply_id = isset($_POST['reply_id']) ? absint(wp_unslash($_POST['reply_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
         if (!$reply_id) {
             wp_send_json_error(array('message' => __('Invalid reply.', 'dev-tools')), 400);
         }
 
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $owner = $wpdb->get_var($wpdb->prepare(
             "SELECT user_id FROM {$this->replies_table} WHERE id = %d",
             $reply_id
@@ -575,7 +584,7 @@ class DevToolsCommentPins {
             wp_send_json_error(array('message' => __('You cannot delete this reply.', 'dev-tools')), 403);
         }
 
-        $deleted = $wpdb->delete($this->replies_table, array('id' => $reply_id), array('%d'));
+        $deleted = $wpdb->delete($this->replies_table, array('id' => $reply_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         if (false === $deleted) {
             wp_send_json_error(array('message' => __('Error deleting comment.', 'dev-tools')), 500);
         }
@@ -593,7 +602,7 @@ class DevToolsCommentPins {
      * the request URI under home_url() instead.
      */
     private static function current_url(): string {
-        $path = isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '';
+        $path = isset($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : '';
         return self::normalize_post_url_static(home_url($path));
     }
 

@@ -11,7 +11,7 @@ if (!current_user_can('manage_options')) {
 global $wpdb;
 
 // All tabs.
-$tabs = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}page_tabs ORDER BY position ASC, name ASC");
+$tabs = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}page_tabs ORDER BY position ASC, name ASC"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name comes from $wpdb->prefix; no value params.
 
 // All pages.
 $pages = get_pages(array(
@@ -20,10 +20,10 @@ $pages = get_pages(array(
 ));
 
 // Page-tab relations + per-tab counts (computed in PHP — no per-tab COUNT query).
-$relations      = array();
-$counts         = array();
-$relations_data = $wpdb->get_results("SELECT page_id, tab_id FROM {$wpdb->prefix}page_tab_relations");
-foreach ($relations_data as $relation) {
+$relations      = array(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
+$counts         = array(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
+$relations_data = $wpdb->get_results("SELECT page_id, tab_id FROM {$wpdb->prefix}page_tab_relations"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Direct query on the plugin's own custom table; not cacheable. Table name comes from $wpdb->prefix; no value params. Local variable inside an included template; not global scope.
+foreach ($relations_data as $relation) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
     $relations[$relation->page_id] = $relation->tab_id;
     $counts[$relation->tab_id]     = isset($counts[$relation->tab_id]) ? $counts[$relation->tab_id] + 1 : 1;
 }
@@ -110,7 +110,7 @@ foreach ($relations_data as $relation) {
                         </thead>
                         <tbody>
                             <?php foreach ($tabs as $tab) : ?>
-                                <?php $page_count = isset($counts[$tab->id]) ? $counts[$tab->id] : 0; ?>
+                                <?php $page_count = isset($counts[$tab->id]) ? $counts[$tab->id] : 0; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope. ?>
                                 <tr data-tab-id="<?php echo esc_attr($tab->id); ?>">
                                     <td>
                                         <strong style="color: <?php echo esc_attr($tab->color); ?>;">
@@ -189,15 +189,15 @@ foreach ($relations_data as $relation) {
                                     </td>
                                     <td>
                                         <?php
-                                        $assigned_tab_id    = isset($relations[$page->ID]) ? $relations[$page->ID] : 0;
-                                        $assigned_tab_name  = '';
-                                        $assigned_tab_color = '#666';
+                                        $assigned_tab_id    = isset($relations[$page->ID]) ? $relations[$page->ID] : 0; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
+                                        $assigned_tab_name  = ''; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
+                                        $assigned_tab_color = '#666'; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
 
                                         if ($assigned_tab_id > 0) {
                                             foreach ($tabs as $tab) {
                                                 if ($tab->id == $assigned_tab_id) {
-                                                    $assigned_tab_name  = $tab->name;
-                                                    $assigned_tab_color = $tab->color;
+                                                    $assigned_tab_name  = $tab->name; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
+                                                    $assigned_tab_color = $tab->color; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
                                                     break;
                                                 }
                                             }

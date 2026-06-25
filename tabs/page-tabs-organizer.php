@@ -13,13 +13,13 @@ if (!defined('ABSPATH')) {
 }
 
 if (!defined('DTPT_PLUGIN_URL')) {
-    define('DTPT_PLUGIN_URL', plugin_dir_url(__FILE__));
+    define('DTPT_PLUGIN_URL', plugin_dir_url(__FILE__)); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- DTPT is this module's unique prefix.
 }
 if (!defined('DTPT_PLUGIN_PATH')) {
-    define('DTPT_PLUGIN_PATH', plugin_dir_path(__FILE__));
+    define('DTPT_PLUGIN_PATH', plugin_dir_path(__FILE__)); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- DTPT is this module's unique prefix.
 }
 if (!defined('DTPT_VERSION')) {
-    define('DTPT_VERSION', '1.0.8');
+    define('DTPT_VERSION', '1.0.8'); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- DTPT is this module's unique prefix.
 }
 
 if (!class_exists('DevToolsPageTabs')) :
@@ -91,8 +91,8 @@ class DevToolsPageTabs {
         global $wpdb;
         $relations = $wpdb->prefix . 'page_tab_relations';
         $tabs      = $wpdb->prefix . 'page_tabs';
-        $wpdb->query("DROP TABLE IF EXISTS {$relations}"); // phpcs:ignore WordPress.DB
-        $wpdb->query("DROP TABLE IF EXISTS {$tabs}");      // phpcs:ignore WordPress.DB
+        $wpdb->query("DROP TABLE IF EXISTS {$relations}"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
+        $wpdb->query("DROP TABLE IF EXISTS {$tabs}"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         delete_option(self::DB_VERSION_OPTION);
     }
 
@@ -152,11 +152,12 @@ class DevToolsPageTabs {
         global $wpdb;
         $table = $wpdb->prefix . 'page_tab_relations';
 
-        if ($wpdb->get_var("SHOW TABLES LIKE '{$table}'") !== $table) {
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$table}'") !== $table) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             return;
         }
 
         // Deduplicate by page_id, keeping the most recent row.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $wpdb->query(
             "DELETE r1 FROM {$table} r1
              INNER JOIN {$table} r2
@@ -164,19 +165,19 @@ class DevToolsPageTabs {
         );
 
         // Drop the legacy composite unique key if present.
-        if ($wpdb->get_results("SHOW INDEX FROM {$table} WHERE Key_name = 'page_tab'")) {
-            $wpdb->query("ALTER TABLE {$table} DROP INDEX page_tab");
+        if ($wpdb->get_results("SHOW INDEX FROM {$table} WHERE Key_name = 'page_tab'")) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
+            $wpdb->query("ALTER TABLE {$table} DROP INDEX page_tab"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         }
 
         // Ensure a UNIQUE key on page_id (replacing any non-unique one).
-        $page_id_index = $wpdb->get_results("SHOW INDEX FROM {$table} WHERE Key_name = 'page_id'");
+        $page_id_index = $wpdb->get_results("SHOW INDEX FROM {$table} WHERE Key_name = 'page_id'"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $is_unique     = $page_id_index && (int) $page_id_index[0]->Non_unique === 0;
 
         if (!$is_unique) {
             if ($page_id_index) {
-                $wpdb->query("ALTER TABLE {$table} DROP INDEX page_id");
+                $wpdb->query("ALTER TABLE {$table} DROP INDEX page_id"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             }
-            $wpdb->query("ALTER TABLE {$table} ADD UNIQUE KEY page_id (page_id)");
+            $wpdb->query("ALTER TABLE {$table} ADD UNIQUE KEY page_id (page_id)"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         }
     }
 
@@ -279,6 +280,7 @@ class DevToolsPageTabs {
             $views['all'] = $original_views['all'];
         }
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $tabs = $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM {$wpdb->prefix}page_tabs WHERE post_type = %s ORDER BY position ASC, name ASC",
             $current_post_type
@@ -286,6 +288,7 @@ class DevToolsPageTabs {
 
         if ($tabs) {
             // Single aggregate query instead of one COUNT per tab (no N+1).
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             $counts = $wpdb->get_results($wpdb->prepare(
                 "SELECT ptr.tab_id, COUNT(*) AS c
                  FROM {$wpdb->prefix}page_tab_relations ptr
@@ -295,7 +298,7 @@ class DevToolsPageTabs {
                 $current_post_type
             ), OBJECT_K);
 
-            $active_filter = isset($_GET['tab_filter']) ? absint(wp_unslash($_GET['tab_filter'])) : 0;
+            $active_filter = isset($_GET['tab_filter']) ? absint(wp_unslash($_GET['tab_filter'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only list filter; no state change.
 
             foreach ($tabs as $index => $tab) {
                 $count = isset($counts[$tab->id]) ? (int) $counts[$tab->id]->c : 0;
@@ -335,13 +338,14 @@ class DevToolsPageTabs {
             return;
         }
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $tabs = $wpdb->get_results($wpdb->prepare(
             "SELECT * FROM {$wpdb->prefix}page_tabs WHERE post_type = %s ORDER BY position ASC, name ASC",
             $typenow
         ));
 
         if ($tabs) {
-            $selected = isset($_GET['tab_filter']) ? absint(wp_unslash($_GET['tab_filter'])) : '';
+            $selected = isset($_GET['tab_filter']) ? absint(wp_unslash($_GET['tab_filter'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only list filter; no state change.
 
             echo '<select name="tab_filter">';
             echo '<option value="">' . esc_html__('All tabs', 'dev-tools') . '</option>';
@@ -362,12 +366,14 @@ class DevToolsPageTabs {
     public function filter_posts_by_tab($vars) {
         global $typenow, $wpdb;
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only list filter; no state change.
         if (!array_key_exists($typenow, $this->get_supported_post_types())
             || !isset($_GET['tab_filter']) || '' === $_GET['tab_filter']) {
             return $vars;
         }
 
-        $tab_id   = absint(wp_unslash($_GET['tab_filter']));
+        $tab_id   = absint(wp_unslash($_GET['tab_filter'])); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only list filter; no state change.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $post_ids = $wpdb->get_col($wpdb->prepare(
             "SELECT ptr.page_id FROM {$wpdb->prefix}page_tab_relations ptr
              JOIN {$wpdb->prefix}posts p ON ptr.page_id = p.ID
@@ -453,6 +459,7 @@ class DevToolsPageTabs {
     private function get_tabs_for_post_type($post_type) {
         if (!isset($this->tabs_cache[$post_type])) {
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             $this->tabs_cache[$post_type] = $wpdb->get_results($wpdb->prepare(
                 "SELECT id, name, color FROM {$wpdb->prefix}page_tabs WHERE post_type = %s ORDER BY position ASC, name ASC",
                 $post_type
@@ -468,7 +475,7 @@ class DevToolsPageTabs {
         if (null === $this->relations_cache) {
             global $wpdb;
             $this->relations_cache = array();
-            $rows = $wpdb->get_results("SELECT page_id, tab_id FROM {$wpdb->prefix}page_tab_relations");
+            $rows = $wpdb->get_results("SELECT page_id, tab_id FROM {$wpdb->prefix}page_tab_relations"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             foreach ((array) $rows as $row) {
                 $this->relations_cache[(int) $row->page_id] = (int) $row->tab_id;
             }
@@ -501,11 +508,13 @@ class DevToolsPageTabs {
 
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $next_position = $wpdb->get_var($wpdb->prepare(
             "SELECT MAX(position) + 1 FROM {$wpdb->prefix}page_tabs WHERE post_type = %s",
             $post_type
         )) ?: 0;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         $result = $wpdb->insert(
             $wpdb->prefix . 'page_tabs',
             array(
@@ -557,6 +566,7 @@ class DevToolsPageTabs {
         );
 
         if ($tab_id > 0) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
             $result = $wpdb->update(
                 $wpdb->prefix . 'page_tabs',
                 $data,
@@ -565,6 +575,7 @@ class DevToolsPageTabs {
                 array('%d')
             );
         } else {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
             $result = $wpdb->insert(
                 $wpdb->prefix . 'page_tabs',
                 $data,
@@ -597,8 +608,8 @@ class DevToolsPageTabs {
 
         global $wpdb;
 
-        $wpdb->delete($wpdb->prefix . 'page_tab_relations', array('tab_id' => $tab_id), array('%d'));
-        $result = $wpdb->delete($wpdb->prefix . 'page_tabs', array('id' => $tab_id), array('%d'));
+        $wpdb->delete($wpdb->prefix . 'page_tab_relations', array('tab_id' => $tab_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
+        $result = $wpdb->delete($wpdb->prefix . 'page_tabs', array('id' => $tab_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
 
         if (false !== $result) {
             wp_send_json_success(__('Tab deleted successfully.', 'dev-tools'));
@@ -622,6 +633,7 @@ class DevToolsPageTabs {
         global $wpdb;
 
         if ($tab_id === 0) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
             $result = $wpdb->delete(
                 $wpdb->prefix . 'page_tab_relations',
                 array('page_id' => $page_id),
@@ -632,6 +644,7 @@ class DevToolsPageTabs {
                 wp_send_json_error(__('Invalid tab.', 'dev-tools'), 400);
             }
 
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
             $result = $wpdb->replace(
                 $wpdb->prefix . 'page_tab_relations',
                 array('page_id' => $page_id, 'tab_id' => $tab_id),
@@ -642,6 +655,7 @@ class DevToolsPageTabs {
         if (false !== $result) {
             $tab_name = '';
             if ($tab_id > 0) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
                 $tab_name = $wpdb->get_var($wpdb->prepare(
                     "SELECT name FROM {$wpdb->prefix}page_tabs WHERE id = %d",
                     $tab_id
@@ -676,6 +690,7 @@ class DevToolsPageTabs {
 
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         $result = $wpdb->replace(
             $wpdb->prefix . 'page_tab_relations',
             array('page_id' => $page_id, 'tab_id' => $tab_id),
@@ -701,6 +716,7 @@ class DevToolsPageTabs {
 
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         $result = $wpdb->delete(
             $wpdb->prefix . 'page_tab_relations',
             array('page_id' => $page_id, 'tab_id' => $tab_id),
@@ -719,6 +735,7 @@ class DevToolsPageTabs {
      */
     private function tab_exists(int $tab_id): bool {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         return (bool) $wpdb->get_var($wpdb->prepare(
             "SELECT id FROM {$wpdb->prefix}page_tabs WHERE id = %d",
             $tab_id

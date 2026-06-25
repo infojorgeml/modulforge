@@ -29,7 +29,7 @@ require_once __DIR__ . '/dev-tools.php';
 
 if (class_exists('DevTools')) {
     // Clean every module — including inactive ones — so nothing is left behind.
-    foreach (DevTools::get_mini_plugin_definitions() as $plugin_key => $data) {
+    foreach (DevTools::get_mini_plugin_definitions() as $plugin_key => $data) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
         DevTools::run_lifecycle($plugin_key, 'uninstall');
     }
 }

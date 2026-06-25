@@ -135,7 +135,7 @@ class DevToolsPageState {
     }
 
     private function render_notes_column($post_id) {
-        $notes = esc_textarea(get_post_meta($post_id, 'page_notes', true));
+        $notes = get_post_meta($post_id, 'page_notes', true);
         ?>
         <div class="page-notes-container">
             <textarea
@@ -144,7 +144,7 @@ class DevToolsPageState {
                 rows="2"
                 style="width: 100%; min-height: 60px; resize: vertical;"
                 placeholder="<?php esc_attr_e('Add notes...', 'dev-tools'); ?>"
-            ><?php echo $notes; ?></textarea>
+            ><?php echo esc_textarea($notes); ?></textarea>
             <div class="page-notes-status" style="font-size: 11px; color: #666; margin-top: 3px;"></div>
         </div>
         <?php
@@ -182,7 +182,7 @@ class DevToolsPageState {
      * Load admin scripts and styles on the pages list screen only.
      */
     public function enqueue_admin_scripts($hook) {
-        $post_type = isset($_GET['post_type']) ? sanitize_key(wp_unslash($_GET['post_type'])) : '';
+        $post_type = isset($_GET['post_type']) ? sanitize_key(wp_unslash($_GET['post_type'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check to scope asset loading; no data is processed.
         if ($hook !== 'edit.php' || $post_type !== 'page') {
             return;
         }
@@ -217,7 +217,7 @@ class DevToolsPageState {
         check_ajax_referer('dtps_nonce', 'nonce');
 
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
-        $status  = isset($_POST['status']) ? $this->sanitize_status(wp_unslash($_POST['status'])) : '';
+        $status  = isset($_POST['status']) ? $this->sanitize_status(wp_unslash($_POST['status'])) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_status() whitelists the value.
 
         if (!$post_id || get_post_type($post_id) !== 'page') {
             wp_send_json_error(['message' => __('Invalid page ID', 'dev-tools')]);
