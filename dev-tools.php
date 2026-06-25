@@ -3,8 +3,11 @@
 Plugin Name: DevTools
 Description: Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins.
 Version: 2.1.4
+Requires at least: 6.0
+Requires PHP: 7.4
 Author: JorgeML
-License: GPLv2 or later
+Author URI: https://suitedevtools.com
+License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: dev-tools
 Domain Path: /languages
