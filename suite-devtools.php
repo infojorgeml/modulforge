@@ -1,15 +1,15 @@
 <?php
 /*
-Plugin Name: DevTools
-Description: Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins.
-Version: 2.1.4
+Plugin Name: Suite DevTools
+Description: Controller that manages and lets you toggle bundled developer mini-tools individually.
+Version: 2.2.0
 Requires at least: 6.0
 Requires PHP: 7.4
 Author: JorgeML
 Author URI: https://suitedevtools.com
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: dev-tools
+Text Domain: suite-devtools
 Domain Path: /languages
 */
 
@@ -22,10 +22,10 @@ if (!defined('ABSPATH')) {
  * Main DevTools Plugin Controller.
  */
 final class DevTools {
-    private const VERSION       = '2.1.4';
+    private const VERSION       = '2.2.0';
     private const OPTION_KEY     = 'dev_tools_active_plugins';
     private const OPTION_DELETE_DATA = 'dev_tools_delete_data_on_uninstall';
-    private const MENU_SLUG   = 'dev-tools';
+    private const MENU_SLUG   = 'suite-devtools';
     private const CAPABILITY  = 'manage_options';
     private const NONCE_FIELD = 'nonce';
     private const NONCE_ACTION = 'dev_tools_toggle_plugin';
@@ -209,24 +209,24 @@ final class DevTools {
     private static function get_mini_plugin_labels(): array {
         return array(
             'page-state'   => array(
-                'name'        => __('Page State Management', 'dev-tools'),
-                'description' => __('Complete page state management system with status tracking, notes, and responsive design checkboxes.', 'dev-tools'),
+                'name'        => __('Page State Management', 'suite-devtools'),
+                'description' => __('Complete page state management system with status tracking, notes, and responsive design checkboxes.', 'suite-devtools'),
             ),
             'page-tabs'    => array(
-                'name'        => __('Page Tabs Organizer', 'dev-tools'),
-                'description' => __('Organize WordPress pages with customizable tabs to improve admin panel management.', 'dev-tools'),
+                'name'        => __('Page Tabs Organizer', 'suite-devtools'),
+                'description' => __('Organize WordPress pages with customizable tabs to improve admin panel management.', 'suite-devtools'),
             ),
             'comment-pins' => array(
-                'name'        => __('Comment Pins', 'dev-tools'),
-                'description' => __('Visual comment pins system for WordPress. Add visual comments anywhere on a page.', 'dev-tools'),
+                'name'        => __('Comment Pins', 'suite-devtools'),
+                'description' => __('Visual comment pins system for WordPress. Add visual comments anywhere on a page.', 'suite-devtools'),
             ),
             'debug-tools'  => array(
-                'name'        => __('Debug & Logs', 'dev-tools'),
-                'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'dev-tools'),
+                'name'        => __('Debug & Logs', 'suite-devtools'),
+                'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'suite-devtools'),
             ),
             'convert-webp' => array(
-                'name'        => __('Convert to WebP', 'dev-tools'),
-                'description' => __('Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals.', 'dev-tools'),
+                'name'        => __('Convert to WebP', 'suite-devtools'),
+                'description' => __('Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals.', 'suite-devtools'),
             ),
         );
     }
@@ -256,8 +256,8 @@ final class DevTools {
      */
     public function add_admin_menu(): void {
         add_menu_page(
-            __('DevTools', 'dev-tools'),
-            __('DevTools', 'dev-tools'),
+            __('Suite DevTools', 'suite-devtools'),
+            __('Suite DevTools', 'suite-devtools'),
             self::CAPABILITY,
             self::MENU_SLUG,
             array($this, 'render_admin_page'),
@@ -268,8 +268,8 @@ final class DevTools {
         // Rename the auto-generated first submenu (a duplicate "DevTools") to "Tools".
         add_submenu_page(
             self::MENU_SLUG,
-            __('Tools', 'dev-tools'),
-            __('Tools', 'dev-tools'),
+            __('Tools', 'suite-devtools'),
+            __('Tools', 'suite-devtools'),
             self::CAPABILITY,
             self::MENU_SLUG,
             array($this, 'render_admin_page')
@@ -286,7 +286,7 @@ final class DevTools {
         $settings = sprintf(
             '<a href="%s">%s</a>',
             esc_url(admin_url('admin.php?page=' . self::MENU_SLUG)),
-            esc_html__('Settings', 'dev-tools')
+            esc_html__('Settings', 'suite-devtools')
         );
         array_unshift($links, $settings);
         return $links;
@@ -322,12 +322,12 @@ final class DevTools {
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce(self::NONCE_ACTION),
                 'strings'  => array(
-                    'activating'        => __('Activating...', 'dev-tools'),
-                    'deactivating'      => __('Deactivating...', 'dev-tools'),
-                    'error'             => __('Operation error', 'dev-tools'),
-                    'generic_error'     => __('An unexpected error occurred. Please try again.', 'dev-tools'),
+                    'activating'        => __('Activating...', 'suite-devtools'),
+                    'deactivating'      => __('Deactivating...', 'suite-devtools'),
+                    'error'             => __('Operation error', 'suite-devtools'),
+                    'generic_error'     => __('An unexpected error occurred. Please try again.', 'suite-devtools'),
                     /* translators: %s: mini-plugin name. */
-                    'toggle_hint'       => __('Click the switch to activate or deactivate %s.', 'dev-tools'),
+                    'toggle_hint'       => __('Click the switch to activate or deactivate %s.', 'suite-devtools'),
                 ),
             )
         );
@@ -340,7 +340,7 @@ final class DevTools {
         ?>
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            <p class="description"><?php esc_html_e('Manage the mini-plugins included in DevTools. You can activate or deactivate each one according to your needs.', 'dev-tools'); ?></p>
+            <p class="description"><?php esc_html_e('Manage the mini-plugins included in Suite DevTools. You can activate or deactivate each one according to your needs.', 'suite-devtools'); ?></p>
 
             <div class="devtools-plugins-grid">
                 <?php foreach ($this->mini_plugins as $plugin_key => $plugin_data) : ?>
@@ -395,35 +395,35 @@ final class DevTools {
     private function render_information_section(): void {
         ?>
         <div class="devtools-info-section">
-            <h2><?php esc_html_e('Information', 'dev-tools'); ?></h2>
+            <h2><?php esc_html_e('Information', 'suite-devtools'); ?></h2>
             <div class="devtools-info-grid">
                 <div class="devtools-info-card">
-                    <h4><?php esc_html_e('How does it work?', 'dev-tools'); ?></h4>
-                    <p><?php esc_html_e('DevTools acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance.', 'dev-tools'); ?></p>
+                    <h4><?php esc_html_e('How does it work?', 'suite-devtools'); ?></h4>
+                    <p><?php esc_html_e('Suite DevTools acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance.', 'suite-devtools'); ?></p>
                 </div>
                 <div class="devtools-info-card">
-                    <h4><?php esc_html_e('Included mini-plugins', 'dev-tools'); ?></h4>
+                    <h4><?php esc_html_e('Included mini-plugins', 'suite-devtools'); ?></h4>
                     <ul>
                         <li>
-                            <strong><?php esc_html_e('Page State Management:', 'dev-tools'); ?></strong>
-                            <?php esc_html_e('Page state management', 'dev-tools'); ?>
+                            <strong><?php esc_html_e('Page State Management:', 'suite-devtools'); ?></strong>
+                            <?php esc_html_e('Page state management', 'suite-devtools'); ?>
                         </li>
                         <li>
-                            <strong><?php esc_html_e('Page Tabs Organizer:', 'dev-tools'); ?></strong>
-                            <?php esc_html_e('Tab organization', 'dev-tools'); ?>
+                            <strong><?php esc_html_e('Page Tabs Organizer:', 'suite-devtools'); ?></strong>
+                            <?php esc_html_e('Tab organization', 'suite-devtools'); ?>
                         </li>
                         <li>
-                            <strong><?php esc_html_e('Comment Pins:', 'dev-tools'); ?></strong>
-                            <?php esc_html_e('Visual comment system', 'dev-tools'); ?>
+                            <strong><?php esc_html_e('Comment Pins:', 'suite-devtools'); ?></strong>
+                            <?php esc_html_e('Visual comment system', 'suite-devtools'); ?>
                         </li>
                     </ul>
                 </div>
                 <div class="devtools-info-card">
-                    <h4><?php esc_html_e('Data on uninstall', 'dev-tools'); ?></h4>
-                    <p><?php esc_html_e('By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled.', 'dev-tools'); ?></p>
+                    <h4><?php esc_html_e('Data on uninstall', 'suite-devtools'); ?></h4>
+                    <p><?php esc_html_e('By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled.', 'suite-devtools'); ?></p>
                     <label class="devtools-uninstall-pref">
                         <input type="checkbox" id="devtools-delete-data" <?php checked((bool) get_option(self::OPTION_DELETE_DATA, false)); ?> />
-                        <?php esc_html_e('Delete all data on uninstall', 'dev-tools'); ?>
+                        <?php esc_html_e('Delete all data on uninstall', 'suite-devtools'); ?>
                     </label>
                 </div>
             </div>
@@ -547,7 +547,7 @@ final class DevTools {
 
         if (!current_user_can(self::CAPABILITY)) {
             wp_send_json_error(array(
-                'message' => __('You do not have permission to perform this action.', 'dev-tools'),
+                'message' => __('You do not have permission to perform this action.', 'suite-devtools'),
             ));
         }
 
@@ -555,13 +555,13 @@ final class DevTools {
 
         if ('' === $plugin_key || !isset($this->mini_plugins[$plugin_key])) {
             wp_send_json_error(array(
-                'message' => __('Plugin not found.', 'dev-tools'),
+                'message' => __('Plugin not found.', 'suite-devtools'),
             ));
         }
 
         if (!isset($_POST['should_activate'])) {
             wp_send_json_error(array(
-                'message' => __('Invalid request.', 'dev-tools'),
+                'message' => __('Invalid request.', 'suite-devtools'),
             ));
         }
 
@@ -573,7 +573,7 @@ final class DevTools {
             wp_send_json_success(array(
                 'message'     => sprintf(
                     /* translators: %s: mini-plugin name. */
-                    __('%s activated successfully.', 'dev-tools'),
+                    __('%s activated successfully.', 'suite-devtools'),
                     self::get_mini_plugin_label($plugin_key)['name']
                 ),
                 'status'      => 'active',
@@ -585,7 +585,7 @@ final class DevTools {
         wp_send_json_success(array(
             'message'     => sprintf(
                 /* translators: %s: mini-plugin name. */
-                __('%s deactivated successfully.', 'dev-tools'),
+                __('%s deactivated successfully.', 'suite-devtools'),
                 self::get_mini_plugin_label($plugin_key)['name']
             ),
             'status'      => 'inactive',
@@ -600,7 +600,7 @@ final class DevTools {
 
         if (!current_user_can(self::CAPABILITY)) {
             wp_send_json_error(array(
-                'message' => __('You do not have permission to perform this action.', 'dev-tools'),
+                'message' => __('You do not have permission to perform this action.', 'suite-devtools'),
             ));
         }
 
@@ -610,8 +610,8 @@ final class DevTools {
         wp_send_json_success(array(
             'enabled' => $enabled,
             'message' => $enabled
-                ? __('Plugin data will be deleted on uninstall.', 'dev-tools')
-                : __('Plugin data will be kept on uninstall.', 'dev-tools'),
+                ? __('Plugin data will be deleted on uninstall.', 'suite-devtools')
+                : __('Plugin data will be kept on uninstall.', 'suite-devtools'),
         ));
     }
 }

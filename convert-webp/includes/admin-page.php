@@ -13,71 +13,71 @@ if (!defined('ABSPATH')) {
 }
 ?>
 <div class="wrap devtools-webp">
-    <h1><?php esc_html_e('Convert to WebP', 'dev-tools'); ?></h1>
+    <h1><?php esc_html_e('Convert to WebP', 'suite-devtools'); ?></h1>
     <p class="description">
-        <?php esc_html_e('Convert JPEG and PNG images to WebP to reduce their file size. New uploads can be converted automatically, and you can bulk-convert everything already in the media library.', 'dev-tools'); ?>
+        <?php esc_html_e('Convert JPEG and PNG images to WebP to reduce their file size. New uploads can be converted automatically, and you can bulk-convert everything already in the media library.', 'suite-devtools'); ?>
     </p>
 
     <?php if (!$supported) : ?>
         <div class="notice notice-error">
             <p>
-                <strong><?php esc_html_e('WebP is not available on this server.', 'dev-tools'); ?></strong>
-                <?php esc_html_e('Neither GD (with WebP support) nor Imagick is available, so images cannot be converted. Ask your host to enable WebP support in PHP.', 'dev-tools'); ?>
+                <strong><?php esc_html_e('WebP is not available on this server.', 'suite-devtools'); ?></strong>
+                <?php esc_html_e('Neither GD (with WebP support) nor Imagick is available, so images cannot be converted. Ask your host to enable WebP support in PHP.', 'suite-devtools'); ?>
             </p>
         </div>
     <?php else : ?>
 
-        <h2 class="title"><?php esc_html_e('Settings', 'dev-tools'); ?></h2>
+        <h2 class="title"><?php esc_html_e('Settings', 'suite-devtools'); ?></h2>
         <table class="form-table" role="presentation">
             <tbody>
                 <tr>
-                    <th scope="row"><?php esc_html_e('Automatic conversion', 'dev-tools'); ?></th>
+                    <th scope="row"><?php esc_html_e('Automatic conversion', 'suite-devtools'); ?></th>
                     <td>
                         <label for="dtw-auto-upload">
                             <input type="checkbox" id="dtw-auto-upload" <?php checked(!empty($settings['auto_upload'])); ?> />
-                            <?php esc_html_e('Convert new JPEG/PNG uploads to WebP automatically', 'dev-tools'); ?>
+                            <?php esc_html_e('Convert new JPEG/PNG uploads to WebP automatically', 'suite-devtools'); ?>
                         </label>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="dtw-quality"><?php esc_html_e('WebP quality', 'dev-tools'); ?></label>
+                        <label for="dtw-quality"><?php esc_html_e('WebP quality', 'suite-devtools'); ?></label>
                     </th>
                     <td>
                         <input type="number" id="dtw-quality" class="small-text" min="1" max="100" step="1" value="<?php echo esc_attr($settings['quality']); ?>" />
                         <span>/ 100</span>
-                        <p class="description"><?php esc_html_e('Higher means better quality and larger files. 80–85 is a good balance.', 'dev-tools'); ?></p>
+                        <p class="description"><?php esc_html_e('Higher means better quality and larger files. 80–85 is a good balance.', 'suite-devtools'); ?></p>
                     </td>
                 </tr>
             </tbody>
         </table>
         <p>
-            <button type="button" class="button button-primary" id="dtw-save"><?php esc_html_e('Save settings', 'dev-tools'); ?></button>
+            <button type="button" class="button button-primary" id="dtw-save"><?php esc_html_e('Save settings', 'suite-devtools'); ?></button>
             <span id="dtw-settings-msg" class="devtools-webp-msg" role="status" aria-live="polite"></span>
         </p>
 
         <hr />
 
-        <h2 class="title"><?php esc_html_e('Bulk convert the media library', 'dev-tools'); ?></h2>
-        <p id="dtw-pending" class="devtools-webp-pending"><?php esc_html_e('Scanning the media library…', 'dev-tools'); ?></p>
+        <h2 class="title"><?php esc_html_e('Bulk convert the media library', 'suite-devtools'); ?></h2>
+        <p id="dtw-pending" class="devtools-webp-pending"><?php esc_html_e('Scanning the media library…', 'suite-devtools'); ?></p>
 
         <div class="notice notice-warning devtools-webp-warning inline">
             <p>
-                <strong><?php esc_html_e('This cannot be undone.', 'dev-tools'); ?></strong>
-                <?php esc_html_e('Each image is replaced by a WebP version and the original JPEG/PNG files (including every generated size) are permanently deleted. There is no backup. Make sure you have your own backup before continuing.', 'dev-tools'); ?>
+                <strong><?php esc_html_e('This cannot be undone.', 'suite-devtools'); ?></strong>
+                <?php esc_html_e('Each image is replaced by a WebP version and the original JPEG/PNG files (including every generated size) are permanently deleted. There is no backup. Make sure you have your own backup before continuing.', 'suite-devtools'); ?>
             </p>
         </div>
 
         <p>
             <label for="dtw-confirm">
                 <input type="checkbox" id="dtw-confirm" />
-                <?php esc_html_e('I understand this permanently deletes the original images and cannot be undone.', 'dev-tools'); ?>
+                <?php esc_html_e('I understand this permanently deletes the original images and cannot be undone.', 'suite-devtools'); ?>
             </label>
         </p>
 
         <p>
             <button type="button" class="button button-primary" id="dtw-convert-all" disabled>
-                <?php esc_html_e('Convert all to WebP', 'dev-tools'); ?>
+                <?php esc_html_e('Convert all to WebP', 'suite-devtools'); ?>
             </button>
         </p>
 

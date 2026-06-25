@@ -1,10 +1,10 @@
-=== DevTools ===
+=== Suite DevTools ===
 Contributors: jorgemml
 Tags: development, admin, debug, webp, tabs
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.1.4
+Stable tag: 2.2.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Controller that bundles developer mini-tools you can toggle individually: page s
 
 == Description ==
 
-DevTools is a lightweight controller that groups several developer-oriented mini-tools as modules you can activate or deactivate individually from a single screen. Each module is only loaded when active, so you only pay for what you use.
+Suite DevTools is a lightweight controller that groups several developer-oriented mini-tools as modules you can activate or deactivate individually from a single screen. Each module is only loaded when active, so you only pay for what you use.
 
 Included modules:
 
@@ -22,13 +22,13 @@ Included modules:
 * **Debug & Logs** — toggle WordPress debugging and read the debug log from the admin, without FTP.
 * **Convert to WebP** — bulk-convert the media library and auto-convert new uploads from JPEG/PNG to WebP.
 
-Manage everything from **DevTools → Tools**: flip a switch to activate or deactivate each module.
+Manage everything from **Suite DevTools → Tools**: flip a switch to activate or deactivate each module.
 
 == Installation ==
 
-1. Upload the `dev-tools` folder to `/wp-content/plugins/`, or install the ZIP from **Plugins → Add New → Upload Plugin**.
-2. Activate **DevTools** through the **Plugins** screen.
-3. Go to **DevTools → Tools** and enable the modules you want.
+1. Upload the `suite-devtools` folder to `/wp-content/plugins/`, or install the ZIP from **Plugins → Add New → Upload Plugin**.
+2. Activate **Suite DevTools** through the **Plugins** screen.
+3. Go to **Suite DevTools → Tools** and enable the modules you want.
 
 == Frequently Asked Questions ==
 
@@ -42,9 +42,21 @@ No. Bulk conversion replaces and deletes the original JPEG/PNG files (and their 
 
 = What happens to my data when I uninstall? =
 
-By default your data is kept. You can opt in (from the DevTools screen) to delete all plugin data — including custom tables — on uninstall.
+By default your data is kept. You can opt in (from the Suite DevTools screen) to delete all plugin data — including custom tables — on uninstall.
+
+== Source Code ==
+
+The complete source ships inside the plugin. The only compiled asset is the Comment Pins block, a React component built with [@wordpress/scripts](https://www.npmjs.com/package/@wordpress/scripts). Its unminified source is included under `comment-pins/src/`, alongside the compiled `comment-pins/build/`.
+
+To rebuild the block from source (requires Node.js):
+
+`cd comment-pins && npm install && npm run build`
 
 == Changelog ==
+
+= 2.2.0 =
+* Rebranded to **Suite DevTools** (slug `suite-devtools`) for the WordPress.org directory.
+* Ship the Comment Pins block source (`comment-pins/src/`) and document the build process.
 
 = 2.1.4 =
 * WordPress.org readiness: added GPL license headers and a readme, removed manual textdomain loading (auto-loaded since WP 4.6), and applied input-sanitization / output-escaping and filesystem fixes flagged by Plugin Check.
@@ -66,5 +78,5 @@ By default your data is kept. You can opt in (from the DevTools screen) to delet
 
 == Upgrade Notice ==
 
-= 2.1.4 =
-Housekeeping release that prepares the plugin for the WordPress.org directory. No functional changes to the modules.
+= 2.2.0 =
+Rebrand to Suite DevTools for the WordPress.org directory. No functional changes to the modules.

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: DevTools Convert to WebP
+ * Plugin Name: Suite DevTools Convert to WebP
  * Description: Convert JPEG/PNG media to WebP — bulk-convert the existing library and auto-convert new uploads. Replaces and removes the originals.
  * Version: 1.0.0
  * Author: Jorge ML
@@ -101,9 +101,9 @@ class DevToolsWebP {
 
     public function add_admin_menu() {
         $this->page_hook = add_submenu_page(
-            'dev-tools',
-            __('Convert to WebP', 'dev-tools'),
-            __('Convert to WebP', 'dev-tools'),
+            'suite-devtools',
+            __('Convert to WebP', 'suite-devtools'),
+            __('Convert to WebP', 'suite-devtools'),
             self::CAPABILITY,
             self::MENU_SLUG,
             array($this, 'render_admin_page')
@@ -112,7 +112,7 @@ class DevToolsWebP {
 
     public function render_admin_page() {
         if (!current_user_can(self::CAPABILITY)) {
-            wp_die(esc_html__('You do not have permission to access this page.', 'dev-tools'));
+            wp_die(esc_html__('You do not have permission to access this page.', 'suite-devtools'));
         }
         $settings  = self::get_settings();
         $supported = self::server_supports_webp();
@@ -143,19 +143,19 @@ class DevToolsWebP {
             'nonce'     => wp_create_nonce(self::NONCE_ACTION),
             'supported' => self::server_supports_webp(),
             'i18n'      => array(
-                'saved'         => __('Settings saved.', 'dev-tools'),
-                'save_error'    => __('Could not save settings.', 'dev-tools'),
-                'connect_error' => __('Connection error. Please try again.', 'dev-tools'),
-                'scanning'      => __('Scanning the media library…', 'dev-tools'),
-                'none_pending'  => __('No JPEG or PNG images left to convert.', 'dev-tools'),
-                'converting'    => __('Converting…', 'dev-tools'),
-                'done'          => __('Finished.', 'dev-tools'),
-                'skipped'       => __('skipped', 'dev-tools'),
-                'failed'        => __('failed', 'dev-tools'),
+                'saved'         => __('Settings saved.', 'suite-devtools'),
+                'save_error'    => __('Could not save settings.', 'suite-devtools'),
+                'connect_error' => __('Connection error. Please try again.', 'suite-devtools'),
+                'scanning'      => __('Scanning the media library…', 'suite-devtools'),
+                'none_pending'  => __('No JPEG or PNG images left to convert.', 'suite-devtools'),
+                'converting'    => __('Converting…', 'suite-devtools'),
+                'done'          => __('Finished.', 'suite-devtools'),
+                'skipped'       => __('skipped', 'suite-devtools'),
+                'failed'        => __('failed', 'suite-devtools'),
                 /* translators: 1: number converted, 2: number skipped, 3: number failed, 4: human-readable size saved. */
-                'summary'       => __('Done: %1$s converted, %2$s skipped, %3$s failed. Saved %4$s.', 'dev-tools'),
+                'summary'       => __('Done: %1$s converted, %2$s skipped, %3$s failed. Saved %4$s.', 'suite-devtools'),
                 /* translators: %s: number of images pending conversion. */
-                'pending'       => __('%s image(s) ready to convert.', 'dev-tools'),
+                'pending'       => __('%s image(s) ready to convert.', 'suite-devtools'),
             ),
         ));
     }
@@ -166,10 +166,10 @@ class DevToolsWebP {
 
     private function verify(): void {
         if (!check_ajax_referer(self::NONCE_ACTION, 'nonce', false)) {
-            wp_send_json_error(array('message' => __('Security check failed.', 'dev-tools')), 403);
+            wp_send_json_error(array('message' => __('Security check failed.', 'suite-devtools')), 403);
         }
         if (!current_user_can(self::CAPABILITY)) {
-            wp_send_json_error(array('message' => __('Insufficient permissions.', 'dev-tools')), 403);
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'suite-devtools')), 403);
         }
     }
 
@@ -184,7 +184,7 @@ class DevToolsWebP {
 
         update_option(self::OPTION_KEY, $settings);
         wp_send_json_success(array(
-            'message'  => __('Settings saved.', 'dev-tools'),
+            'message'  => __('Settings saved.', 'suite-devtools'),
             'settings' => $settings,
         ));
     }
@@ -194,7 +194,7 @@ class DevToolsWebP {
         $this->verify();
 
         if (!self::server_supports_webp()) {
-            wp_send_json_error(array('message' => __('This server cannot generate WebP images.', 'dev-tools')), 400);
+            wp_send_json_error(array('message' => __('This server cannot generate WebP images.', 'suite-devtools')), 400);
         }
 
         $ids = get_posts(array(
@@ -217,7 +217,7 @@ class DevToolsWebP {
 
         $id = isset($_POST['id']) ? (int) wp_unslash($_POST['id']) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in verify(); value cast to int.
         if ($id <= 0) {
-            wp_send_json_error(array('message' => __('Invalid attachment ID.', 'dev-tools')));
+            wp_send_json_error(array('message' => __('Invalid attachment ID.', 'suite-devtools')));
         }
 
         $result = self::convert_attachment($id, true);
@@ -309,19 +309,19 @@ class DevToolsWebP {
         if ('image/webp' === $mime) {
             $result['success'] = true;
             $result['skipped'] = true;
-            $result['message'] = __('Already WebP.', 'dev-tools');
+            $result['message'] = __('Already WebP.', 'suite-devtools');
             return $result;
         }
         if (!in_array($mime, self::convertible_mimes(), true)) {
             $result['success'] = true;
             $result['skipped'] = true;
-            $result['message'] = __('Not a convertible image.', 'dev-tools');
+            $result['message'] = __('Not a convertible image.', 'suite-devtools');
             return $result;
         }
 
         $file = get_attached_file($attachment_id);
         if (!$file || !file_exists($file)) {
-            $result['message'] = __('Source file not found.', 'dev-tools');
+            $result['message'] = __('Source file not found.', 'suite-devtools');
             return $result;
         }
 
@@ -416,7 +416,7 @@ class DevToolsWebP {
         $result['success']     = true;
         $result['saved_bytes'] = max(0, $old_bytes - $new_bytes);
         /* translators: %s: human-readable size saved (e.g. "1.2 MB"). */
-        $result['message']     = sprintf(__('Converted — saved %s.', 'dev-tools'), size_format($result['saved_bytes']));
+        $result['message']     = sprintf(__('Converted — saved %s.', 'suite-devtools'), size_format($result['saved_bytes']));
         return $result;
     }
 

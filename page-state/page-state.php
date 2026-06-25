@@ -100,9 +100,9 @@ class DevToolsPageState {
         foreach ($columns as $key => $value) {
             $new_columns[$key] = $value;
             if ($key === 'title') {
-                $new_columns['page_status']     = __('Status', 'dev-tools');
-                $new_columns['page_notes']      = __('Notes', 'dev-tools');
-                $new_columns['page_responsive'] = __('Responsive', 'dev-tools');
+                $new_columns['page_status']     = __('Status', 'suite-devtools');
+                $new_columns['page_notes']      = __('Notes', 'suite-devtools');
+                $new_columns['page_responsive'] = __('Responsive', 'suite-devtools');
             }
         }
         return $new_columns;
@@ -122,11 +122,11 @@ class DevToolsPageState {
         $status = get_post_meta($post_id, 'page_status', true);
         ?>
         <select class="page-status-selector" data-post="<?php echo esc_attr($post_id); ?>">
-            <option value="">— <?php esc_html_e('None', 'dev-tools'); ?> —</option>
-            <option value="draft" <?php selected($status, 'draft'); ?>>⚪ <?php esc_html_e('Draft', 'dev-tools'); ?></option>
-            <option value="revision" <?php selected($status, 'revision'); ?>>🟡 <?php esc_html_e('Revision', 'dev-tools'); ?></option>
-            <option value="process" <?php selected($status, 'process'); ?>>🔵 <?php esc_html_e('In Progress', 'dev-tools'); ?></option>
-            <option value="done" <?php selected($status, 'done'); ?>>🟢 <?php esc_html_e('Done', 'dev-tools'); ?></option>
+            <option value="">— <?php esc_html_e('None', 'suite-devtools'); ?> —</option>
+            <option value="draft" <?php selected($status, 'draft'); ?>>⚪ <?php esc_html_e('Draft', 'suite-devtools'); ?></option>
+            <option value="revision" <?php selected($status, 'revision'); ?>>🟡 <?php esc_html_e('Revision', 'suite-devtools'); ?></option>
+            <option value="process" <?php selected($status, 'process'); ?>>🔵 <?php esc_html_e('In Progress', 'suite-devtools'); ?></option>
+            <option value="done" <?php selected($status, 'done'); ?>>🟢 <?php esc_html_e('Done', 'suite-devtools'); ?></option>
         </select>
         <div class="page-status-loading" style="display: none;">
             <span class="spinner" style="visibility: visible; float: none;"></span>
@@ -143,7 +143,7 @@ class DevToolsPageState {
                 data-post="<?php echo esc_attr($post_id); ?>"
                 rows="2"
                 style="width: 100%; min-height: 60px; resize: vertical;"
-                placeholder="<?php esc_attr_e('Add notes...', 'dev-tools'); ?>"
+                placeholder="<?php esc_attr_e('Add notes...', 'suite-devtools'); ?>"
             ><?php echo esc_textarea($notes); ?></textarea>
             <div class="page-notes-status" style="font-size: 11px; color: #666; margin-top: 3px;"></div>
         </div>
@@ -160,17 +160,17 @@ class DevToolsPageState {
                 <label class="responsive-checkbox-label">
                     <input type="checkbox" class="responsive-checkbox" data-device="desktop" <?php checked($desktop, true); ?>>
                     <span class="device-icon">🖥️</span>
-                    <span class="device-label"><?php esc_html_e('Desktop', 'dev-tools'); ?></span>
+                    <span class="device-label"><?php esc_html_e('Desktop', 'suite-devtools'); ?></span>
                 </label>
                 <label class="responsive-checkbox-label">
                     <input type="checkbox" class="responsive-checkbox" data-device="tablet" <?php checked($tablet, true); ?>>
                     <span class="device-icon">📱</span>
-                    <span class="device-label"><?php esc_html_e('Tablet', 'dev-tools'); ?></span>
+                    <span class="device-label"><?php esc_html_e('Tablet', 'suite-devtools'); ?></span>
                 </label>
                 <label class="responsive-checkbox-label">
                     <input type="checkbox" class="responsive-checkbox" data-device="mobile" <?php checked($mobile, true); ?>>
                     <span class="device-icon">📲</span>
-                    <span class="device-label"><?php esc_html_e('Mobile', 'dev-tools'); ?></span>
+                    <span class="device-label"><?php esc_html_e('Mobile', 'suite-devtools'); ?></span>
                 </label>
             </div>
             <div class="responsive-status" style="font-size: 11px; color: #666; margin-top: 3px;"></div>
@@ -199,9 +199,9 @@ class DevToolsPageState {
             'ajaxurl'  => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('dtps_nonce'),
             'messages' => [
-                'saved'  => __('Saved', 'dev-tools'),
-                'saving' => __('Saving...', 'dev-tools'),
-                'error'  => __('Error saving', 'dev-tools'),
+                'saved'  => __('Saved', 'suite-devtools'),
+                'saving' => __('Saving...', 'suite-devtools'),
+                'error'  => __('Error saving', 'suite-devtools'),
             ],
         ]);
 
@@ -220,15 +220,15 @@ class DevToolsPageState {
         $status  = isset($_POST['status']) ? $this->sanitize_status(wp_unslash($_POST['status'])) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_status() whitelists the value.
 
         if (!$post_id || get_post_type($post_id) !== 'page') {
-            wp_send_json_error(['message' => __('Invalid page ID', 'dev-tools')]);
+            wp_send_json_error(['message' => __('Invalid page ID', 'suite-devtools')]);
         }
 
         if (!current_user_can('edit_page', $post_id)) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'dev-tools')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'suite-devtools')]);
         }
 
         update_post_meta($post_id, 'page_status', $status);
-        wp_send_json_success(['message' => __('Status saved successfully', 'dev-tools')]);
+        wp_send_json_success(['message' => __('Status saved successfully', 'suite-devtools')]);
     }
 
     public function ajax_save_page_notes() {
@@ -238,15 +238,15 @@ class DevToolsPageState {
         $notes   = isset($_POST['notes']) ? sanitize_textarea_field(wp_unslash($_POST['notes'])) : '';
 
         if (!$post_id || get_post_type($post_id) !== 'page') {
-            wp_send_json_error(['message' => __('Invalid page ID', 'dev-tools')]);
+            wp_send_json_error(['message' => __('Invalid page ID', 'suite-devtools')]);
         }
 
         if (!current_user_can('edit_page', $post_id)) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'dev-tools')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'suite-devtools')]);
         }
 
         update_post_meta($post_id, 'page_notes', $notes);
-        wp_send_json_success(['message' => __('Notes saved successfully', 'dev-tools')]);
+        wp_send_json_success(['message' => __('Notes saved successfully', 'suite-devtools')]);
     }
 
     public function ajax_save_page_responsive() {
@@ -257,20 +257,20 @@ class DevToolsPageState {
         $checked = isset($_POST['checked']) ? rest_sanitize_boolean(wp_unslash($_POST['checked'])) : false;
 
         if (!$post_id || get_post_type($post_id) !== 'page') {
-            wp_send_json_error(['message' => __('Invalid page ID', 'dev-tools')]);
+            wp_send_json_error(['message' => __('Invalid page ID', 'suite-devtools')]);
         }
 
         if (!current_user_can('edit_page', $post_id)) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'dev-tools')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'suite-devtools')]);
         }
 
         $allowed_devices = ['desktop', 'tablet', 'mobile'];
         if (!in_array($device, $allowed_devices, true)) {
-            wp_send_json_error(['message' => __('Invalid device type', 'dev-tools')]);
+            wp_send_json_error(['message' => __('Invalid device type', 'suite-devtools')]);
         }
 
         update_post_meta($post_id, 'responsive_' . $device, $checked);
-        wp_send_json_success(['message' => __('Responsive status saved successfully', 'dev-tools')]);
+        wp_send_json_success(['message' => __('Responsive status saved successfully', 'suite-devtools')]);
     }
 }
 

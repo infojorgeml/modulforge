@@ -11,9 +11,9 @@ if (!defined('ABSPATH')) {
     <div class="dtpt-modal-wrap">
         <div class="dtpt-modal-content">
             <div class="dtpt-modal-header">
-                <h2><?php esc_html_e('Create New Tab', 'dev-tools'); ?></h2>
+                <h2><?php esc_html_e('Create New Tab', 'suite-devtools'); ?></h2>
                 <button type="button" class="dtpt-modal-close">
-                    <span class="screen-reader-text"><?php esc_html_e('Close modal', 'dev-tools'); ?></span>
+                    <span class="screen-reader-text"><?php esc_html_e('Close modal', 'suite-devtools'); ?></span>
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -23,20 +23,20 @@ if (!defined('ABSPATH')) {
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="quick-tab-name"><?php esc_html_e('Tab Name', 'dev-tools'); ?> *</label>
+                                <label for="quick-tab-name"><?php esc_html_e('Tab Name', 'suite-devtools'); ?> *</label>
                             </th>
                             <td>
                                 <input type="text" id="quick-tab-name" name="name" class="regular-text" required
-                                       placeholder="<?php esc_attr_e('E.g. Legal Pages, Services, Blog...', 'dev-tools'); ?>">
+                                       placeholder="<?php esc_attr_e('E.g. Legal Pages, Services, Blog...', 'suite-devtools'); ?>">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="quick-tab-color"><?php esc_html_e('Color', 'dev-tools'); ?></label>
+                                <label for="quick-tab-color"><?php esc_html_e('Color', 'suite-devtools'); ?></label>
                             </th>
                             <td>
                                 <input type="color" id="quick-tab-color" name="color" value="#0073aa">
-                                <p class="description"><?php esc_html_e('Pick a color to visually identify this tab', 'dev-tools'); ?></p>
+                                <p class="description"><?php esc_html_e('Pick a color to visually identify this tab', 'suite-devtools'); ?></p>
                             </td>
                         </tr>
                     </table>
@@ -45,10 +45,10 @@ if (!defined('ABSPATH')) {
 
             <div class="dtpt-modal-footer">
                 <button type="button" class="button" id="dtpt-modal-cancel">
-                    <?php esc_html_e('Cancel', 'dev-tools'); ?>
+                    <?php esc_html_e('Cancel', 'suite-devtools'); ?>
                 </button>
                 <button type="submit" form="dtpt-quick-tab-form" class="button button-primary" id="dtpt-modal-create">
-                    <span class="button-text"><?php esc_html_e('Create Tab', 'dev-tools'); ?></span>
+                    <span class="button-text"><?php esc_html_e('Create Tab', 'suite-devtools'); ?></span>
                     <span class="spinner"></span>
                 </button>
             </div>
@@ -62,9 +62,9 @@ if (!defined('ABSPATH')) {
     <div class="dtpt-modal-wrap">
         <div class="dtpt-modal-content">
             <div class="dtpt-modal-header">
-                <h2 id="dtpt-manage-tab-title"><?php esc_html_e('Manage Tab', 'dev-tools'); ?></h2>
+                <h2 id="dtpt-manage-tab-title"><?php esc_html_e('Manage Tab', 'suite-devtools'); ?></h2>
                 <button type="button" class="dtpt-modal-close">
-                    <span class="screen-reader-text"><?php esc_html_e('Close modal', 'dev-tools'); ?></span>
+                    <span class="screen-reader-text"><?php esc_html_e('Close modal', 'suite-devtools'); ?></span>
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -76,7 +76,7 @@ if (!defined('ABSPATH')) {
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="manage-tab-name"><?php esc_html_e('Tab Name', 'dev-tools'); ?> *</label>
+                                <label for="manage-tab-name"><?php esc_html_e('Tab Name', 'suite-devtools'); ?> *</label>
                             </th>
                             <td>
                                 <input type="text" id="manage-tab-name" name="name" class="regular-text" required>
@@ -84,16 +84,16 @@ if (!defined('ABSPATH')) {
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="manage-tab-description"><?php esc_html_e('Description', 'dev-tools'); ?></label>
+                                <label for="manage-tab-description"><?php esc_html_e('Description', 'suite-devtools'); ?></label>
                             </th>
                             <td>
                                 <textarea id="manage-tab-description" name="description" class="regular-text" rows="3"
-                                         placeholder="<?php esc_attr_e('Optional tab description', 'dev-tools'); ?>"></textarea>
+                                         placeholder="<?php esc_attr_e('Optional tab description', 'suite-devtools'); ?>"></textarea>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="manage-tab-color"><?php esc_html_e('Color', 'dev-tools'); ?></label>
+                                <label for="manage-tab-color"><?php esc_html_e('Color', 'suite-devtools'); ?></label>
                             </th>
                             <td>
                                 <input type="color" id="manage-tab-color" name="color" value="#0073aa">
@@ -101,11 +101,11 @@ if (!defined('ABSPATH')) {
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="manage-tab-position"><?php esc_html_e('Position', 'dev-tools'); ?></label>
+                                <label for="manage-tab-position"><?php esc_html_e('Position', 'suite-devtools'); ?></label>
                             </th>
                             <td>
                                 <input type="number" id="manage-tab-position" name="position" value="0" min="0">
-                                <p class="description"><?php esc_html_e('Display order (0 = first position)', 'dev-tools'); ?></p>
+                                <p class="description"><?php esc_html_e('Display order (0 = first position)', 'suite-devtools'); ?></p>
                             </td>
                         </tr>
                     </table>
@@ -114,14 +114,14 @@ if (!defined('ABSPATH')) {
 
             <div class="dtpt-modal-footer">
                 <button type="button" class="button button-link-delete" id="dtpt-modal-delete">
-                    <?php esc_html_e('Delete Tab', 'dev-tools'); ?>
+                    <?php esc_html_e('Delete Tab', 'suite-devtools'); ?>
                 </button>
                 <div class="dtpt-modal-actions-right">
                     <button type="button" class="button" id="dtpt-modal-cancel-manage">
-                        <?php esc_html_e('Cancel', 'dev-tools'); ?>
+                        <?php esc_html_e('Cancel', 'suite-devtools'); ?>
                     </button>
                     <button type="submit" form="dtpt-manage-tab-form" class="button button-primary" id="dtpt-modal-update">
-                        <span class="button-text"><?php esc_html_e('Update Tab', 'dev-tools'); ?></span>
+                        <span class="button-text"><?php esc_html_e('Update Tab', 'suite-devtools'); ?></span>
                         <span class="spinner"></span>
                     </button>
                 </div>

@@ -1,34 +1,39 @@
 # Copyright (C) 2026 JorgeML
-# This file is distributed under the same license as the DevTools plugin.
+# This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: DevTools 2.1.3\n"
+"Project-Id-Version: Suite DevTools 2.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dev-tools\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-23T20:42:32+00:00\n"
+"POT-Creation-Date: 2026-06-25T17:50:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: dev-tools\n"
+"X-Domain: suite-devtools\n"
 
 #. Plugin Name of the plugin
-#: dev-tools.php
-#: dev-tools.php:262
-#: dev-tools.php:263
-msgid "DevTools"
+#: suite-devtools.php
+#: suite-devtools.php:259
+#: suite-devtools.php:260
+msgid "Suite DevTools"
 msgstr ""
 
 #. Description of the plugin
-#: dev-tools.php
-msgid "Controller plugin that manages and allows individual activation/deactivation of WordPress mini-plugins."
+#: suite-devtools.php
+msgid "Controller that manages and lets you toggle bundled developer mini-tools individually."
 msgstr ""
 
 #. Author of the plugin
-#: dev-tools.php
+#: suite-devtools.php
 msgid "JorgeML"
+msgstr ""
+
+#. Author URI of the plugin
+#: suite-devtools.php
+msgid "https://suitedevtools.com"
 msgstr ""
 
 #: comment-pins/comment-pins.php:193
@@ -60,9 +65,9 @@ msgid "You"
 msgstr ""
 
 #: comment-pins/comment-pins.php:199
-#: comment-pins/comment-pins.php:373
-#: comment-pins/comment-pins.php:496
-#: comment-pins/comment-pins.php:551
+#: comment-pins/comment-pins.php:376
+#: comment-pins/comment-pins.php:503
+#: comment-pins/comment-pins.php:559
 msgid "User"
 msgstr ""
 
@@ -75,7 +80,7 @@ msgid "Error deleting comment"
 msgstr ""
 
 #: comment-pins/comment-pins.php:202
-#: tabs/page-tabs-organizer.php:250
+#: tabs/page-tabs-organizer.php:251
 msgid "Connection error"
 msgstr ""
 
@@ -198,12 +203,12 @@ msgid "Invalid anchor."
 msgstr ""
 
 #: comment-pins/comment-pins.php:286
-#: comment-pins/comment-pins.php:514
+#: comment-pins/comment-pins.php:521
 msgid "Comment cannot be empty."
 msgstr ""
 
 #: comment-pins/comment-pins.php:289
-#: comment-pins/comment-pins.php:517
+#: comment-pins/comment-pins.php:524
 msgid "Comment is too long."
 msgstr ""
 
@@ -211,64 +216,64 @@ msgstr ""
 msgid "Invalid pin position."
 msgstr ""
 
-#: comment-pins/comment-pins.php:314
-#: comment-pins/comment-pins.php:541
+#: comment-pins/comment-pins.php:315
+#: comment-pins/comment-pins.php:549
 msgid "Error saving comment."
 msgstr ""
 
-#: comment-pins/comment-pins.php:320
+#: comment-pins/comment-pins.php:321
 msgid "Comment saved successfully."
 msgstr ""
 
-#: comment-pins/comment-pins.php:392
-#: comment-pins/comment-pins.php:431
-#: comment-pins/comment-pins.php:474
-#: comment-pins/comment-pins.php:511
+#: comment-pins/comment-pins.php:395
+#: comment-pins/comment-pins.php:435
+#: comment-pins/comment-pins.php:480
+#: comment-pins/comment-pins.php:518
 msgid "Invalid pin."
 msgstr ""
 
-#: comment-pins/comment-pins.php:402
-#: comment-pins/comment-pins.php:437
-#: comment-pins/comment-pins.php:523
+#: comment-pins/comment-pins.php:406
+#: comment-pins/comment-pins.php:441
+#: comment-pins/comment-pins.php:530
 msgid "Pin not found."
 msgstr ""
 
-#: comment-pins/comment-pins.php:407
+#: comment-pins/comment-pins.php:411
 msgid "You cannot delete this pin."
 msgstr ""
 
-#: comment-pins/comment-pins.php:412
-#: comment-pins/comment-pins.php:580
+#: comment-pins/comment-pins.php:416
+#: comment-pins/comment-pins.php:589
 msgid "Error deleting comment."
 msgstr ""
 
-#: comment-pins/comment-pins.php:459
+#: comment-pins/comment-pins.php:465
 msgid "Error updating comment."
 msgstr ""
 
-#: comment-pins/comment-pins.php:561
+#: comment-pins/comment-pins.php:569
 msgid "Invalid reply."
 msgstr ""
 
-#: comment-pins/comment-pins.php:571
+#: comment-pins/comment-pins.php:580
 msgid "Reply not found."
 msgstr ""
 
-#: comment-pins/comment-pins.php:575
+#: comment-pins/comment-pins.php:584
 msgid "You cannot delete this reply."
 msgstr ""
 
 #: convert-webp/convert-webp.php:105
 #: convert-webp/convert-webp.php:106
 #: convert-webp/includes/admin-page.php:16
-#: dev-tools.php:224
+#: suite-devtools.php:228
 msgid "Convert to WebP"
 msgstr ""
 
 #: convert-webp/convert-webp.php:115
 #: debug-tools/debug-tools.php:111
 #: tabs/includes/admin-page.php:8
-#: tabs/page-tabs-organizer.php:262
+#: tabs/page-tabs-organizer.php:263
 msgid "You do not have permission to access this page."
 msgstr ""
 
@@ -363,7 +368,7 @@ msgid "Neither GD (with WebP support) nor Imagick is available, so images cannot
 msgstr ""
 
 #: convert-webp/includes/admin-page.php:30
-#: dev-tools.php:292
+#: suite-devtools.php:289
 msgid "Settings"
 msgstr ""
 
@@ -410,7 +415,7 @@ msgstr ""
 
 #: debug-tools/debug-tools.php:101
 #: debug-tools/debug-tools.php:102
-#: dev-tools.php:220
+#: suite-devtools.php:224
 msgid "Debug & Logs"
 msgstr ""
 
@@ -583,158 +588,6 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
-#: dev-tools.php:208
-msgid "Page State Management"
-msgstr ""
-
-#: dev-tools.php:209
-msgid "Complete page state management system with status tracking, notes, and responsive design checkboxes."
-msgstr ""
-
-#: dev-tools.php:212
-msgid "Page Tabs Organizer"
-msgstr ""
-
-#: dev-tools.php:213
-msgid "Organize WordPress pages with customizable tabs to improve admin panel management."
-msgstr ""
-
-#: dev-tools.php:216
-msgid "Comment Pins"
-msgstr ""
-
-#: dev-tools.php:217
-msgid "Visual comment pins system for WordPress. Add visual comments anywhere on a page."
-msgstr ""
-
-#: dev-tools.php:221
-msgid "Toggle WordPress debugging and read the debug log from the admin, without FTP or server access."
-msgstr ""
-
-#: dev-tools.php:225
-msgid "Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals."
-msgstr ""
-
-#: dev-tools.php:274
-#: dev-tools.php:275
-msgid "Tools"
-msgstr ""
-
-#: dev-tools.php:328
-msgid "Activating..."
-msgstr ""
-
-#: dev-tools.php:329
-msgid "Deactivating..."
-msgstr ""
-
-#: dev-tools.php:330
-#: tabs/page-tabs-organizer.php:252
-msgid "Operation error"
-msgstr ""
-
-#: dev-tools.php:331
-msgid "An unexpected error occurred. Please try again."
-msgstr ""
-
-#. translators: %s: mini-plugin name.
-#: dev-tools.php:333
-#, php-format
-msgid "Click the switch to activate or deactivate %s."
-msgstr ""
-
-#: dev-tools.php:346
-msgid "Manage the mini-plugins included in DevTools. You can activate or deactivate each one according to your needs."
-msgstr ""
-
-#: dev-tools.php:401
-msgid "Information"
-msgstr ""
-
-#: dev-tools.php:404
-msgid "How does it work?"
-msgstr ""
-
-#: dev-tools.php:405
-msgid "DevTools acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance."
-msgstr ""
-
-#: dev-tools.php:408
-msgid "Included mini-plugins"
-msgstr ""
-
-#: dev-tools.php:411
-msgid "Page State Management:"
-msgstr ""
-
-#: dev-tools.php:412
-msgid "Page state management"
-msgstr ""
-
-#: dev-tools.php:415
-msgid "Page Tabs Organizer:"
-msgstr ""
-
-#: dev-tools.php:416
-msgid "Tab organization"
-msgstr ""
-
-#: dev-tools.php:419
-msgid "Comment Pins:"
-msgstr ""
-
-#: dev-tools.php:420
-msgid "Visual comment system"
-msgstr ""
-
-#: dev-tools.php:425
-msgid "Data on uninstall"
-msgstr ""
-
-#: dev-tools.php:426
-msgid "By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled."
-msgstr ""
-
-#: dev-tools.php:429
-msgid "Delete all data on uninstall"
-msgstr ""
-
-#: dev-tools.php:553
-#: dev-tools.php:606
-#: tabs/page-tabs-organizer.php:487
-#: tabs/page-tabs-organizer.php:537
-#: tabs/page-tabs-organizer.php:590
-msgid "You do not have permission to perform this action."
-msgstr ""
-
-#: dev-tools.php:561
-msgid "Plugin not found."
-msgstr ""
-
-#: dev-tools.php:567
-msgid "Invalid request."
-msgstr ""
-
-#. translators: %s: mini-plugin name.
-#: dev-tools.php:579
-#, php-format
-msgid "%s activated successfully."
-msgstr ""
-
-#. translators: %s: mini-plugin name.
-#: dev-tools.php:591
-#, php-format
-msgid "%s deactivated successfully."
-msgstr ""
-
-#: dev-tools.php:616
-msgid "Plugin data will be deleted on uninstall."
-msgstr ""
-
-#: dev-tools.php:617
-msgid "Plugin data will be kept on uninstall."
-msgstr ""
-
 #: page-state/page-state.php:103
 #: tabs/includes/admin-page.php:163
 msgid "Status"
@@ -824,18 +677,170 @@ msgstr ""
 msgid "Responsive status saved successfully"
 msgstr ""
 
+#: suite-devtools.php:212
+msgid "Page State Management"
+msgstr ""
+
+#: suite-devtools.php:213
+msgid "Complete page state management system with status tracking, notes, and responsive design checkboxes."
+msgstr ""
+
+#: suite-devtools.php:216
+msgid "Page Tabs Organizer"
+msgstr ""
+
+#: suite-devtools.php:217
+msgid "Organize WordPress pages with customizable tabs to improve admin panel management."
+msgstr ""
+
+#: suite-devtools.php:220
+msgid "Comment Pins"
+msgstr ""
+
+#: suite-devtools.php:221
+msgid "Visual comment pins system for WordPress. Add visual comments anywhere on a page."
+msgstr ""
+
+#: suite-devtools.php:225
+msgid "Toggle WordPress debugging and read the debug log from the admin, without FTP or server access."
+msgstr ""
+
+#: suite-devtools.php:229
+msgid "Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals."
+msgstr ""
+
+#: suite-devtools.php:271
+#: suite-devtools.php:272
+msgid "Tools"
+msgstr ""
+
+#: suite-devtools.php:325
+msgid "Activating..."
+msgstr ""
+
+#: suite-devtools.php:326
+msgid "Deactivating..."
+msgstr ""
+
+#: suite-devtools.php:327
+#: tabs/page-tabs-organizer.php:253
+msgid "Operation error"
+msgstr ""
+
+#: suite-devtools.php:328
+msgid "An unexpected error occurred. Please try again."
+msgstr ""
+
+#. translators: %s: mini-plugin name.
+#: suite-devtools.php:330
+#, php-format
+msgid "Click the switch to activate or deactivate %s."
+msgstr ""
+
+#: suite-devtools.php:343
+msgid "Manage the mini-plugins included in Suite DevTools. You can activate or deactivate each one according to your needs."
+msgstr ""
+
+#: suite-devtools.php:398
+msgid "Information"
+msgstr ""
+
+#: suite-devtools.php:401
+msgid "How does it work?"
+msgstr ""
+
+#: suite-devtools.php:402
+msgid "Suite DevTools acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance."
+msgstr ""
+
+#: suite-devtools.php:405
+msgid "Included mini-plugins"
+msgstr ""
+
+#: suite-devtools.php:408
+msgid "Page State Management:"
+msgstr ""
+
+#: suite-devtools.php:409
+msgid "Page state management"
+msgstr ""
+
+#: suite-devtools.php:412
+msgid "Page Tabs Organizer:"
+msgstr ""
+
+#: suite-devtools.php:413
+msgid "Tab organization"
+msgstr ""
+
+#: suite-devtools.php:416
+msgid "Comment Pins:"
+msgstr ""
+
+#: suite-devtools.php:417
+msgid "Visual comment system"
+msgstr ""
+
+#: suite-devtools.php:422
+msgid "Data on uninstall"
+msgstr ""
+
+#: suite-devtools.php:423
+msgid "By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled."
+msgstr ""
+
+#: suite-devtools.php:426
+msgid "Delete all data on uninstall"
+msgstr ""
+
+#: suite-devtools.php:550
+#: suite-devtools.php:603
+#: tabs/page-tabs-organizer.php:494
+#: tabs/page-tabs-organizer.php:546
+#: tabs/page-tabs-organizer.php:601
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: suite-devtools.php:558
+msgid "Plugin not found."
+msgstr ""
+
+#: suite-devtools.php:564
+msgid "Invalid request."
+msgstr ""
+
+#. translators: %s: mini-plugin name.
+#: suite-devtools.php:576
+#, php-format
+msgid "%s activated successfully."
+msgstr ""
+
+#. translators: %s: mini-plugin name.
+#: suite-devtools.php:588
+#, php-format
+msgid "%s deactivated successfully."
+msgstr ""
+
+#: suite-devtools.php:613
+msgid "Plugin data will be deleted on uninstall."
+msgstr ""
+
+#: suite-devtools.php:614
+msgid "Plugin data will be kept on uninstall."
+msgstr ""
+
 #: tabs/includes/admin-page.php:33
 msgid "Manage Page Tabs"
 msgstr ""
 
 #: tabs/includes/admin-page.php:38
-#: tabs/page-tabs-organizer.php:221
+#: tabs/page-tabs-organizer.php:222
 msgid "Tabs"
 msgstr ""
 
 #: tabs/includes/admin-page.php:41
 #: tabs/includes/tab-modal.php:14
-#: tabs/page-tabs-organizer.php:393
+#: tabs/page-tabs-organizer.php:399
 msgid "Create New Tab"
 msgstr ""
 
@@ -870,7 +875,7 @@ msgstr ""
 
 #: tabs/includes/admin-page.php:83
 #: tabs/includes/tab-modal.php:51
-#: tabs/page-tabs-organizer.php:254
+#: tabs/page-tabs-organizer.php:255
 msgid "Create Tab"
 msgstr ""
 
@@ -920,7 +925,7 @@ msgid "View"
 msgstr ""
 
 #: tabs/includes/admin-page.php:208
-#: tabs/page-tabs-organizer.php:435
+#: tabs/page-tabs-organizer.php:441
 msgid "No tab"
 msgstr ""
 
@@ -963,114 +968,114 @@ msgid "Delete Tab"
 msgstr ""
 
 #: tabs/includes/tab-modal.php:124
-#: tabs/page-tabs-organizer.php:255
+#: tabs/page-tabs-organizer.php:256
 msgid "Update Tab"
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:220
+#: tabs/page-tabs-organizer.php:221
 msgid "Manage Tabs"
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:246
+#: tabs/page-tabs-organizer.php:247
 msgid "Are you sure you want to delete this tab?"
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:247
+#: tabs/page-tabs-organizer.php:248
 msgid "Are you sure you want to remove this page from the tab?"
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:248
-#: tabs/page-tabs-organizer.php:499
-#: tabs/page-tabs-organizer.php:547
+#: tabs/page-tabs-organizer.php:249
+#: tabs/page-tabs-organizer.php:506
+#: tabs/page-tabs-organizer.php:556
 msgid "The tab name is required."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:249
+#: tabs/page-tabs-organizer.php:250
 msgid "Please select a tab first."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:251
+#: tabs/page-tabs-organizer.php:252
 msgid "Unknown error"
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:253
+#: tabs/page-tabs-organizer.php:254
 msgid "Operation completed successfully"
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:347
+#: tabs/page-tabs-organizer.php:351
 msgid "All tabs"
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:411
+#: tabs/page-tabs-organizer.php:417
 msgid "Tab"
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:427
+#: tabs/page-tabs-organizer.php:433
 msgid "No tabs available"
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:525
+#: tabs/page-tabs-organizer.php:534
 msgid "Tab created successfully."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:530
+#: tabs/page-tabs-organizer.php:539
 msgid "Error creating the tab."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:579
+#: tabs/page-tabs-organizer.php:590
 msgid "Tab saved successfully."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:583
+#: tabs/page-tabs-organizer.php:594
 msgid "Error saving the tab."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:595
-#: tabs/page-tabs-organizer.php:632
-#: tabs/page-tabs-organizer.php:674
+#: tabs/page-tabs-organizer.php:606
+#: tabs/page-tabs-organizer.php:644
+#: tabs/page-tabs-organizer.php:688
 msgid "Invalid tab."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:604
+#: tabs/page-tabs-organizer.php:615
 msgid "Tab deleted successfully."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:607
+#: tabs/page-tabs-organizer.php:618
 msgid "Error deleting the tab."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:619
-#: tabs/page-tabs-organizer.php:670
-#: tabs/page-tabs-organizer.php:699
+#: tabs/page-tabs-organizer.php:630
+#: tabs/page-tabs-organizer.php:684
+#: tabs/page-tabs-organizer.php:714
 msgid "You do not have permission to edit this page."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:653
+#: tabs/page-tabs-organizer.php:667
 msgid "Page removed from all tabs."
 msgstr ""
 
 #. translators: %s: tab name.
-#: tabs/page-tabs-organizer.php:654
+#: tabs/page-tabs-organizer.php:668
 #, php-format
 msgid "Page assigned to \"%s\"."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:660
+#: tabs/page-tabs-organizer.php:674
 msgid "Error updating the tab assignment."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:686
+#: tabs/page-tabs-organizer.php:701
 msgid "Page assigned to the tab successfully."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:689
+#: tabs/page-tabs-organizer.php:704
 msgid "Error assigning the page to the tab."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:711
+#: tabs/page-tabs-organizer.php:727
 msgid "Page removed from the tab successfully."
 msgstr ""
 
-#: tabs/page-tabs-organizer.php:714
+#: tabs/page-tabs-organizer.php:730
 msgid "Error removing the page from the tab."
 msgstr ""
