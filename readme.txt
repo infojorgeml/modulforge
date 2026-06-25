@@ -4,7 +4,7 @@ Tags: development, admin, debug, webp, tabs
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 2.2.0
+Stable tag: 1.0.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,29 +54,11 @@ To rebuild the block from source (requires Node.js):
 
 == Changelog ==
 
-= 2.2.0 =
-* Rebranded to **Suite DevTools** (slug `suite-devtools`) for the WordPress.org directory.
-* Ship the Comment Pins block source (`comment-pins/src/`) and document the build process.
-
-= 2.1.4 =
-* WordPress.org readiness: added GPL license headers and a readme, removed manual textdomain loading (auto-loaded since WP 4.6), and applied input-sanitization / output-escaping and filesystem fixes flagged by Plugin Check.
-
-= 2.1.3 =
-* Renamed the first submenu to "Tools" and added a "Settings" action link on the plugins list.
-
-= 2.1.2 =
-* Fixed early textdomain loading notice on WordPress 6.7+.
-
-= 2.1.1 =
-* Simplified the module cards UI (removed status badge and icons, blue active state).
-
-= 2.1.0 =
-* Added the "Convert to WebP" module.
-
-= 2.0.0 =
-* Rebranded to DevTools.
+= 1.0.0 =
+* Initial public release on the WordPress.org plugin directory.
+* Controller that bundles five developer modules — Page State Management, Page Tabs Organizer, Comment Pins, Debug & Logs, and Convert to WebP — each toggled individually and loaded only while active.
 
 == Upgrade Notice ==
 
-= 2.2.0 =
-Rebrand to Suite DevTools for the WordPress.org directory. No functional changes to the modules.
+= 1.0.0 =
+Initial public release.

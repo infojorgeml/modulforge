@@ -2,7 +2,7 @@
 /*
 Plugin Name: Suite DevTools
 Description: Controller that manages and lets you toggle bundled developer mini-tools individually.
-Version: 2.2.0
+Version: 1.0.0
 Requires at least: 6.0
 Requires PHP: 7.4
 Author: JorgeML
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
  * Main DevTools Plugin Controller.
  */
 final class DevTools {
-    private const VERSION       = '2.2.0';
+    private const VERSION       = '1.0.0';
     private const OPTION_KEY     = 'dev_tools_active_plugins';
     private const OPTION_DELETE_DATA = 'dev_tools_delete_data_on_uninstall';
     private const MENU_SLUG   = 'suite-devtools';
