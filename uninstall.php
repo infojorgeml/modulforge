@@ -25,7 +25,7 @@ if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
     define('DEVTOOLS_LIFECYCLE_RUN', true);
 }
 
-require_once __DIR__ . '/dev-tools.php';
+require_once __DIR__ . '/modulforge.php';
 
 if (class_exists('DevTools')) {
     // Clean every module — including inactive ones — so nothing is left behind.

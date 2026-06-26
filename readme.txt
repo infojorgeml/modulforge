@@ -1,4 +1,4 @@
-=== Suite DevTools ===
+=== Modulforge ===
 Contributors: jorgemml
 Tags: development, admin, debug, webp, tabs
 Requires at least: 6.0
@@ -12,7 +12,7 @@ Controller that bundles developer mini-tools you can toggle individually: page s
 
 == Description ==
 
-Suite DevTools is a lightweight controller that groups several developer-oriented mini-tools as modules you can activate or deactivate individually from a single screen. Each module is only loaded when active, so you only pay for what you use.
+Modulforge is a lightweight controller that groups several developer-oriented mini-tools as modules you can activate or deactivate individually from a single screen. Each module is only loaded when active, so you only pay for what you use.
 
 Included modules:
 
@@ -22,13 +22,13 @@ Included modules:
 * **Debug & Logs** — toggle WordPress debugging and read the debug log from the admin, without FTP.
 * **Convert to WebP** — bulk-convert the media library and auto-convert new uploads from JPEG/PNG to WebP.
 
-Manage everything from **Suite DevTools → Tools**: flip a switch to activate or deactivate each module.
+Manage everything from **Modulforge → Tools**: flip a switch to activate or deactivate each module.
 
 == Installation ==
 
-1. Upload the `suite-devtools` folder to `/wp-content/plugins/`, or install the ZIP from **Plugins → Add New → Upload Plugin**.
-2. Activate **Suite DevTools** through the **Plugins** screen.
-3. Go to **Suite DevTools → Tools** and enable the modules you want.
+1. Upload the `modulforge` folder to `/wp-content/plugins/`, or install the ZIP from **Plugins → Add New → Upload Plugin**.
+2. Activate **Modulforge** through the **Plugins** screen.
+3. Go to **Modulforge → Tools** and enable the modules you want.
 
 == Frequently Asked Questions ==
 
@@ -42,7 +42,7 @@ No. Bulk conversion replaces and deletes the original JPEG/PNG files (and their 
 
 = What happens to my data when I uninstall? =
 
-By default your data is kept. You can opt in (from the Suite DevTools screen) to delete all plugin data — including custom tables — on uninstall.
+By default your data is kept. You can opt in (from the Modulforge screen) to delete all plugin data — including custom tables — on uninstall.
 
 == Source Code ==
 

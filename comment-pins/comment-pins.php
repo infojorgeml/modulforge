@@ -1,11 +1,11 @@
 <?php
 /**
- * Suite DevTools — Comment Pins module.
+ * Modulforge — Comment Pins module.
  *
- * Bundled component loaded by the Suite DevTools controller; not a standalone plugin.
+ * Bundled component loaded by the Modulforge controller; not a standalone plugin.
  * Visual comment pins system for WordPress (React front end).
  *
- * @package SuiteDevTools
+ * @package Modulforge
  */
 
 // Prevent direct access.
@@ -192,40 +192,40 @@ class DevToolsCommentPins {
             'nonce'       => wp_create_nonce(self::NONCE_ACTION),
             'current_url' => self::current_url(),
             'i18n'        => array(
-                'placeholder'          => __('Write your comment here...', 'suite-devtools'),
-                'cancel'               => __('Cancel', 'suite-devtools'),
-                'save'                 => __('Save', 'suite-devtools'),
-                'delete'               => __('Delete', 'suite-devtools'),
-                'close'                => __('Close', 'suite-devtools'),
-                'you'                  => __('You', 'suite-devtools'),
-                'user'                 => __('User', 'suite-devtools'),
-                'save_error'           => __('Error saving comment', 'suite-devtools'),
-                'delete_error'         => __('Error deleting comment', 'suite-devtools'),
-                'connect_error'        => __('Connection error', 'suite-devtools'),
-                'confirm_delete'       => __('Delete this comment?', 'suite-devtools'),
-                'confirm_delete_reply' => __('Delete this reply?', 'suite-devtools'),
-                'reply'                => __('Reply', 'suite-devtools'),
-                'reply_placeholder'    => __('Write a reply...', 'suite-devtools'),
-                'resolve'              => __('Resolve', 'suite-devtools'),
-                'reopen'               => __('Reopen', 'suite-devtools'),
-                'resolved'             => __('Resolved', 'suite-devtools'),
-                'open'                 => __('Open', 'suite-devtools'),
-                'comments'             => __('Comments', 'suite-devtools'),
-                'filter_all'           => __('All', 'suite-devtools'),
-                'filter_open'          => __('Open', 'suite-devtools'),
-                'filter_resolved'      => __('Resolved', 'suite-devtools'),
-                'filter_mine'          => __('Mine', 'suite-devtools'),
-                'show_resolved'        => __('Show resolved on page', 'suite-devtools'),
-                'no_comments'          => __('No comments on this page yet.', 'suite-devtools'),
-                'no_match'             => __('Nothing matches this filter.', 'suite-devtools'),
-                'loading'              => __('Loading…', 'suite-devtools'),
-                'panel_open'           => __('Open comments panel', 'suite-devtools'),
-                'panel_close'          => __('Close panel', 'suite-devtools'),
+                'placeholder'          => __('Write your comment here...', 'modulforge'),
+                'cancel'               => __('Cancel', 'modulforge'),
+                'save'                 => __('Save', 'modulforge'),
+                'delete'               => __('Delete', 'modulforge'),
+                'close'                => __('Close', 'modulforge'),
+                'you'                  => __('You', 'modulforge'),
+                'user'                 => __('User', 'modulforge'),
+                'save_error'           => __('Error saving comment', 'modulforge'),
+                'delete_error'         => __('Error deleting comment', 'modulforge'),
+                'connect_error'        => __('Connection error', 'modulforge'),
+                'confirm_delete'       => __('Delete this comment?', 'modulforge'),
+                'confirm_delete_reply' => __('Delete this reply?', 'modulforge'),
+                'reply'                => __('Reply', 'modulforge'),
+                'reply_placeholder'    => __('Write a reply...', 'modulforge'),
+                'resolve'              => __('Resolve', 'modulforge'),
+                'reopen'               => __('Reopen', 'modulforge'),
+                'resolved'             => __('Resolved', 'modulforge'),
+                'open'                 => __('Open', 'modulforge'),
+                'comments'             => __('Comments', 'modulforge'),
+                'filter_all'           => __('All', 'modulforge'),
+                'filter_open'          => __('Open', 'modulforge'),
+                'filter_resolved'      => __('Resolved', 'modulforge'),
+                'filter_mine'          => __('Mine', 'modulforge'),
+                'show_resolved'        => __('Show resolved on page', 'modulforge'),
+                'no_comments'          => __('No comments on this page yet.', 'modulforge'),
+                'no_match'             => __('Nothing matches this filter.', 'modulforge'),
+                'loading'              => __('Loading…', 'modulforge'),
+                'panel_open'           => __('Open comments panel', 'modulforge'),
+                'panel_close'          => __('Close panel', 'modulforge'),
                 /* translators: %s: user name. */
-                'resolved_by'          => __('Resolved by %s', 'suite-devtools'),
-                'one_reply'            => __('1 reply', 'suite-devtools'),
+                'resolved_by'          => __('Resolved by %s', 'modulforge'),
+                'one_reply'            => __('1 reply', 'modulforge'),
                 /* translators: %d: number of replies. */
-                'many_replies'         => __('%d replies', 'suite-devtools'),
+                'many_replies'         => __('%d replies', 'modulforge'),
             ),
         ));
     }
@@ -237,11 +237,11 @@ class DevToolsCommentPins {
 
         $wp_admin_bar->add_node(array(
             'id'    => 'comment-pins-toggle',
-            'title' => '<span class="ab-icon dashicons dashicons-admin-comments"></span>' . esc_html__('Comment', 'suite-devtools'),
+            'title' => '<span class="ab-icon dashicons dashicons-admin-comments"></span>' . esc_html__('Comment', 'modulforge'),
             'href'  => '#',
             'meta'  => array(
                 'class' => 'comment-pins-admin-bar-btn',
-                'title' => __('Toggle comment mode', 'suite-devtools'),
+                'title' => __('Toggle comment mode', 'modulforge'),
             ),
         ));
     }
@@ -256,11 +256,11 @@ class DevToolsCommentPins {
      */
     private function verify_request(): void {
         if (!check_ajax_referer(self::NONCE_ACTION, 'nonce', false)) {
-            wp_send_json_error(array('message' => __('Security check failed.', 'suite-devtools')), 403);
+            wp_send_json_error(array('message' => __('Security check failed.', 'modulforge')), 403);
         }
 
         if (!current_user_can($this->get_required_capability())) {
-            wp_send_json_error(array('message' => __('Insufficient permissions.', 'suite-devtools')), 403);
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'modulforge')), 403);
         }
     }
 
@@ -276,22 +276,22 @@ class DevToolsCommentPins {
         $post_url = $this->normalize_post_url($post_url);
 
         if ('' === $post_url) {
-            wp_send_json_error(array('message' => __('Invalid page URL.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Invalid page URL.', 'modulforge')), 400);
         }
         if (strlen($post_url) > 255) {
-            wp_send_json_error(array('message' => __('URL is too long.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('URL is too long.', 'modulforge')), 400);
         }
         if ('' === $anchor || strlen($anchor) > self::MAX_SELECTOR_LENGTH) {
-            wp_send_json_error(array('message' => __('Invalid anchor.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Invalid anchor.', 'modulforge')), 400);
         }
         if ('' === $comment_text) {
-            wp_send_json_error(array('message' => __('Comment cannot be empty.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Comment cannot be empty.', 'modulforge')), 400);
         }
         if (mb_strlen($comment_text) > self::MAX_COMMENT_LENGTH) {
-            wp_send_json_error(array('message' => __('Comment is too long.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Comment is too long.', 'modulforge')), 400);
         }
         if ($offset_x < 0 || $offset_x > 100 || $offset_y < 0 || $offset_y > 100) {
-            wp_send_json_error(array('message' => __('Invalid pin position.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Invalid pin position.', 'modulforge')), 400);
         }
 
         global $wpdb;
@@ -314,13 +314,13 @@ class DevToolsCommentPins {
         );
 
         if (false === $result) {
-            wp_send_json_error(array('message' => __('Error saving comment.', 'suite-devtools')), 500);
+            wp_send_json_error(array('message' => __('Error saving comment.', 'modulforge')), 500);
         }
 
         wp_send_json_success(array(
             'id'         => (int) $wpdb->insert_id,
             'created_at' => $created_at,
-            'message'    => __('Comment saved successfully.', 'suite-devtools'),
+            'message'    => __('Comment saved successfully.', 'modulforge'),
         ));
     }
 
@@ -377,7 +377,7 @@ class DevToolsCommentPins {
                 'offset_y'         => (float) $pin->offset_y,
                 'comment_text'     => $pin->comment_text,
                 'created_at'       => $pin->created_at,
-                'display_name'     => $pin->display_name ? $pin->display_name : __('User', 'suite-devtools'),
+                'display_name'     => $pin->display_name ? $pin->display_name : __('User', 'modulforge'),
                 'status'           => $pin->status ? $pin->status : 'open',
                 'resolved_at'      => $pin->resolved_at,
                 'resolved_by_name' => $pin->resolved_by_name,
@@ -396,7 +396,7 @@ class DevToolsCommentPins {
 
         $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
         if (!$pin_id) {
-            wp_send_json_error(array('message' => __('Invalid pin.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Invalid pin.', 'modulforge')), 400);
         }
 
         global $wpdb;
@@ -408,17 +408,17 @@ class DevToolsCommentPins {
         // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
         if (null === $owner) {
-            wp_send_json_error(array('message' => __('Pin not found.', 'suite-devtools')), 404);
+            wp_send_json_error(array('message' => __('Pin not found.', 'modulforge')), 404);
         }
 
         // Owner can delete their own pins; deleting others' requires elevated capability.
         if ((int) $owner !== get_current_user_id() && !current_user_can('edit_others_posts')) {
-            wp_send_json_error(array('message' => __('You cannot delete this pin.', 'suite-devtools')), 403);
+            wp_send_json_error(array('message' => __('You cannot delete this pin.', 'modulforge')), 403);
         }
 
         $deleted = $wpdb->delete($this->table_name, array('id' => $pin_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         if (false === $deleted) {
-            wp_send_json_error(array('message' => __('Error deleting comment.', 'suite-devtools')), 500);
+            wp_send_json_error(array('message' => __('Error deleting comment.', 'modulforge')), 500);
         }
 
         // Cascade: remove the pin's replies.
@@ -437,13 +437,13 @@ class DevToolsCommentPins {
         $pin_id   = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
         $resolved = isset($_POST['resolved']) ? wp_validate_boolean(wp_unslash($_POST['resolved'])) : false; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce verified in verify_request(); validated with wp_validate_boolean().
         if (!$pin_id) {
-            wp_send_json_error(array('message' => __('Invalid pin.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Invalid pin.', 'modulforge')), 400);
         }
 
         global $wpdb;
         $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE id = %d", $pin_id)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         if (null === $exists) {
-            wp_send_json_error(array('message' => __('Pin not found.', 'suite-devtools')), 404);
+            wp_send_json_error(array('message' => __('Pin not found.', 'modulforge')), 404);
         }
 
         $current = get_current_user_id();
@@ -469,7 +469,7 @@ class DevToolsCommentPins {
         }
 
         if (false === $result) {
-            wp_send_json_error(array('message' => __('Error updating comment.', 'suite-devtools')), 500);
+            wp_send_json_error(array('message' => __('Error updating comment.', 'modulforge')), 500);
         }
 
         wp_send_json_success(array(
@@ -484,7 +484,7 @@ class DevToolsCommentPins {
 
         $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
         if (!$pin_id) {
-            wp_send_json_error(array('message' => __('Invalid pin.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Invalid pin.', 'modulforge')), 400);
         }
 
         global $wpdb;
@@ -508,7 +508,7 @@ class DevToolsCommentPins {
                 'id'           => (int) $reply->id,
                 'comment_text' => $reply->comment_text,
                 'created_at'   => $reply->created_at,
-                'display_name' => $reply->display_name ? $reply->display_name : __('User', 'suite-devtools'),
+                'display_name' => $reply->display_name ? $reply->display_name : __('User', 'modulforge'),
                 'can_delete'   => ((int) $reply->user_id === $current_user) || $can_edit_others,
             );
         }
@@ -523,19 +523,19 @@ class DevToolsCommentPins {
         $text   = isset($_POST['comment_text']) ? sanitize_textarea_field(wp_unslash($_POST['comment_text'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
 
         if (!$pin_id) {
-            wp_send_json_error(array('message' => __('Invalid pin.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Invalid pin.', 'modulforge')), 400);
         }
         if ('' === $text) {
-            wp_send_json_error(array('message' => __('Comment cannot be empty.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Comment cannot be empty.', 'modulforge')), 400);
         }
         if (mb_strlen($text) > self::MAX_COMMENT_LENGTH) {
-            wp_send_json_error(array('message' => __('Comment is too long.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Comment is too long.', 'modulforge')), 400);
         }
 
         global $wpdb;
         $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE id = %d", $pin_id)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         if (null === $exists) {
-            wp_send_json_error(array('message' => __('Pin not found.', 'suite-devtools')), 404);
+            wp_send_json_error(array('message' => __('Pin not found.', 'modulforge')), 404);
         }
 
         $current    = get_current_user_id();
@@ -554,7 +554,7 @@ class DevToolsCommentPins {
         );
 
         if (false === $result) {
-            wp_send_json_error(array('message' => __('Error saving comment.', 'suite-devtools')), 500);
+            wp_send_json_error(array('message' => __('Error saving comment.', 'modulforge')), 500);
         }
 
         $name = $wpdb->get_var($wpdb->prepare("SELECT display_name FROM {$wpdb->users} WHERE ID = %d", $current)); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query; not cacheable.
@@ -564,7 +564,7 @@ class DevToolsCommentPins {
             'pin_id'       => $pin_id,
             'comment_text' => $text,
             'created_at'   => $created_at,
-            'display_name' => $name ? $name : __('User', 'suite-devtools'),
+            'display_name' => $name ? $name : __('User', 'modulforge'),
             'can_delete'   => true,
         ));
     }
@@ -574,7 +574,7 @@ class DevToolsCommentPins {
 
         $reply_id = isset($_POST['reply_id']) ? absint(wp_unslash($_POST['reply_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
         if (!$reply_id) {
-            wp_send_json_error(array('message' => __('Invalid reply.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('Invalid reply.', 'modulforge')), 400);
         }
 
         global $wpdb;
@@ -586,16 +586,16 @@ class DevToolsCommentPins {
         // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
         if (null === $owner) {
-            wp_send_json_error(array('message' => __('Reply not found.', 'suite-devtools')), 404);
+            wp_send_json_error(array('message' => __('Reply not found.', 'modulforge')), 404);
         }
 
         if ((int) $owner !== get_current_user_id() && !current_user_can('edit_others_posts')) {
-            wp_send_json_error(array('message' => __('You cannot delete this reply.', 'suite-devtools')), 403);
+            wp_send_json_error(array('message' => __('You cannot delete this reply.', 'modulforge')), 403);
         }
 
         $deleted = $wpdb->delete($this->replies_table, array('id' => $reply_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         if (false === $deleted) {
-            wp_send_json_error(array('message' => __('Error deleting comment.', 'suite-devtools')), 500);
+            wp_send_json_error(array('message' => __('Error deleting comment.', 'modulforge')), 500);
         }
 
         wp_send_json_success(array('id' => $reply_id));

@@ -1,12 +1,12 @@
 <?php
 /**
- * Suite DevTools — Page State Management module.
+ * Modulforge — Page State Management module.
  *
- * Bundled component loaded by the Suite DevTools controller; not a standalone plugin.
+ * Bundled component loaded by the Modulforge controller; not a standalone plugin.
  * Page management with status tracking, notes, and responsive design
  * checkboxes for the WordPress pages list.
  *
- * @package SuiteDevTools
+ * @package Modulforge
  */
 
 // Prevent direct access.
@@ -98,9 +98,9 @@ class DevToolsPageState {
         foreach ($columns as $key => $value) {
             $new_columns[$key] = $value;
             if ($key === 'title') {
-                $new_columns['page_status']     = __('Status', 'suite-devtools');
-                $new_columns['page_notes']      = __('Notes', 'suite-devtools');
-                $new_columns['page_responsive'] = __('Responsive', 'suite-devtools');
+                $new_columns['page_status']     = __('Status', 'modulforge');
+                $new_columns['page_notes']      = __('Notes', 'modulforge');
+                $new_columns['page_responsive'] = __('Responsive', 'modulforge');
             }
         }
         return $new_columns;
@@ -120,11 +120,11 @@ class DevToolsPageState {
         $status = get_post_meta($post_id, 'page_status', true);
         ?>
         <select class="page-status-selector" data-post="<?php echo esc_attr($post_id); ?>">
-            <option value="">— <?php esc_html_e('None', 'suite-devtools'); ?> —</option>
-            <option value="draft" <?php selected($status, 'draft'); ?>>⚪ <?php esc_html_e('Draft', 'suite-devtools'); ?></option>
-            <option value="revision" <?php selected($status, 'revision'); ?>>🟡 <?php esc_html_e('Revision', 'suite-devtools'); ?></option>
-            <option value="process" <?php selected($status, 'process'); ?>>🔵 <?php esc_html_e('In Progress', 'suite-devtools'); ?></option>
-            <option value="done" <?php selected($status, 'done'); ?>>🟢 <?php esc_html_e('Done', 'suite-devtools'); ?></option>
+            <option value="">— <?php esc_html_e('None', 'modulforge'); ?> —</option>
+            <option value="draft" <?php selected($status, 'draft'); ?>>⚪ <?php esc_html_e('Draft', 'modulforge'); ?></option>
+            <option value="revision" <?php selected($status, 'revision'); ?>>🟡 <?php esc_html_e('Revision', 'modulforge'); ?></option>
+            <option value="process" <?php selected($status, 'process'); ?>>🔵 <?php esc_html_e('In Progress', 'modulforge'); ?></option>
+            <option value="done" <?php selected($status, 'done'); ?>>🟢 <?php esc_html_e('Done', 'modulforge'); ?></option>
         </select>
         <div class="page-status-loading" style="display: none;">
             <span class="spinner" style="visibility: visible; float: none;"></span>
@@ -141,7 +141,7 @@ class DevToolsPageState {
                 data-post="<?php echo esc_attr($post_id); ?>"
                 rows="2"
                 style="width: 100%; min-height: 60px; resize: vertical;"
-                placeholder="<?php esc_attr_e('Add notes...', 'suite-devtools'); ?>"
+                placeholder="<?php esc_attr_e('Add notes...', 'modulforge'); ?>"
             ><?php echo esc_textarea($notes); ?></textarea>
             <div class="page-notes-status" style="font-size: 11px; color: #666; margin-top: 3px;"></div>
         </div>
@@ -158,17 +158,17 @@ class DevToolsPageState {
                 <label class="responsive-checkbox-label">
                     <input type="checkbox" class="responsive-checkbox" data-device="desktop" <?php checked($desktop, true); ?>>
                     <span class="device-icon">🖥️</span>
-                    <span class="device-label"><?php esc_html_e('Desktop', 'suite-devtools'); ?></span>
+                    <span class="device-label"><?php esc_html_e('Desktop', 'modulforge'); ?></span>
                 </label>
                 <label class="responsive-checkbox-label">
                     <input type="checkbox" class="responsive-checkbox" data-device="tablet" <?php checked($tablet, true); ?>>
                     <span class="device-icon">📱</span>
-                    <span class="device-label"><?php esc_html_e('Tablet', 'suite-devtools'); ?></span>
+                    <span class="device-label"><?php esc_html_e('Tablet', 'modulforge'); ?></span>
                 </label>
                 <label class="responsive-checkbox-label">
                     <input type="checkbox" class="responsive-checkbox" data-device="mobile" <?php checked($mobile, true); ?>>
                     <span class="device-icon">📲</span>
-                    <span class="device-label"><?php esc_html_e('Mobile', 'suite-devtools'); ?></span>
+                    <span class="device-label"><?php esc_html_e('Mobile', 'modulforge'); ?></span>
                 </label>
             </div>
             <div class="responsive-status" style="font-size: 11px; color: #666; margin-top: 3px;"></div>
@@ -197,9 +197,9 @@ class DevToolsPageState {
             'ajaxurl'  => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce('dtps_nonce'),
             'messages' => [
-                'saved'  => __('Saved', 'suite-devtools'),
-                'saving' => __('Saving...', 'suite-devtools'),
-                'error'  => __('Error saving', 'suite-devtools'),
+                'saved'  => __('Saved', 'modulforge'),
+                'saving' => __('Saving...', 'modulforge'),
+                'error'  => __('Error saving', 'modulforge'),
             ],
         ]);
 
@@ -218,15 +218,15 @@ class DevToolsPageState {
         $status  = isset($_POST['status']) ? $this->sanitize_status(wp_unslash($_POST['status'])) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_status() whitelists the value.
 
         if (!$post_id || get_post_type($post_id) !== 'page') {
-            wp_send_json_error(['message' => __('Invalid page ID', 'suite-devtools')]);
+            wp_send_json_error(['message' => __('Invalid page ID', 'modulforge')]);
         }
 
         if (!current_user_can('edit_page', $post_id)) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'suite-devtools')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'modulforge')]);
         }
 
         update_post_meta($post_id, 'page_status', $status);
-        wp_send_json_success(['message' => __('Status saved successfully', 'suite-devtools')]);
+        wp_send_json_success(['message' => __('Status saved successfully', 'modulforge')]);
     }
 
     public function ajax_save_page_notes() {
@@ -236,15 +236,15 @@ class DevToolsPageState {
         $notes   = isset($_POST['notes']) ? sanitize_textarea_field(wp_unslash($_POST['notes'])) : '';
 
         if (!$post_id || get_post_type($post_id) !== 'page') {
-            wp_send_json_error(['message' => __('Invalid page ID', 'suite-devtools')]);
+            wp_send_json_error(['message' => __('Invalid page ID', 'modulforge')]);
         }
 
         if (!current_user_can('edit_page', $post_id)) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'suite-devtools')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'modulforge')]);
         }
 
         update_post_meta($post_id, 'page_notes', $notes);
-        wp_send_json_success(['message' => __('Notes saved successfully', 'suite-devtools')]);
+        wp_send_json_success(['message' => __('Notes saved successfully', 'modulforge')]);
     }
 
     public function ajax_save_page_responsive() {
@@ -255,20 +255,20 @@ class DevToolsPageState {
         $checked = isset($_POST['checked']) ? rest_sanitize_boolean(wp_unslash($_POST['checked'])) : false;
 
         if (!$post_id || get_post_type($post_id) !== 'page') {
-            wp_send_json_error(['message' => __('Invalid page ID', 'suite-devtools')]);
+            wp_send_json_error(['message' => __('Invalid page ID', 'modulforge')]);
         }
 
         if (!current_user_can('edit_page', $post_id)) {
-            wp_send_json_error(['message' => __('Insufficient permissions', 'suite-devtools')]);
+            wp_send_json_error(['message' => __('Insufficient permissions', 'modulforge')]);
         }
 
         $allowed_devices = ['desktop', 'tablet', 'mobile'];
         if (!in_array($device, $allowed_devices, true)) {
-            wp_send_json_error(['message' => __('Invalid device type', 'suite-devtools')]);
+            wp_send_json_error(['message' => __('Invalid device type', 'modulforge')]);
         }
 
         update_post_meta($post_id, 'responsive_' . $device, $checked);
-        wp_send_json_success(['message' => __('Responsive status saved successfully', 'suite-devtools')]);
+        wp_send_json_success(['message' => __('Responsive status saved successfully', 'modulforge')]);
     }
 }
 

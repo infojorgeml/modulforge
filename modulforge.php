@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Suite DevTools
+Plugin Name: Modulforge
 Description: Controller that manages and lets you toggle bundled developer mini-tools individually.
 Version: 1.0.0
 Requires at least: 6.0
@@ -9,7 +9,7 @@ Author: JorgeML
 Author URI: https://suitedevtools.com
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: suite-devtools
+Text Domain: modulforge
 Domain Path: /languages
 */
 
@@ -25,7 +25,7 @@ final class DevTools {
     private const VERSION       = '1.0.0';
     private const OPTION_KEY     = 'dev_tools_active_plugins';
     private const OPTION_DELETE_DATA = 'dev_tools_delete_data_on_uninstall';
-    private const MENU_SLUG   = 'suite-devtools';
+    private const MENU_SLUG   = 'modulforge';
     private const CAPABILITY  = 'manage_options';
     private const NONCE_FIELD = 'nonce';
     private const NONCE_ACTION = 'dev_tools_toggle_plugin';
@@ -209,24 +209,24 @@ final class DevTools {
     private static function get_mini_plugin_labels(): array {
         return array(
             'page-state'   => array(
-                'name'        => __('Page State Management', 'suite-devtools'),
-                'description' => __('Complete page state management system with status tracking, notes, and responsive design checkboxes.', 'suite-devtools'),
+                'name'        => __('Page State Management', 'modulforge'),
+                'description' => __('Complete page state management system with status tracking, notes, and responsive design checkboxes.', 'modulforge'),
             ),
             'page-tabs'    => array(
-                'name'        => __('Page Tabs Organizer', 'suite-devtools'),
-                'description' => __('Organize WordPress pages with customizable tabs to improve admin panel management.', 'suite-devtools'),
+                'name'        => __('Page Tabs Organizer', 'modulforge'),
+                'description' => __('Organize WordPress pages with customizable tabs to improve admin panel management.', 'modulforge'),
             ),
             'comment-pins' => array(
-                'name'        => __('Comment Pins', 'suite-devtools'),
-                'description' => __('Visual comment pins system for WordPress. Add visual comments anywhere on a page.', 'suite-devtools'),
+                'name'        => __('Comment Pins', 'modulforge'),
+                'description' => __('Visual comment pins system for WordPress. Add visual comments anywhere on a page.', 'modulforge'),
             ),
             'debug-tools'  => array(
-                'name'        => __('Debug & Logs', 'suite-devtools'),
-                'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'suite-devtools'),
+                'name'        => __('Debug & Logs', 'modulforge'),
+                'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'modulforge'),
             ),
             'convert-webp' => array(
-                'name'        => __('Convert to WebP', 'suite-devtools'),
-                'description' => __('Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals.', 'suite-devtools'),
+                'name'        => __('Convert to WebP', 'modulforge'),
+                'description' => __('Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals.', 'modulforge'),
             ),
         );
     }
@@ -256,8 +256,8 @@ final class DevTools {
      */
     public function add_admin_menu(): void {
         add_menu_page(
-            __('Suite DevTools', 'suite-devtools'),
-            __('Suite DevTools', 'suite-devtools'),
+            __('Modulforge', 'modulforge'),
+            __('Modulforge', 'modulforge'),
             self::CAPABILITY,
             self::MENU_SLUG,
             array($this, 'render_admin_page'),
@@ -268,8 +268,8 @@ final class DevTools {
         // Rename the auto-generated first submenu (a duplicate "DevTools") to "Tools".
         add_submenu_page(
             self::MENU_SLUG,
-            __('Tools', 'suite-devtools'),
-            __('Tools', 'suite-devtools'),
+            __('Tools', 'modulforge'),
+            __('Tools', 'modulforge'),
             self::CAPABILITY,
             self::MENU_SLUG,
             array($this, 'render_admin_page')
@@ -286,7 +286,7 @@ final class DevTools {
         $settings = sprintf(
             '<a href="%s">%s</a>',
             esc_url(admin_url('admin.php?page=' . self::MENU_SLUG)),
-            esc_html__('Settings', 'suite-devtools')
+            esc_html__('Settings', 'modulforge')
         );
         array_unshift($links, $settings);
         return $links;
@@ -322,12 +322,12 @@ final class DevTools {
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce(self::NONCE_ACTION),
                 'strings'  => array(
-                    'activating'        => __('Activating...', 'suite-devtools'),
-                    'deactivating'      => __('Deactivating...', 'suite-devtools'),
-                    'error'             => __('Operation error', 'suite-devtools'),
-                    'generic_error'     => __('An unexpected error occurred. Please try again.', 'suite-devtools'),
+                    'activating'        => __('Activating...', 'modulforge'),
+                    'deactivating'      => __('Deactivating...', 'modulforge'),
+                    'error'             => __('Operation error', 'modulforge'),
+                    'generic_error'     => __('An unexpected error occurred. Please try again.', 'modulforge'),
                     /* translators: %s: mini-plugin name. */
-                    'toggle_hint'       => __('Click the switch to activate or deactivate %s.', 'suite-devtools'),
+                    'toggle_hint'       => __('Click the switch to activate or deactivate %s.', 'modulforge'),
                 ),
             )
         );
@@ -340,7 +340,7 @@ final class DevTools {
         ?>
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            <p class="description"><?php esc_html_e('Manage the mini-plugins included in Suite DevTools. You can activate or deactivate each one according to your needs.', 'suite-devtools'); ?></p>
+            <p class="description"><?php esc_html_e('Manage the mini-plugins included in Modulforge. You can activate or deactivate each one according to your needs.', 'modulforge'); ?></p>
 
             <div class="devtools-plugins-grid">
                 <?php foreach ($this->mini_plugins as $plugin_key => $plugin_data) : ?>
@@ -395,35 +395,35 @@ final class DevTools {
     private function render_information_section(): void {
         ?>
         <div class="devtools-info-section">
-            <h2><?php esc_html_e('Information', 'suite-devtools'); ?></h2>
+            <h2><?php esc_html_e('Information', 'modulforge'); ?></h2>
             <div class="devtools-info-grid">
                 <div class="devtools-info-card">
-                    <h4><?php esc_html_e('How does it work?', 'suite-devtools'); ?></h4>
-                    <p><?php esc_html_e('Suite DevTools acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance.', 'suite-devtools'); ?></p>
+                    <h4><?php esc_html_e('How does it work?', 'modulforge'); ?></h4>
+                    <p><?php esc_html_e('Modulforge acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance.', 'modulforge'); ?></p>
                 </div>
                 <div class="devtools-info-card">
-                    <h4><?php esc_html_e('Included mini-plugins', 'suite-devtools'); ?></h4>
+                    <h4><?php esc_html_e('Included mini-plugins', 'modulforge'); ?></h4>
                     <ul>
                         <li>
-                            <strong><?php esc_html_e('Page State Management:', 'suite-devtools'); ?></strong>
-                            <?php esc_html_e('Page state management', 'suite-devtools'); ?>
+                            <strong><?php esc_html_e('Page State Management:', 'modulforge'); ?></strong>
+                            <?php esc_html_e('Page state management', 'modulforge'); ?>
                         </li>
                         <li>
-                            <strong><?php esc_html_e('Page Tabs Organizer:', 'suite-devtools'); ?></strong>
-                            <?php esc_html_e('Tab organization', 'suite-devtools'); ?>
+                            <strong><?php esc_html_e('Page Tabs Organizer:', 'modulforge'); ?></strong>
+                            <?php esc_html_e('Tab organization', 'modulforge'); ?>
                         </li>
                         <li>
-                            <strong><?php esc_html_e('Comment Pins:', 'suite-devtools'); ?></strong>
-                            <?php esc_html_e('Visual comment system', 'suite-devtools'); ?>
+                            <strong><?php esc_html_e('Comment Pins:', 'modulforge'); ?></strong>
+                            <?php esc_html_e('Visual comment system', 'modulforge'); ?>
                         </li>
                     </ul>
                 </div>
                 <div class="devtools-info-card">
-                    <h4><?php esc_html_e('Data on uninstall', 'suite-devtools'); ?></h4>
-                    <p><?php esc_html_e('By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled.', 'suite-devtools'); ?></p>
+                    <h4><?php esc_html_e('Data on uninstall', 'modulforge'); ?></h4>
+                    <p><?php esc_html_e('By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled.', 'modulforge'); ?></p>
                     <label class="devtools-uninstall-pref">
                         <input type="checkbox" id="devtools-delete-data" <?php checked((bool) get_option(self::OPTION_DELETE_DATA, false)); ?> />
-                        <?php esc_html_e('Delete all data on uninstall', 'suite-devtools'); ?>
+                        <?php esc_html_e('Delete all data on uninstall', 'modulforge'); ?>
                     </label>
                 </div>
             </div>
@@ -547,7 +547,7 @@ final class DevTools {
 
         if (!current_user_can(self::CAPABILITY)) {
             wp_send_json_error(array(
-                'message' => __('You do not have permission to perform this action.', 'suite-devtools'),
+                'message' => __('You do not have permission to perform this action.', 'modulforge'),
             ));
         }
 
@@ -555,13 +555,13 @@ final class DevTools {
 
         if ('' === $plugin_key || !isset($this->mini_plugins[$plugin_key])) {
             wp_send_json_error(array(
-                'message' => __('Plugin not found.', 'suite-devtools'),
+                'message' => __('Plugin not found.', 'modulforge'),
             ));
         }
 
         if (!isset($_POST['should_activate'])) {
             wp_send_json_error(array(
-                'message' => __('Invalid request.', 'suite-devtools'),
+                'message' => __('Invalid request.', 'modulforge'),
             ));
         }
 
@@ -573,7 +573,7 @@ final class DevTools {
             wp_send_json_success(array(
                 'message'     => sprintf(
                     /* translators: %s: mini-plugin name. */
-                    __('%s activated successfully.', 'suite-devtools'),
+                    __('%s activated successfully.', 'modulforge'),
                     self::get_mini_plugin_label($plugin_key)['name']
                 ),
                 'status'      => 'active',
@@ -585,7 +585,7 @@ final class DevTools {
         wp_send_json_success(array(
             'message'     => sprintf(
                 /* translators: %s: mini-plugin name. */
-                __('%s deactivated successfully.', 'suite-devtools'),
+                __('%s deactivated successfully.', 'modulforge'),
                 self::get_mini_plugin_label($plugin_key)['name']
             ),
             'status'      => 'inactive',
@@ -600,7 +600,7 @@ final class DevTools {
 
         if (!current_user_can(self::CAPABILITY)) {
             wp_send_json_error(array(
-                'message' => __('You do not have permission to perform this action.', 'suite-devtools'),
+                'message' => __('You do not have permission to perform this action.', 'modulforge'),
             ));
         }
 
@@ -610,8 +610,8 @@ final class DevTools {
         wp_send_json_success(array(
             'enabled' => $enabled,
             'message' => $enabled
-                ? __('Plugin data will be deleted on uninstall.', 'suite-devtools')
-                : __('Plugin data will be kept on uninstall.', 'suite-devtools'),
+                ? __('Plugin data will be deleted on uninstall.', 'modulforge')
+                : __('Plugin data will be kept on uninstall.', 'modulforge'),
         ));
     }
 }

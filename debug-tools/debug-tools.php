@@ -1,11 +1,11 @@
 <?php
 /**
- * Suite DevTools — Debug & Logs module.
+ * Modulforge — Debug & Logs module.
  *
- * Bundled component loaded by the Suite DevTools controller; not a standalone plugin.
+ * Bundled component loaded by the Modulforge controller; not a standalone plugin.
  * Toggle WordPress debugging from the admin and view the debug log without FTP.
  *
- * @package SuiteDevTools
+ * @package Modulforge
  */
 
 // Prevent direct access.
@@ -99,9 +99,9 @@ class DevToolsDebug {
     public function add_admin_menu() {
         // Register under the DevTools top-level menu so it's easy to find.
         $this->page_hook = add_submenu_page(
-            'suite-devtools',
-            __('Debug & Logs', 'suite-devtools'),
-            __('Debug & Logs', 'suite-devtools'),
+            'modulforge',
+            __('Debug & Logs', 'modulforge'),
+            __('Debug & Logs', 'modulforge'),
             self::CAPABILITY,
             self::MENU_SLUG,
             array($this, 'render_admin_page')
@@ -110,7 +110,7 @@ class DevToolsDebug {
 
     public function render_admin_page() {
         if (!current_user_can(self::CAPABILITY)) {
-            wp_die(esc_html__('You do not have permission to access this page.', 'suite-devtools'));
+            wp_die(esc_html__('You do not have permission to access this page.', 'modulforge'));
         }
         $settings = self::get_settings();
         $state    = self::current_state();
@@ -145,15 +145,15 @@ class DevToolsDebug {
             ),
             'state'        => self::current_state(),
             'i18n'         => array(
-                'saved'          => __('Settings saved. Reload pages to apply.', 'suite-devtools'),
-                'save_error'     => __('Could not save settings.', 'suite-devtools'),
-                'connect_error'  => __('Connection error.', 'suite-devtools'),
-                'confirm_clear'  => __('Clear the debug log? This cannot be undone.', 'suite-devtools'),
-                'confirm_restore'=> __('Restore wp-config.php from the original backup?', 'suite-devtools'),
-                'cleared'        => __('Log cleared.', 'suite-devtools'),
-                'empty_log'      => __('The debug log is empty.', 'suite-devtools'),
-                'no_match'       => __('No entries match the current filter.', 'suite-devtools'),
-                'restored'       => __('wp-config.php restored from backup.', 'suite-devtools'),
+                'saved'          => __('Settings saved. Reload pages to apply.', 'modulforge'),
+                'save_error'     => __('Could not save settings.', 'modulforge'),
+                'connect_error'  => __('Connection error.', 'modulforge'),
+                'confirm_clear'  => __('Clear the debug log? This cannot be undone.', 'modulforge'),
+                'confirm_restore'=> __('Restore wp-config.php from the original backup?', 'modulforge'),
+                'cleared'        => __('Log cleared.', 'modulforge'),
+                'empty_log'      => __('The debug log is empty.', 'modulforge'),
+                'no_match'       => __('No entries match the current filter.', 'modulforge'),
+                'restored'       => __('wp-config.php restored from backup.', 'modulforge'),
             ),
         ));
     }
@@ -164,10 +164,10 @@ class DevToolsDebug {
 
     private function verify(): void {
         if (!check_ajax_referer(self::NONCE_ACTION, 'nonce', false)) {
-            wp_send_json_error(array('message' => __('Security check failed.', 'suite-devtools')), 403);
+            wp_send_json_error(array('message' => __('Security check failed.', 'modulforge')), 403);
         }
         if (!current_user_can(self::CAPABILITY)) {
-            wp_send_json_error(array('message' => __('Insufficient permissions.', 'suite-devtools')), 403);
+            wp_send_json_error(array('message' => __('Insufficient permissions.', 'modulforge')), 403);
         }
     }
 
@@ -199,7 +199,7 @@ class DevToolsDebug {
         }
 
         wp_send_json_success(array(
-            'message' => __('Settings saved.', 'suite-devtools'),
+            'message' => __('Settings saved.', 'modulforge'),
             'state'   => self::current_state(),
         ));
     }
@@ -229,7 +229,7 @@ class DevToolsDebug {
         if (file_exists($path)) {
             file_put_contents($path, '', LOCK_EX);
         }
-        wp_send_json_success(array('message' => __('Log cleared.', 'suite-devtools')));
+        wp_send_json_success(array('message' => __('Log cleared.', 'modulforge')));
     }
 
     public function ajax_restore_backup() {
@@ -239,29 +239,29 @@ class DevToolsDebug {
         $backup = self::backup_dir() . '/wp-config-original.bak';
 
         if ('' === $path || !is_writable($path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- wp-config.php is outside WP_Filesystem's scope.
-            wp_send_json_error(array('message' => __('wp-config.php is not writable.', 'suite-devtools')), 400);
+            wp_send_json_error(array('message' => __('wp-config.php is not writable.', 'modulforge')), 400);
         }
         if (!file_exists($backup)) {
-            wp_send_json_error(array('message' => __('No backup found.', 'suite-devtools')), 404);
+            wp_send_json_error(array('message' => __('No backup found.', 'modulforge')), 404);
         }
 
         $contents = file_get_contents($backup);
         if (false === $contents || false === file_put_contents($path, $contents, LOCK_EX)) {
-            wp_send_json_error(array('message' => __('Could not restore wp-config.php.', 'suite-devtools')), 500);
+            wp_send_json_error(array('message' => __('Could not restore wp-config.php.', 'modulforge')), 500);
         }
 
         update_option(self::OPTION_KEY, self::default_settings());
-        wp_send_json_success(array('message' => __('Restored.', 'suite-devtools'), 'state' => self::current_state()));
+        wp_send_json_success(array('message' => __('Restored.', 'modulforge'), 'state' => self::current_state()));
     }
 
     public function ajax_download_log() {
         if (!check_ajax_referer(self::NONCE_ACTION, 'nonce', false) || !current_user_can(self::CAPABILITY)) {
-            wp_die(esc_html__('Access denied.', 'suite-devtools'), '', array('response' => 403));
+            wp_die(esc_html__('Access denied.', 'modulforge'), '', array('response' => 403));
         }
 
         $path = self::log_path();
         if (!file_exists($path) || !is_readable($path)) {
-            wp_die(esc_html__('No log file.', 'suite-devtools'), '', array('response' => 404));
+            wp_die(esc_html__('No log file.', 'modulforge'), '', array('response' => 404));
         }
 
         nocache_headers();
@@ -295,15 +295,15 @@ class DevToolsDebug {
     private static function apply_wp_config(array $settings) {
         $path = self::locate_wp_config();
         if ('' === $path) {
-            return new WP_Error('not_found', __('wp-config.php could not be located.', 'suite-devtools'));
+            return new WP_Error('not_found', __('wp-config.php could not be located.', 'modulforge'));
         }
         if (!is_writable($path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- wp-config.php is outside WP_Filesystem's scope.
-            return new WP_Error('not_writable', __('wp-config.php is not writable. Add the block below manually.', 'suite-devtools'));
+            return new WP_Error('not_writable', __('wp-config.php is not writable. Add the block below manually.', 'modulforge'));
         }
 
         $contents = file_get_contents($path);
         if (false === $contents) {
-            return new WP_Error('read_failed', __('Could not read wp-config.php.', 'suite-devtools'));
+            return new WP_Error('read_failed', __('Could not read wp-config.php.', 'modulforge'));
         }
 
         self::backup($contents);
@@ -319,7 +319,7 @@ class DevToolsDebug {
         }
 
         if (false === file_put_contents($path, $contents, LOCK_EX)) {
-            return new WP_Error('write_failed', __('Could not write wp-config.php.', 'suite-devtools'));
+            return new WP_Error('write_failed', __('Could not write wp-config.php.', 'modulforge'));
         }
         return true;
     }

@@ -2,8 +2,8 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Suite DevTools 2.2.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/dev-tools\n"
+"Project-Id-Version: Modulforge 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/modulforge\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,27 +12,27 @@ msgstr ""
 "POT-Creation-Date: 2026-06-25T17:50:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: suite-devtools\n"
+"X-Domain: modulforge\n"
 
 #. Plugin Name of the plugin
-#: suite-devtools.php
-#: suite-devtools.php:259
-#: suite-devtools.php:260
-msgid "Suite DevTools"
+#: modulforge.php
+#: modulforge.php:259
+#: modulforge.php:260
+msgid "Modulforge"
 msgstr ""
 
 #. Description of the plugin
-#: suite-devtools.php
+#: modulforge.php
 msgid "Controller that manages and lets you toggle bundled developer mini-tools individually."
 msgstr ""
 
 #. Author of the plugin
-#: suite-devtools.php
+#: modulforge.php
 msgid "JorgeML"
 msgstr ""
 
 #. Author URI of the plugin
-#: suite-devtools.php
+#: modulforge.php
 msgid "https://suitedevtools.com"
 msgstr ""
 
@@ -266,7 +266,7 @@ msgstr ""
 #: convert-webp/convert-webp.php:105
 #: convert-webp/convert-webp.php:106
 #: convert-webp/includes/admin-page.php:16
-#: suite-devtools.php:228
+#: modulforge.php:228
 msgid "Convert to WebP"
 msgstr ""
 
@@ -368,7 +368,7 @@ msgid "Neither GD (with WebP support) nor Imagick is available, so images cannot
 msgstr ""
 
 #: convert-webp/includes/admin-page.php:30
-#: suite-devtools.php:289
+#: modulforge.php:289
 msgid "Settings"
 msgstr ""
 
@@ -415,7 +415,7 @@ msgstr ""
 
 #: debug-tools/debug-tools.php:101
 #: debug-tools/debug-tools.php:102
-#: suite-devtools.php:224
+#: modulforge.php:224
 msgid "Debug & Logs"
 msgstr ""
 
@@ -677,155 +677,155 @@ msgstr ""
 msgid "Responsive status saved successfully"
 msgstr ""
 
-#: suite-devtools.php:212
+#: modulforge.php:212
 msgid "Page State Management"
 msgstr ""
 
-#: suite-devtools.php:213
+#: modulforge.php:213
 msgid "Complete page state management system with status tracking, notes, and responsive design checkboxes."
 msgstr ""
 
-#: suite-devtools.php:216
+#: modulforge.php:216
 msgid "Page Tabs Organizer"
 msgstr ""
 
-#: suite-devtools.php:217
+#: modulforge.php:217
 msgid "Organize WordPress pages with customizable tabs to improve admin panel management."
 msgstr ""
 
-#: suite-devtools.php:220
+#: modulforge.php:220
 msgid "Comment Pins"
 msgstr ""
 
-#: suite-devtools.php:221
+#: modulforge.php:221
 msgid "Visual comment pins system for WordPress. Add visual comments anywhere on a page."
 msgstr ""
 
-#: suite-devtools.php:225
+#: modulforge.php:225
 msgid "Toggle WordPress debugging and read the debug log from the admin, without FTP or server access."
 msgstr ""
 
-#: suite-devtools.php:229
+#: modulforge.php:229
 msgid "Convert JPEG and PNG images to WebP — bulk-convert the media library and auto-convert new uploads. Replaces and deletes the originals."
 msgstr ""
 
-#: suite-devtools.php:271
-#: suite-devtools.php:272
+#: modulforge.php:271
+#: modulforge.php:272
 msgid "Tools"
 msgstr ""
 
-#: suite-devtools.php:325
+#: modulforge.php:325
 msgid "Activating..."
 msgstr ""
 
-#: suite-devtools.php:326
+#: modulforge.php:326
 msgid "Deactivating..."
 msgstr ""
 
-#: suite-devtools.php:327
+#: modulforge.php:327
 #: tabs/page-tabs-organizer.php:253
 msgid "Operation error"
 msgstr ""
 
-#: suite-devtools.php:328
+#: modulforge.php:328
 msgid "An unexpected error occurred. Please try again."
 msgstr ""
 
 #. translators: %s: mini-plugin name.
-#: suite-devtools.php:330
+#: modulforge.php:330
 #, php-format
 msgid "Click the switch to activate or deactivate %s."
 msgstr ""
 
-#: suite-devtools.php:343
-msgid "Manage the mini-plugins included in Suite DevTools. You can activate or deactivate each one according to your needs."
+#: modulforge.php:343
+msgid "Manage the mini-plugins included in Modulforge. You can activate or deactivate each one according to your needs."
 msgstr ""
 
-#: suite-devtools.php:398
+#: modulforge.php:398
 msgid "Information"
 msgstr ""
 
-#: suite-devtools.php:401
+#: modulforge.php:401
 msgid "How does it work?"
 msgstr ""
 
-#: suite-devtools.php:402
-msgid "Suite DevTools acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance."
+#: modulforge.php:402
+msgid "Modulforge acts as a controller that allows you to activate or deactivate mini-plugins individually. Each mini-plugin is loaded only when active, optimizing performance."
 msgstr ""
 
-#: suite-devtools.php:405
+#: modulforge.php:405
 msgid "Included mini-plugins"
 msgstr ""
 
-#: suite-devtools.php:408
+#: modulforge.php:408
 msgid "Page State Management:"
 msgstr ""
 
-#: suite-devtools.php:409
+#: modulforge.php:409
 msgid "Page state management"
 msgstr ""
 
-#: suite-devtools.php:412
+#: modulforge.php:412
 msgid "Page Tabs Organizer:"
 msgstr ""
 
-#: suite-devtools.php:413
+#: modulforge.php:413
 msgid "Tab organization"
 msgstr ""
 
-#: suite-devtools.php:416
+#: modulforge.php:416
 msgid "Comment Pins:"
 msgstr ""
 
-#: suite-devtools.php:417
+#: modulforge.php:417
 msgid "Visual comment system"
 msgstr ""
 
-#: suite-devtools.php:422
+#: modulforge.php:422
 msgid "Data on uninstall"
 msgstr ""
 
-#: suite-devtools.php:423
+#: modulforge.php:423
 msgid "By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled."
 msgstr ""
 
-#: suite-devtools.php:426
+#: modulforge.php:426
 msgid "Delete all data on uninstall"
 msgstr ""
 
-#: suite-devtools.php:550
-#: suite-devtools.php:603
+#: modulforge.php:550
+#: modulforge.php:603
 #: tabs/page-tabs-organizer.php:494
 #: tabs/page-tabs-organizer.php:546
 #: tabs/page-tabs-organizer.php:601
 msgid "You do not have permission to perform this action."
 msgstr ""
 
-#: suite-devtools.php:558
+#: modulforge.php:558
 msgid "Plugin not found."
 msgstr ""
 
-#: suite-devtools.php:564
+#: modulforge.php:564
 msgid "Invalid request."
 msgstr ""
 
 #. translators: %s: mini-plugin name.
-#: suite-devtools.php:576
+#: modulforge.php:576
 #, php-format
 msgid "%s activated successfully."
 msgstr ""
 
 #. translators: %s: mini-plugin name.
-#: suite-devtools.php:588
+#: modulforge.php:588
 #, php-format
 msgid "%s deactivated successfully."
 msgstr ""
 
-#: suite-devtools.php:613
+#: modulforge.php:613
 msgid "Plugin data will be deleted on uninstall."
 msgstr ""
 
-#: suite-devtools.php:614
+#: modulforge.php:614
 msgid "Plugin data will be kept on uninstall."
 msgstr ""
 

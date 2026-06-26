@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
-# build-release.sh — Build a clean, distributable Suite DevTools plugin zip.
+# build-release.sh — Build a clean, distributable Modulforge plugin zip.
 #
 # Exports the committed plugin (HEAD) into:
-#   releases/suite-devtools.zip            (named after the slug — for WordPress.org)
-#   releases/suite-devtools-<version>.zip  (versioned copy for your own archive)
+#   releases/modulforge.zip            (named after the slug — for WordPress.org)
+#   releases/modulforge-<version>.zip  (versioned copy for your own archive)
 #
-# The root folder inside the zip is the slug (suite-devtools/). The archive is
+# The root folder inside the zip is the slug (modulforge/). The archive is
 # built with the standard `zip` tool from a clean staging copy, so it is a plain,
 # widely-compatible zip (no VCS metadata, no macOS resource forks/__MACOSX).
 #
@@ -19,8 +19,8 @@
 #
 set -euo pipefail
 
-PLUGIN_SLUG="suite-devtools"
-MAIN_FILE="suite-devtools.php"
+PLUGIN_SLUG="modulforge"
+MAIN_FILE="modulforge.php"
 
 # Resolve the plugin directory (where this script lives) so it works from any cwd.
 PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
