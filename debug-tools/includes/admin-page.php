@@ -2,16 +2,15 @@
 /**
  * Debug & Logs admin page.
  *
- * @var array $settings  Current saved settings.
- * @var array $state     Runtime/config state from current_state().
+ * @var array $settings  Current saved settings (enabled, display_errors, log_token).
+ * @var array $state     Runtime state from current_state().
+ *
+ * @package Modulforge
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
-
-$runtime  = $state['runtime']; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
-$writable = $state['config_writable']; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
 
 $levels = array( // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
     'fatal'      => __('Fatal', 'modulforge'),
@@ -21,13 +20,24 @@ $levels = array( // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.No
     'deprecated' => __('Deprecated', 'modulforge'),
     'other'      => __('Other', 'modulforge'),
 );
+
+// Static block users can paste into wp-config.php themselves for full core
+// WP_DEBUG (deprecation/doing_it_wrong notices). Shown for reference only —
+// the plugin never writes to wp-config.php.
+$wp_config_block = "define( 'WP_DEBUG', true );\n" .
+    "define( 'WP_DEBUG_LOG', true );\n" .
+    "define( 'WP_DEBUG_DISPLAY', false );\n" .
+    "@ini_set( 'display_errors', 0 );"; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
 ?>
 <div class="wrap devtools-debug">
     <h1><?php esc_html_e('Debug &amp; Logs', 'modulforge'); ?></h1>
+    <p class="description">
+        <?php esc_html_e('Capture PHP errors to a private log file in your uploads folder, then read, filter, download or clear it here. This does not modify wp-config.php.', 'modulforge'); ?>
+    </p>
 
-    <?php if (!$writable) : ?>
+    <?php if (!$state['dir_writable']) : ?>
         <div class="notice notice-warning">
-            <p><?php esc_html_e('wp-config.php is not writable. Saving will show a block you can paste manually.', 'modulforge'); ?></p>
+            <p><?php esc_html_e('The uploads folder is not writable, so the log file cannot be created. Check your file permissions.', 'modulforge'); ?></p>
         </div>
     <?php endif; ?>
 
@@ -35,58 +45,49 @@ $levels = array( // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.No
 
     <div class="devtools-debug-grid">
         <div class="devtools-debug-card">
-            <h2><?php esc_html_e('Debug settings', 'modulforge'); ?></h2>
+            <h2><?php esc_html_e('Error logging', 'modulforge'); ?></h2>
 
             <form id="devtools-debug-form">
                 <label class="devtools-debug-toggle is-master">
-                    <input type="checkbox" name="wp_debug" <?php checked($settings['wp_debug']); ?> />
-                    <span><code>WP_DEBUG</code> — <?php esc_html_e('master switch', 'modulforge'); ?></span>
+                    <input type="checkbox" name="enabled" <?php checked($settings['enabled']); ?> />
+                    <span><?php esc_html_e('Enable error logging', 'modulforge'); ?> — <?php esc_html_e('record PHP errors to a private log file', 'modulforge'); ?></span>
                 </label>
 
                 <div class="devtools-debug-sub">
                     <label class="devtools-debug-toggle">
-                        <input type="checkbox" name="wp_debug_log" <?php checked($settings['wp_debug_log']); ?> />
-                        <span><code>WP_DEBUG_LOG</code> — <?php esc_html_e('write errors to debug.log', 'modulforge'); ?></span>
-                    </label>
-                    <label class="devtools-debug-toggle">
-                        <input type="checkbox" name="wp_debug_display" <?php checked($settings['wp_debug_display']); ?> />
-                        <span><code>WP_DEBUG_DISPLAY</code> — <?php esc_html_e('show errors on screen (avoid on live sites)', 'modulforge'); ?></span>
-                    </label>
-                    <label class="devtools-debug-toggle">
-                        <input type="checkbox" name="script_debug" <?php checked($settings['script_debug']); ?> />
-                        <span><code>SCRIPT_DEBUG</code> — <?php esc_html_e('load unminified core assets', 'modulforge'); ?></span>
-                    </label>
-                    <label class="devtools-debug-toggle">
-                        <input type="checkbox" name="savequeries" <?php checked($settings['savequeries']); ?> />
-                        <span><code>SAVEQUERIES</code> — <?php esc_html_e('record DB queries (uses memory)', 'modulforge'); ?></span>
+                        <input type="checkbox" name="display_errors" <?php checked($settings['display_errors']); ?> />
+                        <span><?php esc_html_e('Show errors on screen', 'modulforge'); ?> — <?php esc_html_e('avoid on live sites; visitors would see the errors', 'modulforge'); ?></span>
                     </label>
                 </div>
 
                 <p class="submit">
                     <button type="submit" class="button button-primary"><?php esc_html_e('Save settings', 'modulforge'); ?></button>
-                    <button type="button" id="devtools-debug-restore" class="button"<?php echo $state['has_backup'] ? '' : ' style="display:none;"'; ?>>
-                        <?php esc_html_e('Restore wp-config backup', 'modulforge'); ?>
-                    </button>
                 </p>
             </form>
 
-            <div id="devtools-debug-manual" class="devtools-debug-manual" style="display:none;">
-                <p><?php esc_html_e('Paste this into wp-config.php, just above the "stop editing" line:', 'modulforge'); ?></p>
-                <textarea readonly rows="7"></textarea>
-            </div>
-
             <p class="devtools-debug-runtime" id="devtools-debug-runtime"
-               data-active="<?php echo $runtime['wp_debug'] ? '1' : '0'; ?>">
+               data-active="<?php echo $state['logging_active'] ? '1' : '0'; ?>">
                 <?php
-                echo $runtime['wp_debug']
-                    ? esc_html__('Debug is currently ACTIVE on the site.', 'modulforge')
-                    : esc_html__('Debug is currently OFF on the site.', 'modulforge');
+                if ($state['logging_active']) {
+                    esc_html_e('Logging is ACTIVE — errors are being written to the log.', 'modulforge');
+                } elseif ($settings['enabled']) {
+                    esc_html_e('Logging is enabled but not active yet. Reload your site, or your host may disable ini_set().', 'modulforge');
+                } else {
+                    esc_html_e('Logging is OFF.', 'modulforge');
+                }
                 ?>
             </p>
+
+            <details class="devtools-debug-manual">
+                <summary><?php esc_html_e('Need full WordPress core debugging (deprecation notices)?', 'modulforge'); ?></summary>
+                <p><?php esc_html_e('That requires constants in wp-config.php, which a plugin must not edit. Paste this just above the "stop editing" line yourself:', 'modulforge'); ?></p>
+                <textarea id="devtools-debug-config" readonly rows="4"><?php echo esc_textarea($wp_config_block); ?></textarea>
+                <button type="button" class="button" id="devtools-debug-copy"><?php esc_html_e('Copy', 'modulforge'); ?></button>
+            </details>
         </div>
 
         <div class="devtools-debug-card devtools-debug-viewer">
-            <h2><?php esc_html_e('Debug log', 'modulforge'); ?></h2>
+            <h2><?php esc_html_e('Log', 'modulforge'); ?></h2>
 
             <div class="devtools-debug-toolbar">
                 <div class="devtools-debug-filters">

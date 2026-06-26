@@ -182,7 +182,7 @@ final class Modulforge_Controller {
             'debug-tools'  => array(
                 'file'    => $base_path . 'debug-tools/debug-tools.php',
                 'class'   => 'Modulforge_Debug',
-                'version' => '1.0.1',
+                'version' => '1.1.0',
             ),
             'convert-webp' => array(
                 'file'    => $base_path . 'convert-webp/convert-webp.php',
@@ -222,7 +222,7 @@ final class Modulforge_Controller {
             ),
             'debug-tools'  => array(
                 'name'        => __('Debug & Logs', 'modulforge'),
-                'description' => __('Toggle WordPress debugging and read the debug log from the admin, without FTP or server access.', 'modulforge'),
+                'description' => __('Capture PHP errors to a private log file and read them from the admin, without FTP or editing wp-config.', 'modulforge'),
             ),
             'convert-webp' => array(
                 'name'        => __('Convert to WebP', 'modulforge'),

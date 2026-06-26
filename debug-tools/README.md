@@ -1,42 +1,49 @@
 # Debug & Logs
 
-A WordPress mini-plugin (part of Modulforge) to **turn WordPress debugging on/off and read
-`debug.log` from the admin**, without FTP or server access.
+A WordPress mini-plugin (part of Modulforge) that **captures PHP errors to a private log
+file and lets you read it from the admin** — without FTP and **without editing
+`wp-config.php` or any core file**.
 
 ## What it does
 
-- **Toggle debug constants** from a page under **Tools → Debug & Logs**: `WP_DEBUG`
-  (master), `WP_DEBUG_LOG`, `WP_DEBUG_DISPLAY`, `SCRIPT_DEBUG`, `SAVEQUERIES`.
-  Defaults to **log on / on-screen off**, which is safe even on a visible site.
-- **Log viewer** for `wp-content/debug.log`: level filters (Fatal / Error / Warning /
-  Notice / Deprecated / Other), text search, auto-refresh, clear and download.
+- **Error logging toggle** under **Modulforge → Debug & Logs**:
+  - *Enable error logging* (master) — records PHP errors to a private log file.
+  - *Show errors on screen* — optional; off by default (safe on live sites).
+- **Log viewer**: level filters (Fatal / Error / Warning / Notice / Deprecated / Other),
+  text search, auto-refresh, clear and download.
 
-## How activation works (and why it edits wp-config)
+## How it works (no wp-config edits)
 
-`WP_DEBUG` is read from `wp-config.php` before any plugin loads, so a plugin cannot enable
-it at runtime — the constants must live in `wp-config.php`. This module edits it safely:
+`WP_DEBUG` is read from `wp-config.php` before any plugin loads, so a plugin cannot flip it
+at runtime. Instead of editing core configuration, this module manages **its own** log:
 
-- Locates `wp-config.php` the way WordPress core does.
-- Keeps a one-time pristine **backup** in `wp-content/uploads/devtools-debug/`
-  (protected with `.htaccess`), restorable from the page.
-- Writes a delimited block (`/* BEGIN/END Modulforge Debug */`) just above the
-  "stop editing" line, and **comments out** any pre-existing `define()` of the managed
-  constants (in PHP the first `define()` wins, so duplicates must be avoided).
-- If `wp-config.php` isn't writable, the page shows the exact block to paste manually.
-- Turning debug off — or deactivating/uninstalling the module — **reverts** the block and
-  restores the original defines, so the site is never left in debug mode without the tool.
+- When enabled, it calls `ini_set('log_errors', '1')`, points `ini_set('error_log', …)` at
+  its own file and raises `error_reporting()` — applied early on every request (front and
+  admin). No constants are defined and `wp-config.php` is never touched.
+- The log lives at `wp-content/uploads/modulforge/debug-{random}.log`:
+  - inside the uploads folder (the only place a plugin should write),
+  - with a **randomised, hard-to-guess filename**, plus an `.htaccess` (`Require all denied`)
+    and an empty `index.html` for defence in depth.
+- All writes (create/harden the folder, clear the log) go through **`WP_Filesystem`**.
+- For full **core** debugging (deprecation / `_doing_it_wrong` notices) the page shows the
+  exact `wp-config.php` block to paste **yourself** — it is reference text only.
+
+Because nothing is written to `wp-config.php`, there is nothing to revert: disabling the
+toggle (or deactivating the module) simply stops re-applying the `ini_set()` calls.
 
 ## Security
 
-- Everything is gated by `manage_options` + nonce (it edits site configuration).
-- The log is served only through a capability-checked endpoint (no direct public link),
-  and the backup directory is protected.
+- Everything is gated by `manage_options` + nonce.
+- The log is served only through a capability-checked endpoint (no direct public link); the
+  file name is randomised and the directory is protected with `.htaccess` + `index.html`.
+- On uninstall (when the user opted in) the whole `uploads/modulforge` log directory is
+  removed via `WP_Filesystem`.
 
 ## Files
 
 ```
 debug-tools/
-├── debug-tools.php        # class: lifecycle, wp-config editing, AJAX, log tail
+├── debug-tools.php        # class: lifecycle, runtime ini_set logging, AJAX, log tail
 ├── includes/admin-page.php
 ├── assets/admin.js        # settings + log viewer (vanilla JS, no build)
 ├── assets/admin.css
@@ -45,5 +52,7 @@ debug-tools/
 
 ## Versions
 
-- **v1.0.0** — initial release: debug toggles via safe wp-config editing + log viewer
-  (filters, search, auto-refresh, clear, download).
+- **v1.1.0** — re-architected for WordPress.org: no longer edits `wp-config.php` and keeps
+  no wp-config backup. Captures errors to a private, randomised log inside `uploads` via
+  `ini_set()`, with all writes through `WP_Filesystem`.
+- **v1.0.x** — initial release (toggled debug constants by editing `wp-config.php`).

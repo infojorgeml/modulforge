@@ -18,12 +18,12 @@
         form.addEventListener('submit', saveSettings);
         bindMasterToggle(form);
 
-        on('devtools-debug-restore', 'click', restoreBackup);
         on('devtools-debug-refresh', 'click', loadLog);
         on('devtools-debug-clear', 'click', clearLog);
         on('devtools-debug-download', 'click', function () {
             window.location.href = cfg.download_url;
         });
+        on('devtools-debug-copy', 'click', copyConfig);
 
         var search = document.getElementById('devtools-debug-search');
         if (search) {
@@ -79,7 +79,7 @@
     /* ----- Settings ----- */
 
     function bindMasterToggle(form) {
-        var master = form.querySelector('input[name="wp_debug"]');
+        var master = form.querySelector('input[name="enabled"]');
         var subs = form.querySelectorAll('.devtools-debug-sub input');
         if (!master) {
             return;
@@ -87,6 +87,9 @@
         var sync = function () {
             subs.forEach(function (cb) {
                 cb.disabled = !master.checked;
+                if (!master.checked) {
+                    cb.checked = false;
+                }
             });
         };
         master.addEventListener('change', sync);
@@ -105,38 +108,8 @@
 
         post(data)
             .then(function (res) {
-                var manual = document.getElementById('devtools-debug-manual');
                 if (res && res.success) {
-                    if (manual) {
-                        manual.style.display = 'none';
-                    }
                     notice((res.data && res.data.message) || i18n.saved, 'success');
-                    updateRuntime(res.data && res.data.state);
-                } else {
-                    var block = res && res.data && res.data.manual_block;
-                    if (block && manual) {
-                        manual.querySelector('textarea').value = block;
-                        manual.style.display = '';
-                    }
-                    notice((res && res.data && res.data.message) || i18n.save_error, 'error');
-                }
-            })
-            .catch(function () {
-                notice(i18n.connect_error, 'error');
-            });
-    }
-
-    function restoreBackup() {
-        if (!window.confirm(i18n.confirm_restore)) {
-            return;
-        }
-        var data = new URLSearchParams();
-        data.append('action', 'modulforge_debug_restore_backup');
-        data.append('nonce', cfg.nonce);
-        post(data)
-            .then(function (res) {
-                if (res && res.success) {
-                    notice((res.data && res.data.message) || i18n.restored, 'success');
                     updateRuntime(res.data && res.data.state);
                 } else {
                     notice((res && res.data && res.data.message) || i18n.save_error, 'error');
@@ -153,12 +126,28 @@
         }
         var el = document.getElementById('devtools-debug-runtime');
         if (el) {
-            // Saved intent differs from runtime until pages reload; keep it informative.
-            el.dataset.active = state.runtime && state.runtime.wp_debug ? '1' : '0';
+            // Saved intent differs from runtime until the next page load.
+            el.dataset.active = state.logging_active ? '1' : '0';
         }
-        var restore = document.getElementById('devtools-debug-restore');
-        if (restore) {
-            restore.style.display = state.has_backup ? '' : 'none';
+    }
+
+    function copyConfig() {
+        var ta = document.getElementById('devtools-debug-config');
+        if (!ta) {
+            return;
+        }
+        ta.select();
+        ta.setSelectionRange(0, 99999);
+        var done = function () {
+            notice(i18n.copied || 'Copied.', 'success');
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(ta.value).then(done).catch(function () {});
+        } else {
+            try {
+                document.execCommand('copy');
+                done();
+            } catch (err) {}
         }
     }
 

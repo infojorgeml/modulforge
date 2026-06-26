@@ -3,7 +3,11 @@
  * Modulforge — Debug & Logs module.
  *
  * Bundled component loaded by the Modulforge controller; not a standalone plugin.
- * Toggle WordPress debugging from the admin and view the debug log without FTP.
+ *
+ * Captures PHP errors to a private log file inside the uploads folder and lets
+ * you read, filter, download and clear it from the admin. It does NOT edit
+ * wp-config.php or any core file: logging is enabled at runtime with ini_set(),
+ * and all writes happen inside wp_upload_dir()/modulforge via WP_Filesystem.
  *
  * @package Modulforge
  */
@@ -17,52 +21,140 @@ if (!class_exists('Modulforge_Debug')) :
 
 class Modulforge_Debug {
 
-    const VERSION         = '1.0.1';
-    const OPTION_KEY      = 'modulforge_debug_settings';
-    const NONCE_ACTION    = 'modulforge_debug';
-    const MENU_SLUG       = 'modulforge-debug';
-    const CAPABILITY      = 'manage_options';
-    const BLOCK_BEGIN     = '/* BEGIN Modulforge Debug */';
-    const BLOCK_END       = '/* END Modulforge Debug */';
-    const DISABLED_PREFIX = '// Modulforge-disabled: ';
-    const LOG_TAIL_BYTES  = 131072; // 128 KB tail
+    const VERSION        = '1.1.0';
+    const OPTION_KEY     = 'modulforge_debug_settings';
+    const NONCE_ACTION   = 'modulforge_debug';
+    const MENU_SLUG      = 'modulforge-debug';
+    const CAPABILITY     = 'manage_options';
+    const LOG_TAIL_BYTES = 131072;        // 128 KB tail shown in the viewer
+    const LOG_DIR_NAME   = 'modulforge';  // sub-folder of wp_upload_dir()
 
     /** Hook suffix of our admin page (set when the menu is registered). */
     private $page_hook = '';
 
     public function __construct() {
-        // Priority 11 so the Modulforge top-level menu (priority 10) exists first.
+        // Apply the logging configuration as early as the module can (it is
+        // loaded on plugins_loaded by the controller), on BOTH front and admin
+        // requests, so errors are captured everywhere while logging is enabled.
+        $this->maybe_enable_logging();
+
         add_action('admin_menu', array($this, 'add_admin_menu'), 11);
         add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));
         add_action('wp_ajax_modulforge_debug_save_settings', array($this, 'ajax_save_settings'));
         add_action('wp_ajax_modulforge_debug_get_log', array($this, 'ajax_get_log'));
         add_action('wp_ajax_modulforge_debug_clear_log', array($this, 'ajax_clear_log'));
         add_action('wp_ajax_modulforge_debug_download_log', array($this, 'ajax_download_log'));
-        add_action('wp_ajax_modulforge_debug_restore_backup', array($this, 'ajax_restore_backup'));
     }
 
-    /** Constants managed inside our wp-config block. */
-    private static function managed_constants(): array {
-        return array('WP_DEBUG', 'WP_DEBUG_LOG', 'WP_DEBUG_DISPLAY', 'SCRIPT_DEBUG', 'SAVEQUERIES');
-    }
+    /* --------------------------------------------------------------------- */
+    /* Settings                                                               */
+    /* --------------------------------------------------------------------- */
 
     private static function default_settings(): array {
         return array(
-            'wp_debug'         => false,
-            'wp_debug_log'     => false,
-            'wp_debug_display' => false,
-            'script_debug'     => false,
-            'savequeries'      => false,
+            'enabled'        => false,  // capture PHP errors to our log file
+            'display_errors' => false,  // also print errors on screen (unsafe live)
+            'log_token'      => '',      // random component of the log filename
         );
     }
 
     private static function get_settings(): array {
         $saved = get_option(self::OPTION_KEY, array());
-        return wp_parse_args(is_array($saved) ? $saved : array(), self::default_settings());
+        $s     = wp_parse_args(is_array($saved) ? $saved : array(), self::default_settings());
+
+        $s['enabled']        = (bool) $s['enabled'];
+        $s['display_errors'] = (bool) $s['display_errors'];
+        $s['log_token']      = is_string($s['log_token']) ? preg_replace('/[^A-Za-z0-9]/', '', $s['log_token']) : '';
+
+        return $s;
+    }
+
+    /** Persist settings, minting the random log-file token on first enable. */
+    private static function store_settings(array $settings): array {
+        if ($settings['enabled'] && '' === $settings['log_token']) {
+            $settings['log_token'] = wp_generate_password(20, false, false); // alnum, unguessable
+        }
+        update_option(self::OPTION_KEY, $settings);
+        return $settings;
     }
 
     /* --------------------------------------------------------------------- */
-    /* Lifecycle — invoked by the Modulforge controller                          */
+    /* Log location — always inside uploads, never the plugin or core dirs    */
+    /* --------------------------------------------------------------------- */
+
+    private static function log_dir(): string {
+        $uploads = wp_upload_dir();
+        return trailingslashit($uploads['basedir']) . self::LOG_DIR_NAME;
+    }
+
+    /** Randomised, hard-to-guess filename (defence on servers ignoring .htaccess). */
+    private static function log_path(): string {
+        $s     = self::get_settings();
+        $token = '' !== $s['log_token'] ? $s['log_token'] : 'log';
+        return self::log_dir() . '/debug-' . $token . '.log';
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* Runtime logging — no wp-config edits, just ini_set for this request    */
+    /* --------------------------------------------------------------------- */
+
+    private function maybe_enable_logging(): void {
+        $s = self::get_settings();
+        if (!$s['enabled'] || '' === $s['log_token']) {
+            return;
+        }
+
+        $dir = self::log_dir();
+        if (!is_dir($dir)) {
+            wp_mkdir_p($dir); // native, cheap, idempotent; hardening added on save
+        }
+
+        // Route PHP's error log to our private file and raise reporting. ini_set
+        // may be disabled on some hosts — fail silently if so.
+        @ini_set('log_errors', '1');                                   // phpcs:ignore WordPress.PHP.IniSet.Risky -- Opt-in debugging toggle, scoped to this request.
+        @ini_set('error_log', self::log_path());                       // phpcs:ignore WordPress.PHP.IniSet.Risky -- Send errors to our own log under uploads, not wp-config.
+        @ini_set('display_errors', $s['display_errors'] ? '1' : '0');  // phpcs:ignore WordPress.PHP.IniSet.display_errors,WordPress.PHP.IniSet.Risky -- User-controlled debug toggle.
+        error_reporting(E_ALL);                                        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_reporting_error_reporting -- Capture all errors while debugging is enabled.
+    }
+
+    /**
+     * Create + harden the uploads/modulforge directory. .htaccess covers Apache;
+     * the randomised filename covers servers that ignore .htaccess. Writes go
+     * through WP_Filesystem. Safe to call repeatedly.
+     */
+    private static function ensure_log_dir(): void {
+        $dir = self::log_dir();
+        if (!is_dir($dir)) {
+            wp_mkdir_p($dir);
+        }
+
+        $fs = self::fs();
+        if (!$fs) {
+            return;
+        }
+        if (!$fs->exists($dir . '/.htaccess')) {
+            $fs->put_contents($dir . '/.htaccess', "Require all denied\n");
+        }
+        if (!$fs->exists($dir . '/index.html')) {
+            $fs->put_contents($dir . '/index.html', '');
+        }
+    }
+
+    /** Lazily initialise WP_Filesystem (direct method on typical uploads). */
+    private static function fs() {
+        global $wp_filesystem;
+        if (!empty($wp_filesystem)) {
+            return $wp_filesystem;
+        }
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        if (WP_Filesystem()) {
+            return $wp_filesystem;
+        }
+        return null;
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* Lifecycle — invoked by the Modulforge controller                       */
     /* --------------------------------------------------------------------- */
 
     public static function activate(): void {
@@ -71,24 +163,19 @@ class Modulforge_Debug {
         }
     }
 
-    /** Never leave the site in debug mode once the tool is gone. */
     public static function deactivate(): void {
-        self::revert_wp_config();
+        // Logging stops on its own once this module is no longer loaded (the
+        // ini_set runs only while active). Nothing in wp-config to revert.
     }
 
     public static function uninstall(): void {
-        self::revert_wp_config();
         delete_option(self::OPTION_KEY);
 
-        // Remove our backup directory.
-        $dir = self::backup_dir();
-        foreach (array('wp-config-original.bak', '.htaccess', 'index.html') as $f) {
-            if (file_exists($dir . '/' . $f)) {
-                wp_delete_file($dir . '/' . $f);
-            }
-        }
-        if (is_dir($dir)) {
-            @rmdir($dir); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- Removing our own empty backup directory on uninstall.
+        // Remove our private log directory (and its contents) from uploads.
+        $dir = self::log_dir();
+        $fs  = self::fs();
+        if ($fs && $fs->is_dir($dir)) {
+            $fs->delete($dir, true); // recursive
         }
     }
 
@@ -145,15 +232,14 @@ class Modulforge_Debug {
             ),
             'state'        => self::current_state(),
             'i18n'         => array(
-                'saved'          => __('Settings saved. Reload pages to apply.', 'modulforge'),
-                'save_error'     => __('Could not save settings.', 'modulforge'),
-                'connect_error'  => __('Connection error.', 'modulforge'),
-                'confirm_clear'  => __('Clear the debug log? This cannot be undone.', 'modulforge'),
-                'confirm_restore'=> __('Restore wp-config.php from the original backup?', 'modulforge'),
-                'cleared'        => __('Log cleared.', 'modulforge'),
-                'empty_log'      => __('The debug log is empty.', 'modulforge'),
-                'no_match'       => __('No entries match the current filter.', 'modulforge'),
-                'restored'       => __('wp-config.php restored from backup.', 'modulforge'),
+                'saved'         => __('Settings saved. Reload your site to start capturing errors.', 'modulforge'),
+                'save_error'    => __('Could not save settings.', 'modulforge'),
+                'connect_error' => __('Connection error.', 'modulforge'),
+                'confirm_clear' => __('Clear the log? This cannot be undone.', 'modulforge'),
+                'cleared'       => __('Log cleared.', 'modulforge'),
+                'empty_log'     => __('The log is empty.', 'modulforge'),
+                'no_match'      => __('No entries match the current filter.', 'modulforge'),
+                'copied'        => __('Copied to clipboard.', 'modulforge'),
             ),
         ));
     }
@@ -174,32 +260,26 @@ class Modulforge_Debug {
     public function ajax_save_settings() {
         $this->verify();
 
-        $raw      = isset($_POST['settings']) && is_array($_POST['settings']) ? array_map('sanitize_text_field', wp_unslash($_POST['settings'])) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is verified in verify().
-        $settings = array();
-        foreach (self::default_settings() as $key => $unused) {
-            $settings[$key] = isset($raw[$key]) ? wp_validate_boolean($raw[$key]) : false;
-        }
-        // WP_DEBUG is the master switch.
-        if (!$settings['wp_debug']) {
-            $settings['wp_debug_log']     = false;
-            $settings['wp_debug_display'] = false;
-            $settings['script_debug']     = false;
-            $settings['savequeries']      = false;
+        $raw      = isset($_POST['settings']) && is_array($_POST['settings']) ? array_map('sanitize_text_field', wp_unslash($_POST['settings'])) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify().
+        $current  = self::get_settings();
+        $settings = array(
+            'enabled'        => isset($raw['enabled']) ? wp_validate_boolean($raw['enabled']) : false,
+            'display_errors' => isset($raw['display_errors']) ? wp_validate_boolean($raw['display_errors']) : false,
+            'log_token'      => $current['log_token'],
+        );
+        // "Show errors on screen" only makes sense while logging is enabled.
+        if (!$settings['enabled']) {
+            $settings['display_errors'] = false;
         }
 
-        update_option(self::OPTION_KEY, $settings);
+        $settings = self::store_settings($settings); // mints the token on first enable
 
-        $result = self::apply_wp_config($settings);
-        if (is_wp_error($result)) {
-            wp_send_json_error(array(
-                'message'      => $result->get_error_message(),
-                'manual_block' => $settings['wp_debug'] ? self::build_block($settings) : '',
-                'state'        => self::current_state(),
-            ));
+        if ($settings['enabled']) {
+            self::ensure_log_dir(); // create + harden the directory now
         }
 
         wp_send_json_success(array(
-            'message' => __('Settings saved.', 'modulforge'),
+            'message' => __('Settings saved. Reload your site to start capturing errors.', 'modulforge'),
             'state'   => self::current_state(),
         ));
     }
@@ -208,11 +288,11 @@ class Modulforge_Debug {
         $this->verify();
 
         $path = self::log_path();
-        if (!file_exists($path) || !is_readable($path)) {
+        if (!file_exists($path) || !is_readable($path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_readable -- Read-only check on our own log under uploads.
             wp_send_json_success(array('raw' => '', 'exists' => false, 'size' => 0, 'mtime' => 0, 'truncated' => false));
         }
 
-        $size = (int) filesize($path);
+        $size = (int) filesize($path); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_filesize -- Metadata of our own log.
         wp_send_json_success(array(
             'raw'       => self::tail($path, self::LOG_TAIL_BYTES),
             'exists'    => true,
@@ -226,32 +306,11 @@ class Modulforge_Debug {
         $this->verify();
 
         $path = self::log_path();
-        if (file_exists($path)) {
-            file_put_contents($path, '', LOCK_EX);
+        $fs   = self::fs();
+        if ($fs && $fs->exists($path)) {
+            $fs->put_contents($path, ''); // truncate via WP_Filesystem
         }
         wp_send_json_success(array('message' => __('Log cleared.', 'modulforge')));
-    }
-
-    public function ajax_restore_backup() {
-        $this->verify();
-
-        $path   = self::locate_wp_config();
-        $backup = self::backup_dir() . '/wp-config-original.bak';
-
-        if ('' === $path || !is_writable($path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- wp-config.php is outside WP_Filesystem's scope.
-            wp_send_json_error(array('message' => __('wp-config.php is not writable.', 'modulforge')), 400);
-        }
-        if (!file_exists($backup)) {
-            wp_send_json_error(array('message' => __('No backup found.', 'modulforge')), 404);
-        }
-
-        $contents = file_get_contents($backup);
-        if (false === $contents || false === file_put_contents($path, $contents, LOCK_EX)) {
-            wp_send_json_error(array('message' => __('Could not restore wp-config.php.', 'modulforge')), 500);
-        }
-
-        update_option(self::OPTION_KEY, self::default_settings());
-        wp_send_json_success(array('message' => __('Restored.', 'modulforge'), 'state' => self::current_state()));
     }
 
     public function ajax_download_log() {
@@ -260,176 +319,25 @@ class Modulforge_Debug {
         }
 
         $path = self::log_path();
-        if (!file_exists($path) || !is_readable($path)) {
+        if (!file_exists($path) || !is_readable($path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_readable -- Read-only check on our own log under uploads.
             wp_die(esc_html__('No log file.', 'modulforge'), '', array('response' => 404));
         }
 
         nocache_headers();
         header('Content-Type: text/plain; charset=utf-8');
-        header('Content-Disposition: attachment; filename="debug.log"');
-        header('Content-Length: ' . filesize($path));
-        readfile($path); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Streaming the debug log file to the browser for download.
+        header('Content-Disposition: attachment; filename="modulforge-debug.log"');
+        header('Content-Length: ' . filesize($path)); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_filesize -- Metadata of our own log.
+        readfile($path); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- Streaming our own log file to the browser for download.
         exit;
-    }
-
-    /* --------------------------------------------------------------------- */
-    /* wp-config.php editing                                                  */
-    /* --------------------------------------------------------------------- */
-
-    /** Locate wp-config.php the way wp-load.php does. */
-    private static function locate_wp_config(): string {
-        if (file_exists(ABSPATH . 'wp-config.php')) {
-            return ABSPATH . 'wp-config.php';
-        }
-        if (file_exists(dirname(ABSPATH) . '/wp-config.php') && !file_exists(dirname(ABSPATH) . '/wp-settings.php')) {
-            return dirname(ABSPATH) . '/wp-config.php';
-        }
-        return '';
-    }
-
-    /**
-     * Apply settings to wp-config.php.
-     *
-     * @return true|WP_Error
-     */
-    private static function apply_wp_config(array $settings) {
-        $path = self::locate_wp_config();
-        if ('' === $path) {
-            return new WP_Error('not_found', __('wp-config.php could not be located.', 'modulforge'));
-        }
-        if (!is_writable($path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- wp-config.php is outside WP_Filesystem's scope.
-            return new WP_Error('not_writable', __('wp-config.php is not writable. Add the block below manually.', 'modulforge'));
-        }
-
-        $contents = file_get_contents($path);
-        if (false === $contents) {
-            return new WP_Error('read_failed', __('Could not read wp-config.php.', 'modulforge'));
-        }
-
-        self::backup($contents);
-
-        // Always start from a clean slate.
-        $contents = self::strip_block($contents);
-        $contents = self::restore_commented_defines($contents);
-
-        // When debug is on, comment the originals and insert our block.
-        if (!empty($settings['wp_debug'])) {
-            $contents = self::comment_existing_defines($contents);
-            $contents = self::insert_block($contents, self::build_block($settings));
-        }
-
-        if (false === file_put_contents($path, $contents, LOCK_EX)) {
-            return new WP_Error('write_failed', __('Could not write wp-config.php.', 'modulforge'));
-        }
-        return true;
-    }
-
-    /** Remove our block and un-comment the originals. Used on disable/deactivate/uninstall. */
-    private static function revert_wp_config(): void {
-        $path = self::locate_wp_config();
-        if ('' === $path || !is_writable($path)) { // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- wp-config.php is outside WP_Filesystem's scope.
-            return;
-        }
-        $contents = file_get_contents($path);
-        if (false === $contents) {
-            return;
-        }
-        $new = self::restore_commented_defines(self::strip_block($contents));
-        if ($new !== $contents) {
-            file_put_contents($path, $new, LOCK_EX);
-        }
-    }
-
-    private static function build_block(array $settings): string {
-        $lines   = array(self::BLOCK_BEGIN);
-        $lines[] = "define( 'WP_DEBUG', true );";
-        if (!empty($settings['wp_debug_log'])) {
-            $lines[] = "define( 'WP_DEBUG_LOG', true );";
-        }
-        $lines[] = "define( 'WP_DEBUG_DISPLAY', " . (!empty($settings['wp_debug_display']) ? 'true' : 'false') . " );";
-        if (empty($settings['wp_debug_display'])) {
-            $lines[] = "@ini_set( 'display_errors', '0' );";
-        }
-        if (!empty($settings['script_debug'])) {
-            $lines[] = "define( 'SCRIPT_DEBUG', true );";
-        }
-        if (!empty($settings['savequeries'])) {
-            $lines[] = "define( 'SAVEQUERIES', true );";
-        }
-        $lines[] = self::BLOCK_END;
-        return implode("\n", $lines);
-    }
-
-    private static function strip_block(string $contents): string {
-        $pattern = '/\n?[ \t]*' . preg_quote(self::BLOCK_BEGIN, '/') . '.*?' . preg_quote(self::BLOCK_END, '/') . '[ \t]*\n?/s';
-        return preg_replace($pattern, "\n", $contents);
-    }
-
-    private static function comment_existing_defines(string $contents): string {
-        foreach (self::managed_constants() as $const) {
-            $pattern = '/^([ \t]*)(define\(\s*[\'"]' . $const . '[\'"]\s*,.*?\)\s*;.*)$/m';
-            $contents = preg_replace($pattern, '$1' . self::DISABLED_PREFIX . '$2', $contents);
-        }
-        return $contents;
-    }
-
-    private static function restore_commented_defines(string $contents): string {
-        $pattern = '/^([ \t]*)' . preg_quote(self::DISABLED_PREFIX, '/') . '(define\(.*)$/m';
-        return preg_replace($pattern, '$1$2', $contents);
-    }
-
-    private static function insert_block(string $contents, string $block): string {
-        $anchor = self::find_insert_offset($contents);
-        return substr($contents, 0, $anchor) . $block . "\n\n" . substr($contents, $anchor);
-    }
-
-    /** Offset of the start of the line containing "stop editing" (or the wp-settings require). */
-    private static function find_insert_offset(string $contents): int {
-        $pos = strpos($contents, 'stop editing');
-        if (false === $pos) {
-            $pos = strpos($contents, "wp-settings.php");
-        }
-        if (false === $pos) {
-            return strlen($contents); // append as a last resort
-        }
-        $nl = strrpos(substr($contents, 0, $pos), "\n");
-        return (false === $nl) ? 0 : $nl + 1;
-    }
-
-    /* --------------------------------------------------------------------- */
-    /* Backups                                                                */
-    /* --------------------------------------------------------------------- */
-
-    private static function backup_dir(): string {
-        $uploads = wp_upload_dir();
-        return trailingslashit($uploads['basedir']) . 'modulforge-debug';
-    }
-
-    /** Keep a single pristine backup (the state before Modulforge ever touched it). */
-    private static function backup(string $contents): void {
-        $dir = self::backup_dir();
-        if (!is_dir($dir)) {
-            wp_mkdir_p($dir);
-            @file_put_contents($dir . '/.htaccess', "Require all denied\n");
-            @file_put_contents($dir . '/index.html', '');
-        }
-        $orig = $dir . '/wp-config-original.bak';
-        if (!file_exists($orig)) {
-            @file_put_contents($orig, $contents, LOCK_EX);
-        }
     }
 
     /* --------------------------------------------------------------------- */
     /* Log helpers                                                            */
     /* --------------------------------------------------------------------- */
 
-    private static function log_path(): string {
-        return WP_CONTENT_DIR . '/debug.log';
-    }
-
-    /** Read up to $bytes from the end of a file, discarding the first partial line. */
+    /** Read up to $bytes from the end of our log, discarding the first partial line. */
     private static function tail(string $path, int $bytes): string {
-        $size = (int) filesize($path);
+        $size = (int) filesize($path); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_filesize -- Metadata of our own log.
         $fp   = fopen($path, 'rb'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Seeking the tail of a potentially large log; WP_Filesystem offers no seek.
         if (!$fp) {
             return '';
@@ -444,22 +352,23 @@ class Modulforge_Debug {
     }
 
     private static function current_state(): array {
-        $path = self::log_path();
-        $cfg  = self::locate_wp_config();
+        $s      = self::get_settings();
+        $path   = self::log_path();
+        $exists = file_exists($path); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_exists -- Read-only check on our own log.
+
         return array(
-            'settings'        => self::get_settings(),
-            'runtime'         => array(
-                'wp_debug'         => defined('WP_DEBUG') && WP_DEBUG,
-                'wp_debug_log'     => defined('WP_DEBUG_LOG') && WP_DEBUG_LOG,
-                'wp_debug_display' => defined('WP_DEBUG_DISPLAY') && WP_DEBUG_DISPLAY,
-                'script_debug'     => defined('SCRIPT_DEBUG') && SCRIPT_DEBUG,
-                'savequeries'      => defined('SAVEQUERIES') && SAVEQUERIES,
+            'settings'       => array(
+                'enabled'        => $s['enabled'],
+                'display_errors' => $s['display_errors'],
             ),
-            'config_writable' => '' !== $cfg && is_writable($cfg), // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_is_writable -- wp-config.php is outside WP_Filesystem's scope.
-            'has_backup'      => file_exists(self::backup_dir() . '/wp-config-original.bak'),
-            'log_exists'      => file_exists($path),
-            'log_size'        => file_exists($path) ? (int) filesize($path) : 0,
-            'log_mtime'       => file_exists($path) ? (int) filemtime($path) : 0,
+            // Whether our ini_set actually took effect this request.
+            'logging_active' => $s['enabled'] && '' !== $s['log_token'] && (string) @ini_get('error_log') === $path,
+            'dir_writable'   => wp_is_writable(self::log_dir()) || wp_is_writable(dirname(self::log_dir())),
+            'log_exists'     => $exists,
+            'log_size'       => $exists ? (int) filesize($path) : 0, // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_filesize -- Metadata of our own log.
+            'log_mtime'      => $exists ? (int) filemtime($path) : 0,
+            // Informational only — the real WP_DEBUG constants live in wp-config.
+            'wp_debug'       => defined('WP_DEBUG') && WP_DEBUG,
         );
     }
 }
