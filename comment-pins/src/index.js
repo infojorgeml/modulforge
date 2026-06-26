@@ -5,7 +5,7 @@ import './style.scss';
 /** Mount the React overlay into a dedicated root appended to <body>. */
 function mount() {
 	if (
-		! window.devToolsCommentPins ||
+		! window.modulforgeCommentPins ||
 		document.getElementById( 'dtcp-root' )
 	) {
 		return;

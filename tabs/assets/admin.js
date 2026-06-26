@@ -14,8 +14,8 @@
         },
 
         strings: function(key, fallback) {
-            if (window.dtpt_ajax && dtpt_ajax.strings && dtpt_ajax.strings[key]) {
-                return dtpt_ajax.strings[key];
+            if (window.modulforge_tabs_ajax && modulforge_tabs_ajax.strings && modulforge_tabs_ajax.strings[key]) {
+                return modulforge_tabs_ajax.strings[key];
             }
             return fallback || key;
         },
@@ -80,8 +80,8 @@
             $button.addClass('loading');
 
             var data = {
-                action: 'dtpt_save_tab',
-                nonce: dtpt_ajax.nonce,
+                action: 'modulforge_save_tab',
+                nonce: modulforge_tabs_ajax.nonce,
                 tab_id: $('#tab-id').val(),
                 name: name,
                 description: $('#tab-description').val(),
@@ -89,7 +89,7 @@
                 position: $('#tab-position').val()
             };
 
-            $.post(dtpt_ajax.ajax_url, data)
+            $.post(modulforge_tabs_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data.message, 'success');
@@ -157,12 +157,12 @@
             $row.addClass('updating');
 
             var data = {
-                action: 'dtpt_delete_tab',
-                nonce: dtpt_ajax.nonce,
+                action: 'modulforge_delete_tab',
+                nonce: modulforge_tabs_ajax.nonce,
                 tab_id: tabId
             };
 
-            $.post(dtpt_ajax.ajax_url, data)
+            $.post(modulforge_tabs_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data, 'success');
@@ -225,13 +225,13 @@
             $row.addClass('updating');
 
             var data = {
-                action: 'dtpt_assign_page_to_tab',
-                nonce: dtpt_ajax.nonce,
+                action: 'modulforge_assign_page_to_tab',
+                nonce: modulforge_tabs_ajax.nonce,
                 page_id: pageId,
                 tab_id: tabId
             };
 
-            $.post(dtpt_ajax.ajax_url, data)
+            $.post(modulforge_tabs_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data, 'success');
@@ -265,13 +265,13 @@
             $row.addClass('updating');
 
             var data = {
-                action: 'dtpt_remove_page_from_tab',
-                nonce: dtpt_ajax.nonce,
+                action: 'modulforge_remove_page_from_tab',
+                nonce: modulforge_tabs_ajax.nonce,
                 page_id: pageId,
                 tab_id: tabId
             };
 
-            $.post(dtpt_ajax.ajax_url, data)
+            $.post(modulforge_tabs_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data, 'success');
@@ -385,14 +385,14 @@
             $button.addClass('loading');
 
             var data = {
-                action: 'dtpt_create_tab_quick',
-                nonce: dtpt_ajax.nonce,
+                action: 'modulforge_create_tab_quick',
+                nonce: modulforge_tabs_ajax.nonce,
                 name: name,
                 color: $('#quick-tab-color').val(),
-                post_type: (window.dtpt_ajax && dtpt_ajax.current_post_type) ? dtpt_ajax.current_post_type : 'page'
+                post_type: (window.modulforge_tabs_ajax && modulforge_tabs_ajax.current_post_type) ? modulforge_tabs_ajax.current_post_type : 'page'
             };
 
-            $.post(dtpt_ajax.ajax_url, data)
+            $.post(modulforge_tabs_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data.message, 'success');
@@ -431,8 +431,8 @@
             $button.addClass('loading');
 
             var data = {
-                action: 'dtpt_save_tab',
-                nonce: dtpt_ajax.nonce,
+                action: 'modulforge_save_tab',
+                nonce: modulforge_tabs_ajax.nonce,
                 tab_id: $('#manage-tab-id').val(),
                 name: name,
                 description: $('#manage-tab-description').val(),
@@ -440,7 +440,7 @@
                 position: $('#manage-tab-position').val()
             };
 
-            $.post(dtpt_ajax.ajax_url, data)
+            $.post(modulforge_tabs_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data.message, 'success');
@@ -478,12 +478,12 @@
             $button.addClass('loading');
 
             var data = {
-                action: 'dtpt_delete_tab',
-                nonce: dtpt_ajax.nonce,
+                action: 'modulforge_delete_tab',
+                nonce: modulforge_tabs_ajax.nonce,
                 tab_id: tabId
             };
 
-            $.post(dtpt_ajax.ajax_url, data)
+            $.post(modulforge_tabs_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data, 'success');
@@ -525,7 +525,7 @@
         },
 
         initializeColumnSelectors: function() {
-            if (window.dtpt_ajax && dtpt_ajax.current_post_type) {
+            if (window.modulforge_tabs_ajax && modulforge_tabs_ajax.current_post_type) {
                 this.setupPageTabSelectors();
             }
         },
@@ -548,13 +548,13 @@
             $selector.addClass('updating');
 
             var data = {
-                action: 'dtpt_update_page_tab',
-                nonce: dtpt_ajax.nonce,
+                action: 'modulforge_update_page_tab',
+                nonce: modulforge_tabs_ajax.nonce,
                 page_id: pageId,
                 tab_id: tabId
             };
 
-            $.post(dtpt_ajax.ajax_url, data)
+            $.post(modulforge_tabs_ajax.ajax_url, data)
                 .done(function(response) {
                     if (response.success) {
                         PTO.showMessage(response.data.message, 'success');

@@ -14,17 +14,17 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists('DevToolsWebP')) :
+if (!class_exists('Modulforge_WebP')) :
 
 /**
  * Convert JPEG/PNG attachments to WebP, replacing the originals.
  */
-class DevToolsWebP {
+class Modulforge_WebP {
 
     const VERSION      = '1.0.0';
-    const OPTION_KEY   = 'dev_tools_webp_settings';
-    const NONCE_ACTION = 'dev_tools_webp';
-    const MENU_SLUG    = 'devtools-webp';
+    const OPTION_KEY   = 'modulforge_webp_settings';
+    const NONCE_ACTION = 'modulforge_webp';
+    const MENU_SLUG    = 'modulforge-webp';
     const CAPABILITY   = 'manage_options';
 
     /** Guard against re-entry when we regenerate metadata mid-conversion. */
@@ -34,12 +34,12 @@ class DevToolsWebP {
     private $page_hook = '';
 
     public function __construct() {
-        // Priority 11 so the DevTools top-level menu (priority 10) exists first.
+        // Priority 11 so the Modulforge top-level menu (priority 10) exists first.
         add_action('admin_menu', array($this, 'add_admin_menu'), 11);
         add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));
-        add_action('wp_ajax_dev_tools_webp_save_settings', array($this, 'ajax_save_settings'));
-        add_action('wp_ajax_dev_tools_webp_scan', array($this, 'ajax_scan'));
-        add_action('wp_ajax_dev_tools_webp_convert', array($this, 'ajax_convert'));
+        add_action('wp_ajax_modulforge_webp_save_settings', array($this, 'ajax_save_settings'));
+        add_action('wp_ajax_modulforge_webp_scan', array($this, 'ajax_scan'));
+        add_action('wp_ajax_modulforge_webp_convert', array($this, 'ajax_convert'));
 
         // Auto-convert new uploads once their metadata (and sub-sizes) exist.
         add_filter('wp_generate_attachment_metadata', array($this, 'maybe_convert_on_upload'), 99, 2);
@@ -76,7 +76,7 @@ class DevToolsWebP {
     }
 
     /* --------------------------------------------------------------------- */
-    /* Lifecycle — invoked by the DevTools controller                         */
+    /* Lifecycle — invoked by the Modulforge controller                         */
     /* --------------------------------------------------------------------- */
 
     public static function activate(): void {
@@ -123,20 +123,20 @@ class DevToolsWebP {
         }
 
         wp_enqueue_script(
-            'devtools-webp',
+            'modulforge-webp',
             plugin_dir_url(__FILE__) . 'assets/admin.js',
             array(),
             self::VERSION,
             true
         );
         wp_enqueue_style(
-            'devtools-webp',
+            'modulforge-webp',
             plugin_dir_url(__FILE__) . 'assets/admin.css',
             array(),
             self::VERSION
         );
 
-        wp_localize_script('devtools-webp', 'devToolsWebP', array(
+        wp_localize_script('modulforge-webp', 'modulforgeWebP', array(
             'ajax_url'  => admin_url('admin-ajax.php'),
             'nonce'     => wp_create_nonce(self::NONCE_ACTION),
             'supported' => self::server_supports_webp(),
@@ -462,6 +462,6 @@ class DevToolsWebP {
 
 endif;
 
-if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
-    new DevToolsWebP();
+if (!defined('MODULFORGE_LIFECYCLE_RUN')) {
+    new Modulforge_WebP();
 }

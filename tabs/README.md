@@ -1,6 +1,6 @@
 # Page Tabs Organizer
 
-A WordPress mini-plugin (part of DevTools) that organizes **pages, posts and any
+A WordPress mini-plugin (part of Modulforge) that organizes **pages, posts and any
 public Custom Post Type (CPT)** with customizable tabs, improving content
 management in the admin.
 
@@ -44,13 +44,13 @@ post-type list screen.
 ## Technical notes
 
 ### Database
-- `{prefix}page_tabs` — tab definitions
-- `{prefix}page_tab_relations` — page↔tab relations, with a **UNIQUE key on
+- `{prefix}modulforge_page_tabs` — tab definitions
+- `{prefix}modulforge_page_tab_relations` — page↔tab relations, with a **UNIQUE key on
   `page_id`** enforcing the 1:1 model
 
-Tables are created/upgraded through the DevTools lifecycle (`maybe_install_schema`,
-version-gated via the `dtpt_db_version` option). They are removed on uninstall only
-when DevTools's "Delete all data" opt-in is enabled.
+Tables are created/upgraded through the Modulforge lifecycle (`maybe_install_schema`,
+version-gated via the `modulforge_page_tabs_db_version` option). They are removed on uninstall only
+when Modulforge's "Delete all data" opt-in is enabled.
 
 ### Security
 - Nonce verification on all AJAX operations

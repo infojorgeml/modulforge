@@ -1,6 +1,6 @@
 /** Small shared helpers: localised strings, dates and avatars. */
 
-const cfg = window.devToolsCommentPins || {};
+const cfg = window.modulforgeCommentPins || {};
 
 /** Localised string by key, falling back to the key itself. */
 export function t( key ) {

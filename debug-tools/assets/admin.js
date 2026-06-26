@@ -1,10 +1,10 @@
 /**
- * DevTools Debug & Logs — admin page behaviour (vanilla JS, no build step).
+ * Modulforge Debug & Logs — admin page behaviour (vanilla JS, no build step).
  */
 (function () {
     'use strict';
 
-    var cfg = window.devToolsDebug || {};
+    var cfg = window.modulforgeDebug || {};
     var i18n = cfg.i18n || {};
     var entries = [];
     var autoTimer = null;
@@ -97,7 +97,7 @@
         e.preventDefault();
         var form = e.currentTarget;
         var data = new URLSearchParams();
-        data.append('action', 'dev_tools_debug_save_settings');
+        data.append('action', 'modulforge_debug_save_settings');
         data.append('nonce', cfg.nonce);
         form.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
             data.append('settings[' + cb.name + ']', cb.checked ? '1' : '0');
@@ -131,7 +131,7 @@
             return;
         }
         var data = new URLSearchParams();
-        data.append('action', 'dev_tools_debug_restore_backup');
+        data.append('action', 'modulforge_debug_restore_backup');
         data.append('nonce', cfg.nonce);
         post(data)
             .then(function (res) {
@@ -166,7 +166,7 @@
 
     function loadLog() {
         var data = new URLSearchParams();
-        data.append('action', 'dev_tools_debug_get_log');
+        data.append('action', 'modulforge_debug_get_log');
         data.append('nonce', cfg.nonce);
         post(data)
             .then(function (res) {
@@ -185,7 +185,7 @@
             return;
         }
         var data = new URLSearchParams();
-        data.append('action', 'dev_tools_debug_clear_log');
+        data.append('action', 'modulforge_debug_clear_log');
         data.append('nonce', cfg.nonce);
         post(data)
             .then(function (res) {

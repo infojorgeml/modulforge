@@ -13,7 +13,7 @@ import CommentThread from './components/CommentThread';
 import CommentPanel from './components/CommentPanel';
 import CreateForm from './components/CreateForm';
 
-const cfg = window.devToolsCommentPins || {};
+const cfg = window.modulforgeCommentPins || {};
 const TOGGLE_ID = 'wp-admin-bar-comment-pins-toggle';
 
 export default function App() {

@@ -1,6 +1,6 @@
-# DevTools - Controller Plugin
+# Modulforge - Controller Plugin
 
-DevTools is a WordPress controller plugin that allows you to manage and individually activate/deactivate multiple mini-plugins from a centralized interface.
+Modulforge is a WordPress controller plugin that allows you to manage and individually activate/deactivate multiple mini-plugins from a centralized interface.
 
 ## 🚀 Features
 
@@ -12,8 +12,8 @@ DevTools is a WordPress controller plugin that allows you to manage and individu
 
 ## 🆕 What's New in 2.0.0
 
-- **Renamed to DevTools** (`dev-tools`): the plugin, text domain, classes, options, CSS/JS prefixes, folder and main file were rebranded away from "SuiteWP"/"WP" — required for WordPress.org, where "WP" can't be used in the plugin name. Reactivate the plugin and its modules after updating; the old `suitewp_*` options are not carried over.
-- Debug & Logs now lives under the **DevTools menu** (not Tools).
+- **Renamed to Modulforge** (`dev-tools`): the plugin, text domain, classes, options, CSS/JS prefixes, folder and main file were rebranded away from "SuiteWP"/"WP" — required for WordPress.org, where "WP" can't be used in the plugin name. Reactivate the plugin and its modules after updating; the old `suitewp_*` options are not carried over.
+- Debug & Logs now lives under the **Modulforge menu** (not Tools).
 
 ## 🆕 What's New in 1.4.0
 
@@ -64,16 +64,16 @@ Developer debugging from the admin:
 
 ## 🛠️ Installation
 
-1. Upload the complete `DevTools` folder to `/wp-content/plugins/` directory
+1. Upload the complete `Modulforge` folder to `/wp-content/plugins/` directory
 2. Activate the plugin from WordPress admin panel
-3. Go to **DevTools** in the admin menu
+3. Go to **Modulforge** in the admin menu
 4. Activate the mini-plugins you need using the switches
 
 ## 📋 Usage
 
 ### Activate/Deactivate Mini-plugins
 
-1. Go to **DevTools** in the WordPress menu
+1. Go to **Modulforge** in the WordPress menu
 2. Use the switches to activate or deactivate each mini-plugin
 3. Changes apply immediately without needing to reload
 
@@ -86,7 +86,7 @@ Developer debugging from the admin:
 ## 🔧 Project Structure
 
 ```
-DevTools/
+Modulforge/
 ├── devtools.php              # Main controller plugin
 ├── uninstall.php            # Opt-in data cleanup on uninstall
 ├── assets/
@@ -102,7 +102,7 @@ DevTools/
 
 ## 🎯 Plugin Philosophy
 
-DevTools is designed as a **stable controller** that won't change frequently. Its main function is to:
+Modulforge is designed as a **stable controller** that won't change frequently. Its main function is to:
 
 - **Manage**: Activate/deactivate mini-plugins
 - **Optimize**: Load only what's necessary
@@ -126,7 +126,7 @@ The **individual mini-plugins** are the ones that will evolve and improve over t
 
 ## 🚦 System States
 
-The plugin maintains a record of active mini-plugins in the WordPress `dev_tools_active_plugins` option, allowing:
+The plugin maintains a record of active mini-plugins in the WordPress `modulforge_active_plugins` option, allowing:
 
 - Persistence between sessions
 - Conditional resource loading
@@ -138,7 +138,7 @@ The plugin maintains a record of active mini-plugins in the WordPress `dev_tools
 
 To add a new mini-plugin to the system:
 
-1. Place the mini-plugin in its own folder within DevTools
+1. Place the mini-plugin in its own folder within Modulforge
 2. Update the `get_mini_plugin_definitions()` array in `devtools.php`
 3. Define the necessary metadata (name, description, file, class, version, icon)
 4. Optionally expose static lifecycle methods the controller will call:

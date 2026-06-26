@@ -14,12 +14,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists('DevToolsPageState')) :
+if (!class_exists('Modulforge_Page_State')) :
 
 /**
  * Page state management: status, notes and responsive checkboxes on pages.
  */
-class DevToolsPageState {
+class Modulforge_Page_State {
 
     const VERSION = '2.0.0';
 
@@ -31,9 +31,9 @@ class DevToolsPageState {
         add_action('manage_pages_custom_column', [$this, 'render_custom_columns'], 10, 2);
 
         // AJAX handlers for live saving.
-        add_action('wp_ajax_save_page_status', [$this, 'ajax_save_page_status']);
-        add_action('wp_ajax_save_page_notes', [$this, 'ajax_save_page_notes']);
-        add_action('wp_ajax_save_page_responsive', [$this, 'ajax_save_page_responsive']);
+        add_action('wp_ajax_modulforge_save_page_status', [$this, 'ajax_save_page_status']);
+        add_action('wp_ajax_modulforge_save_page_notes', [$this, 'ajax_save_page_notes']);
+        add_action('wp_ajax_modulforge_save_page_responsive', [$this, 'ajax_save_page_responsive']);
 
         // Admin assets.
         add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_scripts']);
@@ -44,7 +44,7 @@ class DevToolsPageState {
      * uninstall.php when the user opted in.
      */
     public static function uninstall(): void {
-        $keys = ['page_status', 'page_notes', 'responsive_desktop', 'responsive_tablet', 'responsive_mobile'];
+        $keys = ['modulforge_page_status', 'modulforge_page_notes', 'modulforge_responsive_desktop', 'modulforge_responsive_tablet', 'modulforge_responsive_mobile'];
         foreach ($keys as $key) {
             delete_post_meta_by_key($key);
         }
@@ -54,7 +54,7 @@ class DevToolsPageState {
      * Register custom meta fields for page management.
      */
     public function register_meta_fields() {
-        register_post_meta('page', 'page_status', [
+        register_post_meta('page', 'modulforge_page_status', [
             'type'              => 'string',
             'single'            => true,
             'show_in_rest'      => true,
@@ -62,7 +62,7 @@ class DevToolsPageState {
             'auth_callback'     => function () { return current_user_can('edit_posts'); },
         ]);
 
-        register_post_meta('page', 'page_notes', [
+        register_post_meta('page', 'modulforge_page_notes', [
             'type'              => 'string',
             'single'            => true,
             'show_in_rest'      => true,
@@ -70,7 +70,7 @@ class DevToolsPageState {
             'auth_callback'     => function () { return current_user_can('edit_posts'); },
         ]);
 
-        foreach (['responsive_desktop', 'responsive_tablet', 'responsive_mobile'] as $meta_key) {
+        foreach (['modulforge_responsive_desktop', 'modulforge_responsive_tablet', 'modulforge_responsive_mobile'] as $meta_key) {
             register_post_meta('page', $meta_key, [
                 'type'              => 'boolean',
                 'single'            => true,
@@ -98,26 +98,26 @@ class DevToolsPageState {
         foreach ($columns as $key => $value) {
             $new_columns[$key] = $value;
             if ($key === 'title') {
-                $new_columns['page_status']     = __('Status', 'modulforge');
-                $new_columns['page_notes']      = __('Notes', 'modulforge');
-                $new_columns['page_responsive'] = __('Responsive', 'modulforge');
+                $new_columns['modulforge_page_status']     = __('Status', 'modulforge');
+                $new_columns['modulforge_page_notes']      = __('Notes', 'modulforge');
+                $new_columns['modulforge_page_responsive'] = __('Responsive', 'modulforge');
             }
         }
         return $new_columns;
     }
 
     public function render_custom_columns($column, $post_id) {
-        if ($column === 'page_status') {
+        if ($column === 'modulforge_page_status') {
             $this->render_status_column($post_id);
-        } elseif ($column === 'page_notes') {
+        } elseif ($column === 'modulforge_page_notes') {
             $this->render_notes_column($post_id);
-        } elseif ($column === 'page_responsive') {
+        } elseif ($column === 'modulforge_page_responsive') {
             $this->render_responsive_column($post_id);
         }
     }
 
     private function render_status_column($post_id) {
-        $status = get_post_meta($post_id, 'page_status', true);
+        $status = get_post_meta($post_id, 'modulforge_page_status', true);
         ?>
         <select class="page-status-selector" data-post="<?php echo esc_attr($post_id); ?>">
             <option value="">— <?php esc_html_e('None', 'modulforge'); ?> —</option>
@@ -133,7 +133,7 @@ class DevToolsPageState {
     }
 
     private function render_notes_column($post_id) {
-        $notes = get_post_meta($post_id, 'page_notes', true);
+        $notes = get_post_meta($post_id, 'modulforge_page_notes', true);
         ?>
         <div class="page-notes-container">
             <textarea
@@ -149,9 +149,9 @@ class DevToolsPageState {
     }
 
     private function render_responsive_column($post_id) {
-        $desktop = get_post_meta($post_id, 'responsive_desktop', true);
-        $tablet  = get_post_meta($post_id, 'responsive_tablet', true);
-        $mobile  = get_post_meta($post_id, 'responsive_mobile', true);
+        $desktop = get_post_meta($post_id, 'modulforge_responsive_desktop', true);
+        $tablet  = get_post_meta($post_id, 'modulforge_responsive_tablet', true);
+        $mobile  = get_post_meta($post_id, 'modulforge_responsive_mobile', true);
         ?>
         <div class="page-responsive-container">
             <div class="responsive-checkboxes" data-post="<?php echo esc_attr($post_id); ?>">
@@ -186,16 +186,16 @@ class DevToolsPageState {
         }
 
         wp_enqueue_script(
-            'page-state-plugin',
+            'modulforge-page-state',
             plugin_dir_url(__FILE__) . 'page-state-plugin.js',
             ['jquery'],
             self::VERSION,
             true
         );
 
-        wp_localize_script('page-state-plugin', 'devToolsPageState', [
+        wp_localize_script('modulforge-page-state', 'modulforgePageState', [
             'ajaxurl'  => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('dtps_nonce'),
+            'nonce'    => wp_create_nonce('modulforge_page_state'),
             'messages' => [
                 'saved'  => __('Saved', 'modulforge'),
                 'saving' => __('Saving...', 'modulforge'),
@@ -204,7 +204,7 @@ class DevToolsPageState {
         ]);
 
         wp_enqueue_style(
-            'page-state-plugin-admin',
+            'modulforge-page-state-css',
             plugin_dir_url(__FILE__) . 'page-state.css',
             [],
             self::VERSION
@@ -212,7 +212,7 @@ class DevToolsPageState {
     }
 
     public function ajax_save_page_status() {
-        check_ajax_referer('dtps_nonce', 'nonce');
+        check_ajax_referer('modulforge_page_state', 'nonce');
 
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
         $status  = isset($_POST['status']) ? $this->sanitize_status(wp_unslash($_POST['status'])) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitize_status() whitelists the value.
@@ -225,12 +225,12 @@ class DevToolsPageState {
             wp_send_json_error(['message' => __('Insufficient permissions', 'modulforge')]);
         }
 
-        update_post_meta($post_id, 'page_status', $status);
+        update_post_meta($post_id, 'modulforge_page_status', $status);
         wp_send_json_success(['message' => __('Status saved successfully', 'modulforge')]);
     }
 
     public function ajax_save_page_notes() {
-        check_ajax_referer('dtps_nonce', 'nonce');
+        check_ajax_referer('modulforge_page_state', 'nonce');
 
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
         $notes   = isset($_POST['notes']) ? sanitize_textarea_field(wp_unslash($_POST['notes'])) : '';
@@ -243,12 +243,12 @@ class DevToolsPageState {
             wp_send_json_error(['message' => __('Insufficient permissions', 'modulforge')]);
         }
 
-        update_post_meta($post_id, 'page_notes', $notes);
+        update_post_meta($post_id, 'modulforge_page_notes', $notes);
         wp_send_json_success(['message' => __('Notes saved successfully', 'modulforge')]);
     }
 
     public function ajax_save_page_responsive() {
-        check_ajax_referer('dtps_nonce', 'nonce');
+        check_ajax_referer('modulforge_page_state', 'nonce');
 
         $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
         $device  = isset($_POST['device']) ? sanitize_text_field(wp_unslash($_POST['device'])) : '';
@@ -267,13 +267,13 @@ class DevToolsPageState {
             wp_send_json_error(['message' => __('Invalid device type', 'modulforge')]);
         }
 
-        update_post_meta($post_id, 'responsive_' . $device, $checked);
+        update_post_meta($post_id, 'modulforge_responsive_' . $device, $checked);
         wp_send_json_success(['message' => __('Responsive status saved successfully', 'modulforge')]);
     }
 }
 
 endif;
 
-if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
-    new DevToolsPageState();
+if (!defined('MODULFORGE_LIFECYCLE_RUN')) {
+    new Modulforge_Page_State();
 }

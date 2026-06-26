@@ -13,32 +13,32 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists('DevToolsDebug')) :
+if (!class_exists('Modulforge_Debug')) :
 
-class DevToolsDebug {
+class Modulforge_Debug {
 
     const VERSION         = '1.0.1';
-    const OPTION_KEY      = 'dev_tools_debug_settings';
-    const NONCE_ACTION    = 'dev_tools_debug';
-    const MENU_SLUG       = 'devtools-debug';
+    const OPTION_KEY      = 'modulforge_debug_settings';
+    const NONCE_ACTION    = 'modulforge_debug';
+    const MENU_SLUG       = 'modulforge-debug';
     const CAPABILITY      = 'manage_options';
-    const BLOCK_BEGIN     = '/* BEGIN DevTools Debug */';
-    const BLOCK_END       = '/* END DevTools Debug */';
-    const DISABLED_PREFIX = '// DevTools-disabled: ';
+    const BLOCK_BEGIN     = '/* BEGIN Modulforge Debug */';
+    const BLOCK_END       = '/* END Modulforge Debug */';
+    const DISABLED_PREFIX = '// Modulforge-disabled: ';
     const LOG_TAIL_BYTES  = 131072; // 128 KB tail
 
     /** Hook suffix of our admin page (set when the menu is registered). */
     private $page_hook = '';
 
     public function __construct() {
-        // Priority 11 so the DevTools top-level menu (priority 10) exists first.
+        // Priority 11 so the Modulforge top-level menu (priority 10) exists first.
         add_action('admin_menu', array($this, 'add_admin_menu'), 11);
         add_action('admin_enqueue_scripts', array($this, 'enqueue_assets'));
-        add_action('wp_ajax_dev_tools_debug_save_settings', array($this, 'ajax_save_settings'));
-        add_action('wp_ajax_dev_tools_debug_get_log', array($this, 'ajax_get_log'));
-        add_action('wp_ajax_dev_tools_debug_clear_log', array($this, 'ajax_clear_log'));
-        add_action('wp_ajax_dev_tools_debug_download_log', array($this, 'ajax_download_log'));
-        add_action('wp_ajax_dev_tools_debug_restore_backup', array($this, 'ajax_restore_backup'));
+        add_action('wp_ajax_modulforge_debug_save_settings', array($this, 'ajax_save_settings'));
+        add_action('wp_ajax_modulforge_debug_get_log', array($this, 'ajax_get_log'));
+        add_action('wp_ajax_modulforge_debug_clear_log', array($this, 'ajax_clear_log'));
+        add_action('wp_ajax_modulforge_debug_download_log', array($this, 'ajax_download_log'));
+        add_action('wp_ajax_modulforge_debug_restore_backup', array($this, 'ajax_restore_backup'));
     }
 
     /** Constants managed inside our wp-config block. */
@@ -62,7 +62,7 @@ class DevToolsDebug {
     }
 
     /* --------------------------------------------------------------------- */
-    /* Lifecycle — invoked by the DevTools controller                          */
+    /* Lifecycle — invoked by the Modulforge controller                          */
     /* --------------------------------------------------------------------- */
 
     public static function activate(): void {
@@ -97,7 +97,7 @@ class DevToolsDebug {
     /* --------------------------------------------------------------------- */
 
     public function add_admin_menu() {
-        // Register under the DevTools top-level menu so it's easy to find.
+        // Register under the Modulforge top-level menu so it's easy to find.
         $this->page_hook = add_submenu_page(
             'modulforge',
             __('Debug & Logs', 'modulforge'),
@@ -123,24 +123,24 @@ class DevToolsDebug {
         }
 
         wp_enqueue_script(
-            'devtools-debug',
+            'modulforge-debug',
             plugin_dir_url(__FILE__) . 'assets/admin.js',
             array(),
             self::VERSION,
             true
         );
         wp_enqueue_style(
-            'devtools-debug',
+            'modulforge-debug',
             plugin_dir_url(__FILE__) . 'assets/admin.css',
             array(),
             self::VERSION
         );
 
-        wp_localize_script('devtools-debug', 'devToolsDebug', array(
+        wp_localize_script('modulforge-debug', 'modulforgeDebug', array(
             'ajax_url'     => admin_url('admin-ajax.php'),
             'nonce'        => wp_create_nonce(self::NONCE_ACTION),
             'download_url' => add_query_arg(
-                array('action' => 'dev_tools_debug_download_log', 'nonce' => wp_create_nonce(self::NONCE_ACTION)),
+                array('action' => 'modulforge_debug_download_log', 'nonce' => wp_create_nonce(self::NONCE_ACTION)),
                 admin_url('admin-ajax.php')
             ),
             'state'        => self::current_state(),
@@ -402,10 +402,10 @@ class DevToolsDebug {
 
     private static function backup_dir(): string {
         $uploads = wp_upload_dir();
-        return trailingslashit($uploads['basedir']) . 'devtools-debug';
+        return trailingslashit($uploads['basedir']) . 'modulforge-debug';
     }
 
-    /** Keep a single pristine backup (the state before DevTools ever touched it). */
+    /** Keep a single pristine backup (the state before Modulforge ever touched it). */
     private static function backup(string $contents): void {
         $dir = self::backup_dir();
         if (!is_dir($dir)) {
@@ -466,6 +466,6 @@ class DevToolsDebug {
 
 endif;
 
-if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
-    new DevToolsDebug();
+if (!defined('MODULFORGE_LIFECYCLE_RUN')) {
+    new Modulforge_Debug();
 }

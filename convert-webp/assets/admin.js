@@ -1,8 +1,8 @@
-/* global devToolsWebP */
+/* global modulforgeWebP */
 (function () {
     'use strict';
 
-    var cfg = window.devToolsWebP || {};
+    var cfg = window.modulforgeWebP || {};
     var i18n = cfg.i18n || {};
 
     function $(id) {
@@ -46,7 +46,7 @@
         msg.textContent = '';
         msg.className = 'devtools-webp-msg';
 
-        ajax('dev_tools_webp_save_settings', {
+        ajax('modulforge_webp_save_settings', {
             'settings[auto_upload]': $('dtw-auto-upload').checked ? '1' : '0',
             'settings[quality]': $('dtw-quality').value
         }).then(function (res) {
@@ -73,7 +73,7 @@
 
     function scan() {
         var pending = $('dtw-pending');
-        ajax('dev_tools_webp_scan', {}).then(function (res) {
+        ajax('modulforge_webp_scan', {}).then(function (res) {
             if (res && res.success) {
                 pendingIds = res.data.ids || [];
                 if (pendingIds.length === 0) {
@@ -131,7 +131,7 @@
                 return;
             }
             var id = queue[index];
-            ajax('dev_tools_webp_convert', { id: id }).then(function (res) {
+            ajax('modulforge_webp_convert', { id: id }).then(function (res) {
                 var data = (res && res.data) || {};
                 if (res && res.success) {
                     if (data.skipped) {

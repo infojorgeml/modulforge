@@ -1,5 +1,5 @@
 /**
- * DevTools Admin JavaScript
+ * Modulforge Admin JavaScript
  * Handles switch functionality and AJAX calls
  */
 
@@ -41,7 +41,7 @@
         }
     `;
 
-    const DevToolsAdmin = {
+    const ModulforgeAdmin = {
         noticeTimer: null,
 
         init() {
@@ -59,12 +59,12 @@
             const enabled = $(event.currentTarget).is(':checked');
 
             $.ajax({
-                url: dev_tools_ajax.ajax_url,
+                url: modulforge_ajax.ajax_url,
                 method: 'POST',
                 dataType: 'json',
                 data: {
-                    action: 'dev_tools_set_uninstall_pref',
-                    nonce: dev_tools_ajax.nonce,
+                    action: 'modulforge_set_uninstall_pref',
+                    nonce: modulforge_ajax.nonce,
                     enabled: enabled ? '1' : '0'
                 }
             }).done((response) => {
@@ -73,11 +73,11 @@
                 } else {
                     const message = response && response.data && response.data.message
                         ? response.data.message
-                        : dev_tools_ajax.strings.generic_error;
+                        : modulforge_ajax.strings.generic_error;
                     this.renderNotice(message, 'error');
                 }
             }).fail(() => {
-                this.renderNotice(dev_tools_ajax.strings.generic_error, 'error');
+                this.renderNotice(modulforge_ajax.strings.generic_error, 'error');
             });
         },
 
@@ -85,7 +85,7 @@
             $(SELECTORS.card).each(function() {
                 const $card = $(this);
                 const pluginName = $card.find('h3').text();
-                $card.attr('title', DevToolsAdmin.formatToggleHint(pluginName));
+                $card.attr('title', ModulforgeAdmin.formatToggleHint(pluginName));
             });
         },
 
@@ -103,13 +103,13 @@
             this.setLoadingState($card, true);
 
             $.ajax({
-                url: dev_tools_ajax.ajax_url,
+                url: modulforge_ajax.ajax_url,
                 method: 'POST',
                 dataType: 'json',
                 data: {
-                    action: 'dev_tools_toggle_plugin',
+                    action: 'modulforge_toggle_plugin',
                     plugin: pluginKey,
-                    nonce: dev_tools_ajax.nonce,
+                    nonce: modulforge_ajax.nonce,
                     should_activate: desiredState ? '1' : '0'
                 }
             }).done((response) => {
@@ -119,13 +119,13 @@
                 } else {
                     const message = response && response.data && response.data.message
                         ? response.data.message
-                        : dev_tools_ajax.strings.generic_error;
+                        : modulforge_ajax.strings.generic_error;
                     this.handleError($card, $checkbox, message, desiredState);
                 }
             }).fail((jqXHR) => {
                 const message = jqXHR && jqXHR.responseJSON && jqXHR.responseJSON.data && jqXHR.responseJSON.data.message
                     ? jqXHR.responseJSON.data.message
-                    : dev_tools_ajax.strings.generic_error;
+                    : modulforge_ajax.strings.generic_error;
                 this.handleError($card, $checkbox, message, desiredState);
             }).always(() => {
                 this.setLoadingState($card, false);
@@ -196,16 +196,16 @@
         },
 
         formatToggleHint(pluginName) {
-            if (!dev_tools_ajax.strings.toggle_hint) {
+            if (!modulforge_ajax.strings.toggle_hint) {
                 return pluginName;
             }
 
-            return dev_tools_ajax.strings.toggle_hint.replace('%s', pluginName);
+            return modulforge_ajax.strings.toggle_hint.replace('%s', pluginName);
         }
     };
 
     $(document).ready(() => {
-        DevToolsAdmin.init();
-        window.DevToolsAdmin = DevToolsAdmin;
+        ModulforgeAdmin.init();
+        window.ModulforgeAdmin = ModulforgeAdmin;
     });
 })(jQuery);

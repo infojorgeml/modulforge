@@ -13,22 +13,22 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!defined('DTPT_PLUGIN_URL')) {
-    define('DTPT_PLUGIN_URL', plugin_dir_url(__FILE__)); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- DTPT is this module's unique prefix.
+if (!defined('MODULFORGE_TABS_URL')) {
+    define('MODULFORGE_TABS_URL', plugin_dir_url(__FILE__)); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- DTPT is this module's unique prefix.
 }
-if (!defined('DTPT_PLUGIN_PATH')) {
-    define('DTPT_PLUGIN_PATH', plugin_dir_path(__FILE__)); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- DTPT is this module's unique prefix.
+if (!defined('MODULFORGE_TABS_PATH')) {
+    define('MODULFORGE_TABS_PATH', plugin_dir_path(__FILE__)); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- DTPT is this module's unique prefix.
 }
-if (!defined('DTPT_VERSION')) {
-    define('DTPT_VERSION', '1.0.8'); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- DTPT is this module's unique prefix.
+if (!defined('MODULFORGE_TABS_VERSION')) {
+    define('MODULFORGE_TABS_VERSION', '1.0.8'); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- DTPT is this module's unique prefix.
 }
 
-if (!class_exists('DevToolsPageTabs')) :
+if (!class_exists('Modulforge_Page_Tabs')) :
 
-class DevToolsPageTabs {
+class Modulforge_Page_Tabs {
 
     const DB_VERSION        = '1.1.0';
-    const DB_VERSION_OPTION = 'dtpt_db_version';
+    const DB_VERSION_OPTION = 'modulforge_page_tabs_db_version';
 
     /**
      * Per-request cache of tabs keyed by post type.
@@ -52,10 +52,10 @@ class DevToolsPageTabs {
         // Admin hooks.
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_scripts'));
-        add_action('wp_ajax_dtpt_save_tab', array($this, 'ajax_save_tab'));
-        add_action('wp_ajax_dtpt_delete_tab', array($this, 'ajax_delete_tab'));
-        add_action('wp_ajax_dtpt_assign_page_to_tab', array($this, 'ajax_assign_page_to_tab'));
-        add_action('wp_ajax_dtpt_remove_page_from_tab', array($this, 'ajax_remove_page_from_tab'));
+        add_action('wp_ajax_modulforge_save_tab', array($this, 'ajax_save_tab'));
+        add_action('wp_ajax_modulforge_delete_tab', array($this, 'ajax_delete_tab'));
+        add_action('wp_ajax_modulforge_assign_page_to_tab', array($this, 'ajax_assign_page_to_tab'));
+        add_action('wp_ajax_modulforge_remove_page_from_tab', array($this, 'ajax_remove_page_from_tab'));
 
         // Post list screens.
         add_action('restrict_manage_posts', array($this, 'add_tab_filter'));
@@ -64,15 +64,15 @@ class DevToolsPageTabs {
         // "Create New Tab" button + modal.
         add_action('manage_posts_extra_tablenav', array($this, 'add_create_tab_button'));
         add_action('admin_footer-edit.php', array($this, 'add_tab_creation_modal'));
-        add_action('wp_ajax_dtpt_create_tab_quick', array($this, 'ajax_create_tab_quick'));
-        add_action('wp_ajax_dtpt_update_page_tab', array($this, 'ajax_update_page_tab'));
+        add_action('wp_ajax_modulforge_create_tab_quick', array($this, 'ajax_create_tab_quick'));
+        add_action('wp_ajax_modulforge_update_page_tab', array($this, 'ajax_update_page_tab'));
 
         // Register hooks for every supported post type.
         add_action('admin_init', array($this, 'register_post_type_hooks'));
     }
 
     /* --------------------------------------------------------------------- */
-    /* Lifecycle — invoked by the DevTools controller                          */
+    /* Lifecycle — invoked by the Modulforge controller                          */
     /* --------------------------------------------------------------------- */
 
     public static function activate(): void {
@@ -90,8 +90,8 @@ class DevToolsPageTabs {
      */
     public static function uninstall(): void {
         global $wpdb;
-        $relations = $wpdb->prefix . 'page_tab_relations';
-        $tabs      = $wpdb->prefix . 'page_tabs';
+        $relations = $wpdb->prefix . 'modulforge_page_tab_relations';
+        $tabs      = $wpdb->prefix . 'modulforge_page_tabs';
         $wpdb->query("DROP TABLE IF EXISTS {$relations}"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $wpdb->query("DROP TABLE IF EXISTS {$tabs}"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         delete_option(self::DB_VERSION_OPTION);
@@ -115,7 +115,7 @@ class DevToolsPageTabs {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
 
-        $table_tabs = $wpdb->prefix . 'page_tabs';
+        $table_tabs = $wpdb->prefix . 'modulforge_page_tabs';
         $sql_tabs   = "CREATE TABLE {$table_tabs} (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             name varchar(255) NOT NULL,
@@ -129,7 +129,7 @@ class DevToolsPageTabs {
         ) {$charset_collate};";
 
         // 1:1 model: page_id is unique, so $wpdb->replace() reassigns cleanly.
-        $table_relations = $wpdb->prefix . 'page_tab_relations';
+        $table_relations = $wpdb->prefix . 'modulforge_page_tab_relations';
         $sql_relations   = "CREATE TABLE {$table_relations} (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             page_id bigint(20) NOT NULL,
@@ -151,7 +151,7 @@ class DevToolsPageTabs {
      */
     private static function migrate_relations_to_one_to_one(): void {
         global $wpdb;
-        $table = $wpdb->prefix . 'page_tab_relations';
+        $table = $wpdb->prefix . 'modulforge_page_tab_relations';
 
         if ($wpdb->get_var("SHOW TABLES LIKE '{$table}'") !== $table) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             return;
@@ -167,8 +167,8 @@ class DevToolsPageTabs {
         // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
         // Drop the legacy composite unique key if present.
-        if ($wpdb->get_results("SHOW INDEX FROM {$table} WHERE Key_name = 'page_tab'")) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
-            $wpdb->query("ALTER TABLE {$table} DROP INDEX page_tab"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
+        if ($wpdb->get_results("SHOW INDEX FROM {$table} WHERE Key_name = 'modulforge_page_tab'")) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
+            $wpdb->query("ALTER TABLE {$table} DROP INDEX modulforge_page_tab"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         }
 
         // Ensure a UNIQUE key on page_id (replacing any non-unique one).
@@ -238,12 +238,12 @@ class DevToolsPageTabs {
             ? str_replace('edit-', '', $screen->id)
             : '';
 
-        wp_enqueue_script('dtpt-admin', DTPT_PLUGIN_URL . 'assets/admin.js', array('jquery'), DTPT_VERSION, true);
-        wp_enqueue_style('dtpt-admin', DTPT_PLUGIN_URL . 'assets/admin.css', array(), DTPT_VERSION);
+        wp_enqueue_script('modulforge-page-tabs', MODULFORGE_TABS_URL . 'assets/admin.js', array('jquery'), MODULFORGE_TABS_VERSION, true);
+        wp_enqueue_style('modulforge-page-tabs', MODULFORGE_TABS_URL . 'assets/admin.css', array(), MODULFORGE_TABS_VERSION);
 
-        wp_localize_script('dtpt-admin', 'dtpt_ajax', array(
+        wp_localize_script('modulforge-page-tabs', 'modulforge_tabs_ajax', array(
             'ajax_url'          => admin_url('admin-ajax.php'),
-            'nonce'             => wp_create_nonce('dtpt_nonce'),
+            'nonce'             => wp_create_nonce('modulforge_page_tabs'),
             'current_post_type' => $post_type,
             'strings'           => array(
                 'confirm_delete'        => __('Are you sure you want to delete this tab?', 'modulforge'),
@@ -264,7 +264,7 @@ class DevToolsPageTabs {
         if (!current_user_can('manage_options')) {
             wp_die(esc_html__('You do not have permission to access this page.', 'modulforge'));
         }
-        include DTPT_PLUGIN_PATH . 'includes/admin-page.php';
+        include MODULFORGE_TABS_PATH . 'includes/admin-page.php';
     }
 
     /* --------------------------------------------------------------------- */
@@ -284,7 +284,7 @@ class DevToolsPageTabs {
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $tabs = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}page_tabs WHERE post_type = %s ORDER BY position ASC, name ASC",
+            "SELECT * FROM {$wpdb->prefix}modulforge_page_tabs WHERE post_type = %s ORDER BY position ASC, name ASC",
             $current_post_type
         ));
 
@@ -293,7 +293,7 @@ class DevToolsPageTabs {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             $counts = $wpdb->get_results($wpdb->prepare(
                 "SELECT ptr.tab_id, COUNT(*) AS c
-                 FROM {$wpdb->prefix}page_tab_relations ptr
+                 FROM {$wpdb->prefix}modulforge_page_tab_relations ptr
                  JOIN {$wpdb->prefix}posts p ON ptr.page_id = p.ID
                  WHERE p.post_status != 'trash' AND p.post_type = %s
                  GROUP BY ptr.tab_id",
@@ -342,7 +342,7 @@ class DevToolsPageTabs {
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $tabs = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$wpdb->prefix}page_tabs WHERE post_type = %s ORDER BY position ASC, name ASC",
+            "SELECT * FROM {$wpdb->prefix}modulforge_page_tabs WHERE post_type = %s ORDER BY position ASC, name ASC",
             $typenow
         ));
 
@@ -381,7 +381,7 @@ class DevToolsPageTabs {
         $tab_id   = absint($tab_filter);
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $post_ids = $wpdb->get_col($wpdb->prepare(
-            "SELECT ptr.page_id FROM {$wpdb->prefix}page_tab_relations ptr
+            "SELECT ptr.page_id FROM {$wpdb->prefix}modulforge_page_tab_relations ptr
              JOIN {$wpdb->prefix}posts p ON ptr.page_id = p.ID
              WHERE ptr.tab_id = %d AND p.post_type = %s",
             $tab_id,
@@ -412,7 +412,7 @@ class DevToolsPageTabs {
 
         if ($current_screen && strpos($current_screen->id, 'edit-') === 0
             && array_key_exists($typenow, $this->get_supported_post_types())) {
-            include DTPT_PLUGIN_PATH . 'includes/tab-modal.php';
+            include MODULFORGE_TABS_PATH . 'includes/tab-modal.php';
         }
     }
 
@@ -420,7 +420,7 @@ class DevToolsPageTabs {
         $new_columns = array();
         foreach ($columns as $key => $value) {
             if ($key === 'date') {
-                $new_columns['page_tab'] = __('Tab', 'modulforge');
+                $new_columns['modulforge_page_tab'] = __('Tab', 'modulforge');
             }
             $new_columns[$key] = $value;
         }
@@ -428,7 +428,7 @@ class DevToolsPageTabs {
     }
 
     public function display_tab_column($column, $post_id) {
-        if ($column !== 'page_tab') {
+        if ($column !== 'modulforge_page_tab') {
             return;
         }
 
@@ -467,7 +467,7 @@ class DevToolsPageTabs {
             global $wpdb;
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             $this->tabs_cache[$post_type] = $wpdb->get_results($wpdb->prepare(
-                "SELECT id, name, color FROM {$wpdb->prefix}page_tabs WHERE post_type = %s ORDER BY position ASC, name ASC",
+                "SELECT id, name, color FROM {$wpdb->prefix}modulforge_page_tabs WHERE post_type = %s ORDER BY position ASC, name ASC",
                 $post_type
             ));
         }
@@ -481,7 +481,7 @@ class DevToolsPageTabs {
         if (null === $this->relations_cache) {
             global $wpdb;
             $this->relations_cache = array();
-            $rows = $wpdb->get_results("SELECT page_id, tab_id FROM {$wpdb->prefix}page_tab_relations"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
+            $rows = $wpdb->get_results("SELECT page_id, tab_id FROM {$wpdb->prefix}modulforge_page_tab_relations"); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
             foreach ((array) $rows as $row) {
                 $this->relations_cache[(int) $row->page_id] = (int) $row->tab_id;
             }
@@ -494,7 +494,7 @@ class DevToolsPageTabs {
     /* --------------------------------------------------------------------- */
 
     public function ajax_create_tab_quick() {
-        check_ajax_referer('dtpt_nonce', 'nonce');
+        check_ajax_referer('modulforge_page_tabs', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('You do not have permission to perform this action.', 'modulforge'), 403);
@@ -516,13 +516,13 @@ class DevToolsPageTabs {
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         $next_position = $wpdb->get_var($wpdb->prepare(
-            "SELECT MAX(position) + 1 FROM {$wpdb->prefix}page_tabs WHERE post_type = %s",
+            "SELECT MAX(position) + 1 FROM {$wpdb->prefix}modulforge_page_tabs WHERE post_type = %s",
             $post_type
         )) ?: 0;
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         $result = $wpdb->insert(
-            $wpdb->prefix . 'page_tabs',
+            $wpdb->prefix . 'modulforge_page_tabs',
             array(
                 'name'        => $name,
                 'description' => '',
@@ -546,7 +546,7 @@ class DevToolsPageTabs {
     }
 
     public function ajax_save_tab() {
-        check_ajax_referer('dtpt_nonce', 'nonce');
+        check_ajax_referer('modulforge_page_tabs', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('You do not have permission to perform this action.', 'modulforge'), 403);
@@ -574,7 +574,7 @@ class DevToolsPageTabs {
         if ($tab_id > 0) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
             $result = $wpdb->update(
-                $wpdb->prefix . 'page_tabs',
+                $wpdb->prefix . 'modulforge_page_tabs',
                 $data,
                 array('id' => $tab_id),
                 array('%s', '%s', '%s', '%d'),
@@ -583,7 +583,7 @@ class DevToolsPageTabs {
         } else {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
             $result = $wpdb->insert(
-                $wpdb->prefix . 'page_tabs',
+                $wpdb->prefix . 'modulforge_page_tabs',
                 $data,
                 array('%s', '%s', '%s', '%d')
             );
@@ -601,7 +601,7 @@ class DevToolsPageTabs {
     }
 
     public function ajax_delete_tab() {
-        check_ajax_referer('dtpt_nonce', 'nonce');
+        check_ajax_referer('modulforge_page_tabs', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('You do not have permission to perform this action.', 'modulforge'), 403);
@@ -614,8 +614,8 @@ class DevToolsPageTabs {
 
         global $wpdb;
 
-        $wpdb->delete($wpdb->prefix . 'page_tab_relations', array('tab_id' => $tab_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
-        $result = $wpdb->delete($wpdb->prefix . 'page_tabs', array('id' => $tab_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
+        $wpdb->delete($wpdb->prefix . 'modulforge_page_tab_relations', array('tab_id' => $tab_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
+        $result = $wpdb->delete($wpdb->prefix . 'modulforge_page_tabs', array('id' => $tab_id), array('%d')); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
 
         if (false !== $result) {
             wp_send_json_success(__('Tab deleted successfully.', 'modulforge'));
@@ -625,7 +625,7 @@ class DevToolsPageTabs {
     }
 
     public function ajax_update_page_tab() {
-        check_ajax_referer('dtpt_nonce', 'nonce');
+        check_ajax_referer('modulforge_page_tabs', 'nonce');
 
         $page_id = isset($_POST['page_id']) ? absint(wp_unslash($_POST['page_id'])) : 0;
         $tab_id  = isset($_POST['tab_id']) ? absint(wp_unslash($_POST['tab_id'])) : 0;
@@ -641,7 +641,7 @@ class DevToolsPageTabs {
         if ($tab_id === 0) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
             $result = $wpdb->delete(
-                $wpdb->prefix . 'page_tab_relations',
+                $wpdb->prefix . 'modulforge_page_tab_relations',
                 array('page_id' => $page_id),
                 array('%d')
             );
@@ -652,7 +652,7 @@ class DevToolsPageTabs {
 
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
             $result = $wpdb->replace(
-                $wpdb->prefix . 'page_tab_relations',
+                $wpdb->prefix . 'modulforge_page_tab_relations',
                 array('page_id' => $page_id, 'tab_id' => $tab_id),
                 array('%d', '%d')
             );
@@ -663,7 +663,7 @@ class DevToolsPageTabs {
             if ($tab_id > 0) {
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
                 $tab_name = $wpdb->get_var($wpdb->prepare(
-                    "SELECT name FROM {$wpdb->prefix}page_tabs WHERE id = %d",
+                    "SELECT name FROM {$wpdb->prefix}modulforge_page_tabs WHERE id = %d",
                     $tab_id
                 ));
             }
@@ -681,7 +681,7 @@ class DevToolsPageTabs {
     }
 
     public function ajax_assign_page_to_tab() {
-        check_ajax_referer('dtpt_nonce', 'nonce');
+        check_ajax_referer('modulforge_page_tabs', 'nonce');
 
         $page_id = isset($_POST['page_id']) ? absint(wp_unslash($_POST['page_id'])) : 0;
         $tab_id  = isset($_POST['tab_id']) ? absint(wp_unslash($_POST['tab_id'])) : 0;
@@ -698,7 +698,7 @@ class DevToolsPageTabs {
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         $result = $wpdb->replace(
-            $wpdb->prefix . 'page_tab_relations',
+            $wpdb->prefix . 'modulforge_page_tab_relations',
             array('page_id' => $page_id, 'tab_id' => $tab_id),
             array('%d', '%d')
         );
@@ -711,7 +711,7 @@ class DevToolsPageTabs {
     }
 
     public function ajax_remove_page_from_tab() {
-        check_ajax_referer('dtpt_nonce', 'nonce');
+        check_ajax_referer('modulforge_page_tabs', 'nonce');
 
         $page_id = isset($_POST['page_id']) ? absint(wp_unslash($_POST['page_id'])) : 0;
         $tab_id  = isset($_POST['tab_id']) ? absint(wp_unslash($_POST['tab_id'])) : 0;
@@ -724,7 +724,7 @@ class DevToolsPageTabs {
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct query on the plugin's own custom table; not cacheable.
         $result = $wpdb->delete(
-            $wpdb->prefix . 'page_tab_relations',
+            $wpdb->prefix . 'modulforge_page_tab_relations',
             array('page_id' => $page_id, 'tab_id' => $tab_id),
             array('%d', '%d')
         );
@@ -743,7 +743,7 @@ class DevToolsPageTabs {
         global $wpdb;
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Direct query on the plugin's own custom table; not cacheable. Table name derived from $wpdb->prefix; values are passed through $wpdb->prepare().
         return (bool) $wpdb->get_var($wpdb->prepare(
-            "SELECT id FROM {$wpdb->prefix}page_tabs WHERE id = %d",
+            "SELECT id FROM {$wpdb->prefix}modulforge_page_tabs WHERE id = %d",
             $tab_id
         ));
     }
@@ -751,6 +751,6 @@ class DevToolsPageTabs {
 
 endif;
 
-if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
-    new DevToolsPageTabs();
+if (!defined('MODULFORGE_LIFECYCLE_RUN')) {
+    new Modulforge_Page_Tabs();
 }

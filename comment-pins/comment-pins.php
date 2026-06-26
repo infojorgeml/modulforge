@@ -13,14 +13,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists('DevToolsCommentPins')) :
+if (!class_exists('Modulforge_Comment_Pins')) :
 
-class DevToolsCommentPins {
+class Modulforge_Comment_Pins {
 
     const VERSION             = '2.2.0';
     const DB_VERSION          = '2.1.0';
-    const DB_VERSION_OPTION   = 'dtcp_db_version';
-    const NONCE_ACTION        = 'comment_pins_nonce';
+    const DB_VERSION_OPTION   = 'modulforge_comment_pins_db_version';
+    const NONCE_ACTION        = 'modulforge_comment_pins';
     const MAX_COMMENT_LENGTH  = 2000;
     const MAX_SELECTOR_LENGTH = 1000;
 
@@ -37,26 +37,26 @@ class DevToolsCommentPins {
         $this->replies_table = self::replies_table_name();
 
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-        add_action('wp_ajax_save_comment_pin', array($this, 'save_comment_pin'));
-        add_action('wp_ajax_get_comment_pins', array($this, 'get_comment_pins'));
-        add_action('wp_ajax_delete_comment_pin', array($this, 'delete_comment_pin'));
-        add_action('wp_ajax_resolve_comment_pin', array($this, 'resolve_comment_pin'));
-        add_action('wp_ajax_get_comment_replies', array($this, 'get_comment_replies'));
-        add_action('wp_ajax_add_comment_reply', array($this, 'add_comment_reply'));
-        add_action('wp_ajax_delete_comment_reply', array($this, 'delete_comment_reply'));
+        add_action('wp_ajax_modulforge_save_comment_pin', array($this, 'modulforge_save_comment_pin'));
+        add_action('wp_ajax_modulforge_get_comment_pins', array($this, 'modulforge_get_comment_pins'));
+        add_action('wp_ajax_modulforge_delete_comment_pin', array($this, 'modulforge_delete_comment_pin'));
+        add_action('wp_ajax_modulforge_resolve_comment_pin', array($this, 'modulforge_resolve_comment_pin'));
+        add_action('wp_ajax_modulforge_get_comment_replies', array($this, 'modulforge_get_comment_replies'));
+        add_action('wp_ajax_modulforge_add_comment_reply', array($this, 'modulforge_add_comment_reply'));
+        add_action('wp_ajax_modulforge_delete_comment_reply', array($this, 'modulforge_delete_comment_reply'));
         add_action('admin_bar_menu', array($this, 'add_admin_bar_button'), 100);
     }
 
     /** Pins table. Static so lifecycle methods need no instance. */
     private static function table_name(): string {
         global $wpdb;
-        return $wpdb->prefix . 'comment_pins';
+        return $wpdb->prefix . 'modulforge_comment_pins';
     }
 
     /** Replies table. */
     private static function replies_table_name(): string {
         global $wpdb;
-        return $wpdb->prefix . 'comment_pin_replies';
+        return $wpdb->prefix . 'modulforge_comment_pin_replies';
     }
 
     /**
@@ -64,11 +64,11 @@ class DevToolsCommentPins {
      * Filterable. Deleting others' content additionally requires edit_others_posts.
      */
     private function get_required_capability(): string {
-        return apply_filters('dev_tools_comment_pins_capability', 'edit_posts');
+        return apply_filters('modulforge_comment_pins_capability', 'edit_posts');
     }
 
     /* --------------------------------------------------------------------- */
-    /* Lifecycle — invoked by the DevTools controller                          */
+    /* Lifecycle — invoked by the Modulforge controller                          */
     /* --------------------------------------------------------------------- */
 
     public static function activate(): void {
@@ -169,7 +169,7 @@ class DevToolsCommentPins {
         $asset = require $asset_file;
 
         wp_enqueue_script(
-            'dev-tools-comment-pins',
+            'modulforge-comment-pins',
             $build_url . 'index.js',
             $asset['dependencies'],
             $asset['version'],
@@ -180,14 +180,14 @@ class DevToolsCommentPins {
 
         if (file_exists($build_path . 'style-index.css')) {
             wp_enqueue_style(
-                'dev-tools-comment-pins',
+                'modulforge-comment-pins',
                 $build_url . 'style-index.css',
                 array('dashicons'),
                 $asset['version']
             );
         }
 
-        wp_localize_script('dev-tools-comment-pins', 'devToolsCommentPins', array(
+        wp_localize_script('modulforge-comment-pins', 'modulforgeCommentPins', array(
             'ajax_url'    => admin_url('admin-ajax.php'),
             'nonce'       => wp_create_nonce(self::NONCE_ACTION),
             'current_url' => self::current_url(),
@@ -264,7 +264,7 @@ class DevToolsCommentPins {
         }
     }
 
-    public function save_comment_pin() {
+    public function modulforge_save_comment_pin() {
         $this->verify_request();
 
         $post_url     = isset($_POST['post_url']) ? esc_url_raw(wp_unslash($_POST['post_url'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
@@ -324,7 +324,7 @@ class DevToolsCommentPins {
         ));
     }
 
-    public function get_comment_pins() {
+    public function modulforge_get_comment_pins() {
         $this->verify_request();
 
         $post_url = isset($_POST['post_url']) ? esc_url_raw(wp_unslash($_POST['post_url'])) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
@@ -391,7 +391,7 @@ class DevToolsCommentPins {
         wp_send_json_success($out);
     }
 
-    public function delete_comment_pin() {
+    public function modulforge_delete_comment_pin() {
         $this->verify_request();
 
         $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
@@ -431,7 +431,7 @@ class DevToolsCommentPins {
      * Resolve or reopen a pin. Collaborative: any user with the capability may
      * do it; we record who and when.
      */
-    public function resolve_comment_pin() {
+    public function modulforge_resolve_comment_pin() {
         $this->verify_request();
 
         $pin_id   = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
@@ -479,7 +479,7 @@ class DevToolsCommentPins {
         ));
     }
 
-    public function get_comment_replies() {
+    public function modulforge_get_comment_replies() {
         $this->verify_request();
 
         $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
@@ -516,7 +516,7 @@ class DevToolsCommentPins {
         wp_send_json_success($out);
     }
 
-    public function add_comment_reply() {
+    public function modulforge_add_comment_reply() {
         $this->verify_request();
 
         $pin_id = isset($_POST['pin_id']) ? absint(wp_unslash($_POST['pin_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
@@ -569,7 +569,7 @@ class DevToolsCommentPins {
         ));
     }
 
-    public function delete_comment_reply() {
+    public function modulforge_delete_comment_reply() {
         $this->verify_request();
 
         $reply_id = isset($_POST['reply_id']) ? absint(wp_unslash($_POST['reply_id'])) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified in verify_request().
@@ -651,6 +651,6 @@ endif;
 
 // Instantiate for normal runtime. The guard lets uninstall.php include this
 // file purely to reach the static uninstall() method without booting hooks.
-if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
-    new DevToolsCommentPins();
+if (!defined('MODULFORGE_LIFECYCLE_RUN')) {
+    new Modulforge_Comment_Pins();
 }

@@ -1,6 +1,6 @@
 # Comment Pins
 
-A WordPress mini-plugin (part of DevTools) for a visual comment-pins system on
+A WordPress mini-plugin (part of Modulforge) for a visual comment-pins system on
 the front end — useful for editorial review and feedback. The front end is a
 React app (built with `@wordpress/scripts`, reusing the React that WordPress
 ships via `wp-element`).
@@ -16,7 +16,7 @@ layout changed — that was the root cause of pins "floating" off target.)
 
 ## Usage
 
-Activate the **Comment Pins** module from the DevTools screen. A "Comment"
+Activate the **Comment Pins** module from the Modulforge screen. A "Comment"
 button appears in the admin bar for users with the required capability.
 
 1. Click the "Comment" button to enter comment mode
@@ -28,7 +28,7 @@ button appears in the admin bar for users with the required capability.
 ## Security
 
 - Gated by capability (`edit_posts` by default, filterable via
-  `dev_tools_comment_pins_capability`) at enqueue, admin bar and every AJAX endpoint
+  `modulforge_comment_pins_capability`) at enqueue, admin bar and every AJAX endpoint
 - Nonce-checked AJAX with consistent JSON errors
 - Delete restricted to the pin's author or `edit_others_posts`
 - Comment text is rendered through React (auto-escaped) — no `innerHTML`
@@ -36,11 +36,11 @@ button appears in the admin bar for users with the required capability.
 
 ## Database
 
-Table `{prefix}comment_pins`:
+Table `{prefix}modulforge_comment_pins`:
 `id, post_url, user_id, anchor_selector, offset_x, offset_y, comment_text, created_at`.
 
-Created/upgraded through the DevTools lifecycle (`maybe_install_schema`,
-version-gated via `dtcp_db_version`). Removed on uninstall only when DevTools's
+Created/upgraded through the Modulforge lifecycle (`maybe_install_schema`,
+version-gated via `modulforge_comment_pins_db_version`). Removed on uninstall only when Modulforge's
 "Delete all data" opt-in is enabled.
 
 ## Development
@@ -68,7 +68,7 @@ for its dependency list and cache-busting version.
   - Resolve/reopen comments (collaborative; resolved pins hidden on the page by default)
   - Side panel listing every comment with filters (all/open/resolved/mine) and jump-to-pin
   - Flat reply threads on each comment
-  - Schema: `status`/`resolved_at`/`resolved_by` on pins + a `comment_pin_replies` table
+  - Schema: `status`/`resolved_at`/`resolved_by` on pins + a `modulforge_comment_pin_replies` table
 
 - **v2.1.0**
   - Minimalist redesign (Linear/Notion): per-author tinted pins with initials, a light

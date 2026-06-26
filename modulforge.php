@@ -19,16 +19,16 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Main DevTools Plugin Controller.
+ * Main Modulforge Plugin Controller.
  */
-final class DevTools {
+final class Modulforge_Controller {
     private const VERSION       = '1.0.0';
-    private const OPTION_KEY     = 'dev_tools_active_plugins';
-    private const OPTION_DELETE_DATA = 'dev_tools_delete_data_on_uninstall';
+    private const OPTION_KEY     = 'modulforge_active_plugins';
+    private const OPTION_DELETE_DATA = 'modulforge_delete_data_on_uninstall';
     private const MENU_SLUG   = 'modulforge';
     private const CAPABILITY  = 'manage_options';
     private const NONCE_FIELD = 'nonce';
-    private const NONCE_ACTION = 'dev_tools_toggle_plugin';
+    private const NONCE_ACTION = 'modulforge_toggle_plugin';
 
     /**
      * Single plugin instance.
@@ -133,8 +133,8 @@ final class DevTools {
         add_action('plugins_loaded', array($this, 'on_plugins_loaded'));
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_assets'));
-        add_action('wp_ajax_dev_tools_toggle_plugin', array($this, 'ajax_toggle_plugin'));
-        add_action('wp_ajax_dev_tools_set_uninstall_pref', array($this, 'ajax_set_uninstall_pref'));
+        add_action('wp_ajax_modulforge_toggle_plugin', array($this, 'ajax_toggle_plugin'));
+        add_action('wp_ajax_modulforge_set_uninstall_pref', array($this, 'ajax_set_uninstall_pref'));
         add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'add_action_links'));
     }
 
@@ -166,32 +166,32 @@ final class DevTools {
         $plugins = array(
             'page-state'   => array(
                 'file'    => $base_path . 'page-state/page-state.php',
-                'class'   => 'DevToolsPageState',
+                'class'   => 'Modulforge_Page_State',
                 'version' => '2.0.0',
             ),
             'page-tabs'    => array(
                 'file'    => $base_path . 'tabs/page-tabs-organizer.php',
-                'class'   => 'DevToolsPageTabs',
+                'class'   => 'Modulforge_Page_Tabs',
                 'version' => '1.0.8',
             ),
             'comment-pins' => array(
                 'file'    => $base_path . 'comment-pins/comment-pins.php',
-                'class'   => 'DevToolsCommentPins',
+                'class'   => 'Modulforge_Comment_Pins',
                 'version' => '2.2.0',
             ),
             'debug-tools'  => array(
                 'file'    => $base_path . 'debug-tools/debug-tools.php',
-                'class'   => 'DevToolsDebug',
+                'class'   => 'Modulforge_Debug',
                 'version' => '1.0.1',
             ),
             'convert-webp' => array(
                 'file'    => $base_path . 'convert-webp/convert-webp.php',
-                'class'   => 'DevToolsWebP',
+                'class'   => 'Modulforge_WebP',
                 'version' => '1.0.0',
             ),
         );
 
-        $cache = apply_filters('dev_tools_mini_plugins', $plugins);
+        $cache = apply_filters('modulforge_mini_plugins', $plugins);
 
         return $cache;
     }
@@ -235,7 +235,7 @@ final class DevTools {
      * Get the translated name + description for a single mini-plugin.
      *
      * Falls back to the raw key (and to any name/description supplied through
-     * the `dev_tools_mini_plugins` filter) so third-party modules keep working.
+     * the `modulforge_mini_plugins` filter) so third-party modules keep working.
      *
      * @param array<string, string> $plugin_data Definition data for fallback.
      * @return array<string, string>
@@ -252,7 +252,7 @@ final class DevTools {
     }
 
     /**
-     * Add the DevTools menu entry.
+     * Add the Modulforge menu entry.
      */
     public function add_admin_menu(): void {
         add_menu_page(
@@ -265,7 +265,7 @@ final class DevTools {
             30
         );
 
-        // Rename the auto-generated first submenu (a duplicate "DevTools") to "Tools".
+        // Rename the auto-generated first submenu (a duplicate "Modulforge") to "Tools".
         add_submenu_page(
             self::MENU_SLUG,
             __('Tools', 'modulforge'),
@@ -301,7 +301,7 @@ final class DevTools {
         }
 
         wp_enqueue_script(
-            'devtools-admin',
+            'modulforge-admin',
             plugin_dir_url(__FILE__) . 'assets/admin.js',
             array('jquery'),
             self::VERSION,
@@ -309,15 +309,15 @@ final class DevTools {
         );
 
         wp_enqueue_style(
-            'devtools-admin',
+            'modulforge-admin',
             plugin_dir_url(__FILE__) . 'assets/admin.css',
             array(),
             self::VERSION
         );
 
         wp_localize_script(
-            'devtools-admin',
-            'dev_tools_ajax',
+            'modulforge-admin',
+            'modulforge_ajax',
             array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce(self::NONCE_ACTION),
@@ -334,7 +334,7 @@ final class DevTools {
     }
 
     /**
-     * Render the DevTools admin page.
+     * Render the Modulforge admin page.
      */
     public function render_admin_page(): void {
         ?>
@@ -420,7 +420,7 @@ final class DevTools {
                 </div>
                 <div class="devtools-info-card">
                     <h4><?php esc_html_e('Data on uninstall', 'modulforge'); ?></h4>
-                    <p><?php esc_html_e('By default your data (tabs, pins and page notes) is kept if you delete DevTools. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled.', 'modulforge'); ?></p>
+                    <p><?php esc_html_e('By default your data (tabs, pins and page notes) is kept if you delete Modulforge. Enable this to remove all plugin data — including database tables — when the plugin is uninstalled.', 'modulforge'); ?></p>
                     <label class="devtools-uninstall-pref">
                         <input type="checkbox" id="devtools-delete-data" <?php checked((bool) get_option(self::OPTION_DELETE_DATA, false)); ?> />
                         <?php esc_html_e('Delete all data on uninstall', 'modulforge'); ?>
@@ -616,11 +616,11 @@ final class DevTools {
     }
 }
 
-register_activation_hook(__FILE__, array('DevTools', 'activate'));
-register_deactivation_hook(__FILE__, array('DevTools', 'deactivate'));
+register_activation_hook(__FILE__, array('Modulforge_Controller', 'activate'));
+register_deactivation_hook(__FILE__, array('Modulforge_Controller', 'deactivate'));
 
 // The guard lets uninstall.php include this file to reach the static
 // definition/lifecycle helpers without booting the admin runtime.
-if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
-    DevTools::get_instance();
+if (!defined('MODULFORGE_LIFECYCLE_RUN')) {
+    Modulforge_Controller::get_instance();
 }

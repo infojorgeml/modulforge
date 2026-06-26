@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
     $(document).on('change', '.page-status-selector', function() {
         const $select = $(this);
         const postId = $select.data('post');
-        const nonce = devToolsPageState.nonce;
+        const nonce = modulforgePageState.nonce;
         const newStatus = $select.val();
         const $loader = $select.siblings('.page-status-loading');
 
@@ -80,10 +80,10 @@ jQuery(document).ready(function($) {
         $select.prop('disabled', true);
 
         $.ajax({
-            url: devToolsPageState.ajaxurl,
+            url: modulforgePageState.ajaxurl,
             type: 'POST',
             data: {
-                action: 'save_page_status',
+                action: 'modulforge_save_page_status',
                 post_id: postId,
                 status: newStatus,
                 nonce: nonce
@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
                 }
             },
             error: function() {
-                alert(devToolsPageState.messages.error);
+                alert(modulforgePageState.messages.error);
                 // Revert selection on error.
                 $select.val($select.data('original-value'));
             },
@@ -123,7 +123,7 @@ jQuery(document).ready(function($) {
     $(document).on('input paste keyup', '.page-notes-textarea', function() {
         const $textarea = $(this);
         const postId = $textarea.data('post');
-        const nonce = devToolsPageState.nonce;
+        const nonce = modulforgePageState.nonce;
         const notes = $textarea.val();
 
         // Auto-resize.
@@ -135,28 +135,28 @@ jQuery(document).ready(function($) {
         }
 
         // Show the "saving..." state.
-        showSaveStatus($textarea, devToolsPageState.messages.saving, 'saving');
+        showSaveStatus($textarea, modulforgePageState.messages.saving, 'saving');
 
         // Set a new timer (1.5s delay).
         saveTimer[postId] = setTimeout(function() {
             $.ajax({
-                url: devToolsPageState.ajaxurl,
+                url: modulforgePageState.ajaxurl,
                 type: 'POST',
                 data: {
-                    action: 'save_page_notes',
+                    action: 'modulforge_save_page_notes',
                     post_id: postId,
                     notes: notes,
                     nonce: nonce
                 },
                 success: function(response) {
                     if (response.success) {
-                        showSaveStatus($textarea, devToolsPageState.messages.saved, 'success');
+                        showSaveStatus($textarea, modulforgePageState.messages.saved, 'success');
                     } else {
-                        showSaveStatus($textarea, devToolsPageState.messages.error, 'error');
+                        showSaveStatus($textarea, modulforgePageState.messages.error, 'error');
                     }
                 },
                 error: function() {
-                    showSaveStatus($textarea, devToolsPageState.messages.error, 'error');
+                    showSaveStatus($textarea, modulforgePageState.messages.error, 'error');
                 }
             });
         }, 1500);
@@ -233,7 +233,7 @@ jQuery(document).ready(function($) {
         const $checkbox = $(this);
         const $container = $checkbox.closest('.responsive-checkboxes');
         const postId = $container.data('post');
-        const nonce = devToolsPageState.nonce;
+        const nonce = modulforgePageState.nonce;
         const device = $checkbox.data('device');
         const checked = $checkbox.is(':checked');
 
@@ -241,10 +241,10 @@ jQuery(document).ready(function($) {
         $checkbox.prop('disabled', true);
 
         $.ajax({
-            url: devToolsPageState.ajaxurl,
+            url: modulforgePageState.ajaxurl,
             type: 'POST',
             data: {
-                action: 'save_page_responsive',
+                action: 'modulforge_save_page_responsive',
                 post_id: postId,
                 device: device,
                 checked: checked,
@@ -252,15 +252,15 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    showResponsiveStatus($checkbox, devToolsPageState.messages.saved, 'success');
+                    showResponsiveStatus($checkbox, modulforgePageState.messages.saved, 'success');
                 } else {
-                    showResponsiveStatus($checkbox, devToolsPageState.messages.error, 'error');
+                    showResponsiveStatus($checkbox, modulforgePageState.messages.error, 'error');
                     // Revert checkbox on error.
                     $checkbox.prop('checked', !checked);
                 }
             },
             error: function() {
-                showResponsiveStatus($checkbox, devToolsPageState.messages.error, 'error');
+                showResponsiveStatus($checkbox, modulforgePageState.messages.error, 'error');
                 // Revert checkbox on error.
                 $checkbox.prop('checked', !checked);
             },

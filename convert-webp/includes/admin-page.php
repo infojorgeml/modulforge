@@ -5,7 +5,7 @@
  * @var array $settings  Current settings (auto_upload, quality).
  * @var bool  $supported Whether the server can generate WebP.
  *
- * @package DevToolsWebP
+ * @package Modulforge
  */
 
 if (!defined('ABSPATH')) {

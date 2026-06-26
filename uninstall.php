@@ -1,12 +1,12 @@
 <?php
 /**
- * Uninstall handler for DevTools.
+ * Uninstall handler for Modulforge.
  *
  * Runs only when the plugin is deleted from the WordPress admin. Data is
  * preserved unless the "Delete all data on uninstall" option was enabled on
- * the DevTools screen.
+ * the Modulforge screen.
  *
- * @package DevTools
+ * @package Modulforge
  */
 
 // Exit if not called by WordPress during uninstall.
@@ -15,28 +15,28 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 }
 
 // Respect the opt-in. Default: keep everything.
-if (!get_option('dev_tools_delete_data_on_uninstall', false)) {
+if (!get_option('modulforge_delete_data_on_uninstall', false)) {
     return;
 }
 
 // Prevent the controller and mini-plugin files from booting their runtime
 // hooks when we include them purely to reach the static uninstall() methods.
-if (!defined('DEVTOOLS_LIFECYCLE_RUN')) {
-    define('DEVTOOLS_LIFECYCLE_RUN', true);
+if (!defined('MODULFORGE_LIFECYCLE_RUN')) {
+    define('MODULFORGE_LIFECYCLE_RUN', true);
 }
 
 require_once __DIR__ . '/modulforge.php';
 
-if (class_exists('DevTools')) {
+if (class_exists('Modulforge_Controller')) {
     // Clean every module — including inactive ones — so nothing is left behind.
-    foreach (DevTools::get_mini_plugin_definitions() as $plugin_key => $data) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
-        DevTools::run_lifecycle($plugin_key, 'uninstall');
+    foreach (Modulforge_Controller::get_mini_plugin_definitions() as $plugin_key => $data) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Local variable inside an included template; not global scope.
+        Modulforge_Controller::run_lifecycle($plugin_key, 'uninstall');
     }
 }
 
 // Remove the controller's own options.
-delete_option('dev_tools_active_plugins');
-delete_option('dev_tools_delete_data_on_uninstall');
+delete_option('modulforge_active_plugins');
+delete_option('modulforge_delete_data_on_uninstall');
 
 /*
  * Note: this performs single-site cleanup. On a multisite network, wrap the
