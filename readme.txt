@@ -19,7 +19,7 @@ Included modules:
 * **Page State Management** — status tracking, notes and responsive-design checkboxes on the pages list.
 * **Page Tabs Organizer** — organize pages with customizable tabs in the admin.
 * **Comment Pins** — leave visual comment pins anywhere on a page.
-* **Debug & Logs** — toggle WordPress debugging and read the debug log from the admin, without FTP.
+* **Debug & Logs** — capture PHP errors to a private log file and read them from the admin, without FTP or editing wp-config.
 * **Convert to WebP** — bulk-convert the media library and auto-convert new uploads from JPEG/PNG to WebP.
 
 Manage everything from **Modulforge → Tools**: flip a switch to activate or deactivate each module.

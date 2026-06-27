@@ -74,7 +74,7 @@ when Modulforge's "Delete all data" opt-in is enabled.
   - Consolidated to a 1:1 page→tab model with a unique index
   - Closed an IDOR in page-assignment AJAX (per-object `edit_post`)
   - Removed N+1 queries on list screens
-  - English UI under the `devtools` text domain
+  - English UI under the `modulforge` text domain
   - Removed legacy "force DB update" emergency tooling (superseded by the lifecycle)
 
 ---

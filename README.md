@@ -12,7 +12,7 @@ Modulforge is a WordPress controller plugin that allows you to manage and indivi
 
 ## 🆕 What's New in 2.0.0
 
-- **Renamed to Modulforge** (`dev-tools`): the plugin, text domain, classes, options, CSS/JS prefixes, folder and main file were rebranded away from "SuiteWP"/"WP" — required for WordPress.org, where "WP" can't be used in the plugin name. Reactivate the plugin and its modules after updating; the old `suitewp_*` options are not carried over.
+- **Renamed to Modulforge** (`modulforge`): the plugin, text domain, classes, options, script/style handles, folder and main file use the unique `modulforge` prefix — required for WordPress.org. Reactivate the plugin and its modules after updating; options from older prefixes are not carried over.
 - Debug & Logs now lives under the **Modulforge menu** (not Tools).
 
 ## 🆕 What's New in 1.4.0
@@ -32,7 +32,7 @@ Modulforge is a WordPress controller plugin that allows you to manage and indivi
 - **Security hardening** — per-object capability checks (closes an IDOR in Page Tabs), capability gating for Comment Pins, stricter nonce/sanitisation, and consistent JSON error responses
 - **Comment Pins** can now delete pins (owner or `edit_others_posts`), with XSS-safe rendering and reliable URL handling
 - **Page Tabs** consolidated to a clean 1:1 page→tab model and removed N+1 queries on post-list screens
-- **Single language (English), one text domain** (`devtools`), with all UI strings localised
+- **Single language (English), one text domain** (`modulforge`), with all UI strings localised
 - **`uninstall.php`** with an opt-in switch to remove all plugin data (off by default — data is kept)
 - Folders renamed to kebab-case; versions and READMEs reconciled
 

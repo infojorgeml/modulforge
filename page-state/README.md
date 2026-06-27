@@ -51,7 +51,7 @@ page-state/
 ## 🔄 Versions
 
 - **v2.0.0** (current)
-  - Unified text domain (`devtools`) and English UI
+  - Unified text domain (`modulforge`) and English UI
   - Hardened AJAX handlers (per-object capability, single localised nonce)
   - Styles moved from inline `admin_head` to an enqueued stylesheet
   - Optional data cleanup on uninstall (via Modulforge's opt-in)
